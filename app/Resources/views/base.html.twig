@@ -3,11 +3,71 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+    {% block stylesheets %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('bundles/app/bootstrap/css/bootstrap.css')}}" />
+    <script src="{{asset('bundles/app/jquery/jquery.js')}}"></script>  
+</head>
+<body>
+    <div class="container-fluid">
+        {% block cabecalho %}
+            <div class="row">
+                <div class="col-2">
+                    <img src="{{asset('bundles/app/imagens/logo.png')}}" style="width: 130px; height: 75px; margin: 20px 20px 20px 40px; "/>
+                </div>
+                <div class="col-9 text-center">
+                    <p class="h1 text-muted" style="margin-top: 25px;">Fila Fast Online</p><br/>
+                    <p class="text-muted" style="margin-top: -35px;">Soluções em gerenciamento de filas de atendimentos.</p>
+                </div>
+            </div>
+            <hr style="margin: 0px;"/>
+        {% endblock %}
+        {% block navegacao %}
+            <table width="98%">
+                <tr>
+                    <td width="50%">
+                        <nav>
+                            <ul class="nav nav-pills">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{path('Usuarios')}}">Usuários</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Filas</a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Pequisar</a>
+                                        <a class="dropdown-item" href="#">Cadastrar</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Atendimento</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Triagem</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Relatórios</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </td>
+                    <td align="right" width="50%" class="text-muted">
+                        Olá, {{nome}}. <a href="{{path('Sair')}}" style="margin-left: 5px; "> Sair</a>
+                    </td>
+                </tr>
+            </table>
+            <hr style="margin: 0px;"/>
+        {% endblock %}
+    </div>
+    <div class="container-fluid">
+        {% block conteiner %}
+
+        {% endblock %}
+    </div>
+    {% block javascripts %}      
+        <script src="{{asset('bundles/app/bootstrap/js/bootstrap.bundle.js')}}"></script>    
+    {% endblock %}
+</body>
 </html>

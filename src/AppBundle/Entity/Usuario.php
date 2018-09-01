@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="t_usuario")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UsuarioRepository")
  */
-class Usuario
-{
+class Usuario {
+
     /**
      * @var int
      *
@@ -57,14 +57,14 @@ class Usuario
     private $usuario;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTime
      *
      * @ORM\Column(name="create_at", type="datetime", nullable=true)
      */
     private $createAt;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTime
      *
      * @ORM\Column(name="update_at", type="datetime", nullable=true)
      */
@@ -77,14 +77,20 @@ class Usuario
      */
     private $tipo;
 
+    /**
+     * Construct
+     */
+    public function __construct() {
+        $this->createAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+        $this->updateAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+    }
 
     /**
      * Get id.
      *
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -95,8 +101,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setNome($nome)
-    {
+    public function setNome($nome) {
         $this->nome = $nome;
 
         return $this;
@@ -107,8 +112,7 @@ class Usuario
      *
      * @return string
      */
-    public function getNome()
-    {
+    public function getNome() {
         return $this->nome;
     }
 
@@ -119,8 +123,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setSenha($senha)
-    {
+    public function setSenha($senha) {
         $this->senha = $senha;
 
         return $this;
@@ -131,8 +134,7 @@ class Usuario
      *
      * @return string
      */
-    public function getSenha()
-    {
+    public function getSenha() {
         return $this->senha;
     }
 
@@ -143,8 +145,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setSobrenome($sobrenome)
-    {
+    public function setSobrenome($sobrenome) {
         $this->sobrenome = $sobrenome;
 
         return $this;
@@ -155,8 +156,7 @@ class Usuario
      *
      * @return string
      */
-    public function getSobrenome()
-    {
+    public function getSobrenome() {
         return $this->sobrenome;
     }
 
@@ -167,8 +167,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setStatus($status)
-    {
+    public function setStatus($status) {
         $this->status = $status;
 
         return $this;
@@ -179,8 +178,7 @@ class Usuario
      *
      * @return string
      */
-    public function getStatus()
-    {
+    public function getStatus() {
         return $this->status;
     }
 
@@ -191,8 +189,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setUsuario($usuario)
-    {
+    public function setUsuario($usuario) {
         $this->usuario = $usuario;
 
         return $this;
@@ -203,8 +200,7 @@ class Usuario
      *
      * @return int
      */
-    public function getUsuario()
-    {
+    public function getUsuario() {
         return $this->usuario;
     }
 
@@ -215,8 +211,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setCreateAt($createAt = null)
-    {
+    public function setCreateAt($createAt = null) {
         $this->createAt = $createAt;
 
         return $this;
@@ -227,8 +222,7 @@ class Usuario
      *
      * @return \DateTime|null
      */
-    public function getCreateAt()
-    {
+    public function getCreateAt() {
         return $this->createAt;
     }
 
@@ -239,8 +233,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setUpdateAt($updateAt = null)
-    {
+    public function setUpdateAt($updateAt = null) {
         $this->updateAt = $updateAt;
 
         return $this;
@@ -251,8 +244,7 @@ class Usuario
      *
      * @return \DateTime|null
      */
-    public function getUpdateAt()
-    {
+    public function getUpdateAt() {
         return $this->updateAt;
     }
 
@@ -263,8 +255,7 @@ class Usuario
      *
      * @return Usuario
      */
-    public function setTipo($tipo)
-    {
+    public function setTipo($tipo) {
         $this->tipo = $tipo;
 
         return $this;
@@ -275,8 +266,8 @@ class Usuario
      *
      * @return int
      */
-    public function getTipo()
-    {
+    public function getTipo() {
         return $this->tipo;
     }
+
 }

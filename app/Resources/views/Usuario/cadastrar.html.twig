@@ -1,0 +1,82 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">Cadastro de Usuários</div>
+                <div class="card-body">
+                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarUsuario')}}" method="post" id="CadastroUsuario">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Nome" name="nome" required>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Sobrenome" name="sobrenome" required>
+                            </div>
+                        </div><br/>
+                        <div class="row">
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Login (Matricula)" name="login" required>
+                            </div>
+                        </div><br/>
+                        <div class="row">
+                            <div class="col">
+                                <input type="password" class="form-control" placeholder="Senha" name="senha" id="senha" required>
+                            </div>
+                            <div class="col">
+                                <input type="password" class="form-control" placeholder="Confirmar Senha" name="confirmar" id="confirmar" required>
+                            </div>
+                        </div><br/>
+                        <div class="row">
+                            <div class="col-1" style="margin-right: -35px;">
+                                <label class="my-2 mr-2">Status:</label>
+                            </div>
+                            <div class="col-2">                                
+                                <select class="custom-select my-1 mr-sm-1" name="status">
+                                    <option selected value="Ativo">Ativo</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <div class="col-1" style="margin-right: -23px;">
+                                <label class="my-2 mr-2">Direitos:</label>
+                            </div>
+                            <div class="col-2">                                
+                                <select class="custom-select my-1 mr-sm-1" name="tipo" required>
+                                    <option selected value="" >Selecionar</option>
+                                    <option value="1">Administrador</option>
+                                    <option value="2">Atendente</option>
+                                    <option value="3">Triagem</option>
+                                </select>
+                            </div>
+                        </div><br/>
+                        <div class="row">
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Cancelar</button>
+                                <input type="submit" style="display: none; visibility: hidden;"/>
+                                <button type="button" class="btn btn-primary" style="width: 100px;" id="SalvarUsuario">Salvar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#SalvarUsuario").click(function () {
+            var senha = document.getElementById("senha").value;
+            var confirmar = document.getElementById("confirmar").value;
+            if(senha === confirmar){
+            $("#CadastroUsuario").find('[type="submit"]').trigger('click');
+            }else{
+                alert("As senhas não conferem!");
+                $("#senha").focus().select();
+            }
+        });
+    </script>
+    <script>
+        $("#cancelarUsuario").click(function() {
+            window.location.href="{{path('Usuarios')}}";
+        });
+    </script>
+{% endblock %}

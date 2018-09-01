@@ -21,7 +21,7 @@ class UsuarioControllerController extends Controller {
     }
 
     /**
-     * @Route ("/entrar", name="Entrar")
+     * @Route ("/home", name="Home")
      */
     public function entrar() {
         if (isset($_SESSION['login'])) {
@@ -31,7 +31,7 @@ class UsuarioControllerController extends Controller {
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $login = isset($filtro['login']) ? $filtro['login'] : null;
-            $senha = isset($filtro['senha']) ? $filtro['senha'] : null;
+            $senha = isset($filtro['senha']) ? md5($filtro['senha']) : null;
             $entityManager = $this->getDoctrine()->getRepository(\AppBundle\Entity\Usuario::class);
             $usuario = $entityManager->findOneBy(array("usuario" => $login, "senha" => $senha));
             if ($usuario != null) {
@@ -62,9 +62,90 @@ class UsuarioControllerController extends Controller {
             unset($_SESSION['nome']);
             session_destroy();
             return $this->redirectToRoute('Login');
-        }else{
+        } else {
             return $this->redirectToRoute('Login');
         }
     }
 
+    /**
+     * @Route ("/cadastroUsuario", name="CadastroUsuario")
+     */
+    public function novo() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            return $this->render("Usuario/cadastrar.html.twig", array(
+                        'nome' => $_SESSION['nome'],
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/salvarUsuario", name="SalvarUsuario")
+     */
+    public function salvar() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            
+            $em = $this->getDoctrine()->getManager();
+            
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $nome = isset($filtro['nome']) ? $filtro['nome'] : null;
+            $sobrenome = isset($filtro['sobrenome']) ? $filtro['sobrenome'] : null;
+            $login = isset($filtro['login']) ? $filtro['login'] : null;
+            $senha = isset($filtro['senha']) ? md5($filtro['senha']) : null;
+            $status = isset($filtro['status']) ? $filtro['status'] : null;
+            $tipo = isset($filtro['tipo']) ? $filtro['tipo'] : null;
+            $entityManager = $this->getDoctrine()->getRepository(\AppBundle\Entity\Usuario::class);
+            $verifica = $entityManager->findByUsuario($login);
+            if($verifica == null){
+            
+            $usuario = new \AppBundle\Entity\Usuario();
+            $usuario->setNome($nome);
+            $usuario->setSobrenome($sobrenome);
+            $usuario->setUsuario($login);
+            $usuario->setSenha($senha);
+            $usuario->setStatus($status);
+            $usuario->setTipo($tipo);
+            
+            $em->persist($usuario);
+            $em->flush();
+            
+            $usuarios = $entityManager->findAll();
+            $msg = "Usuário cadastrado com sucesso!";
+            
+            return $this->render("Usuario/usuarios.html.twig", array(
+                "mensagem" => $msg,
+                "nome" => $_SESSION['nome'],
+                "usuarios" => $usuarios,
+            ));
+            
+            }else{
+                $msg = "Já existe um usuário utilizando este login!";
+                return $this->render("Usuario/cadastrar.html.twig", array(
+                    "mensagem" => $msg,
+                    "nome" => $_SESSION['nome'],
+                ));
+            }
+            
+        }
+    }
+    
+    /**
+     * @Route ("/usuarios", name="Usuarios")
+     */
+    public function show(){
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $entityManage = $this->getDoctrine()->getRepository(\AppBundle\Entity\Usuario::class);
+            $usuarios = $entityManage->findAll();
+            return $this->render("Usuario/usuarios.html.twig", array(
+                "nome" => $_SESSION['nome'],
+                "usuarios" => $usuarios,
+            ));
+        }
+    }
+    
 }

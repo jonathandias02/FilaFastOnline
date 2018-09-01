@@ -1,0 +1,59 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">Usuários</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col" style="margin: -10px -30px 0px 0px;">
+                            <button type="button" class="btn btn-primary" id="addUsuario" style="width: 100px;"><b>+</b> Novo</button>
+                        </div>
+                        <div class="col-3" style="margin: -10px -30px 0px 0px;">
+                            <form class="form-inline">
+                                <div class="form-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Pesquisar">
+                                </div>
+                                <div class="form-group mx-sm-3 mb-2">
+                                    <button type="button" class="btn btn-secondary">Buscar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Login</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" width="10px"></th>
+                                    <th scope="col" width="10px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                    <tr>
+                                        <th scope="row">{{ usuario.id }}</th>
+                                        <td>{{ usuario.usuario }}</td>
+                                        <td>{{ usuario.nome }} {{ usuario.sobrenome }}</td>
+                                        <td>{{ usuario.status }}</td>
+                                        <td width="80px"></td>
+                                        <td width="80px"></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#addUsuario").click(function() {
+            window.location.href="{{path('CadastroUsuario')}}";
+        });
+    </script>
+{% endblock %}
