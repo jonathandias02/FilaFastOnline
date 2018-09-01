@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Login{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{asset('bundles/app/bootstrap/css/bootstrap.css')}}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block body %}
+            <div class="container">
+                <div class="row" style="margin-top: 8%;">
+                    <img style="width: 280px; height: 160px;" src="{{asset('bundles/app/imagens/logo.png')}}" class="rounded mx-auto d-block" alt="...">
+                </div>
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-4 mx-auto d-block">
+                        <form class="mx-auto d-block" action="{{path("Entrar")}}" method="post">
+                            <input class="form-control form-control-lg" type="number" placeholder="Login" name="login"><br/>
+                            <input class="form-control form-control-lg" type="password" placeholder="Senha" name="senha"><br/>
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block javascripts %}
+            <script src="{{asset('bundles/app/jquery/jquery.js')}}"></script>
+        {% endblock %}
+    </body>    
+</html>
