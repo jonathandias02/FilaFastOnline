@@ -5,9 +5,38 @@
         <title>{% block title %}Login{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/app/bootstrap/css/bootstrap.css')}}" />
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <script src="{{asset('bundles/app/jquery/jquery.js')}}"></script>
     </head>
     <body>
         {% block body %}
+            {#            Inicio modal de erros#}
+            {% if mensagem != null%}
+                <script>
+                    $(document).ready(function () {
+                        $('#ModalCenter').modal('show');
+                    });
+                </script>
+
+                <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {{ mensagem }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {#            fim modal erros#}
             <div class="container">
                 <div class="row" style="margin-top: 8%;">
                     <img style="width: 280px; height: 160px;" src="{{asset('bundles/app/imagens/logo.png')}}" class="rounded mx-auto d-block" alt="...">
@@ -15,8 +44,8 @@
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-4 mx-auto d-block">
                         <form class="mx-auto d-block" action="{{path("Home")}}" method="post">
-                            <input class="form-control form-control-lg" type="number" placeholder="Login" name="login"><br/>
-                            <input class="form-control form-control-lg" type="password" placeholder="Senha" name="senha"><br/>
+                            <input class="form-control form-control-lg" type="number" placeholder="Login" name="login" required><br/>
+                            <input class="form-control form-control-lg" type="password" placeholder="Senha" name="senha" required><br/>
                             <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar</button>
                         </form>
                     </div>
@@ -25,7 +54,12 @@
         {% endblock %}
 
         {% block javascripts %}
-            <script src="{{asset('bundles/app/jquery/jquery.js')}}"></script>
+            <script src="{{asset('bundles/app/bootstrap/js/bootstrap.bundle.js')}}"></script>
+            <script>
+                $('#ModalCenter').on('hide.bs.modal', function () {
+                    window.location.href="{{path("Login")}}";
+                });
+            </script>
         {% endblock %}
     </body>    
 </html>

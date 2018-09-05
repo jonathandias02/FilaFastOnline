@@ -47,7 +47,7 @@ class Usuario {
      *
      * @ORM\Column(name="status_2", type="string", length=10)
      */
-    private $status;
+    private $status_2;
 
     /**
      * @var int
@@ -161,25 +161,25 @@ class Usuario {
     }
 
     /**
-     * Set status.
+     * Set status_2.
      *
      * @param string $status
      *
      * @return Usuario
      */
-    public function setStatus($status) {
-        $this->status = $status;
+    public function setStatus_2($status) {
+        $this->status_2 = $status;
 
         return $this;
     }
 
     /**
-     * Get status.
+     * Get status_2.
      *
      * @return string
      */
-    public function getStatus() {
-        return $this->status;
+    public function getStatus_2() {
+        return $this->status_2;
     }
 
     /**

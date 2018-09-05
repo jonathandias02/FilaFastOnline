@@ -44,38 +44,36 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Cadastro de Usuários</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarUsuario')}}" method="post" id="CadastroUsuario">
+                    <form style="padding: 2% 10% 2% 10%;" action="#" method="post" id="CadastroUsuario">
+                        <button type="button" style="margin-bottom: 20px;" class="btn btn-primary" onclick="AlterarSenha();">Alterar Senha</button>
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Nome" name="nome" required>
+                                <input type="text" class="form-control" placeholder="Nome" name="nome" value="{{ usuario.nome }}" required>
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Sobrenome" name="sobrenome" required>
+                                <input type="text" class="form-control" placeholder="Sobrenome" name="sobrenome" value="{{ usuario.sobrenome }}" required>
                             </div>
                         </div><br/>
                         <div class="row">
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Login (Matricula)" name="login" required>
+                                <input type="number" class="form-control" placeholder="Login (Matricula)" name="login" value="{{ usuario.usuario }}" required>
                                 <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                         </div><br/>
-                        <div class="row">
-                            <div class="col">
-                                <input type="password" class="form-control" placeholder="Senha" name="senha" id="senha" required>
-                                <div id="senhas" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
-                            </div>
-                            <div class="col">
-                                <input type="password" class="form-control" placeholder="Confirmar Senha" name="confirmar" id="confirmar" required>
-                            </div>
-                        </div><br/>
+                        
                         <div class="row">
                             <div class="col-1" style="margin-right: -35px;">
                                 <label class="my-2 mr-2">Status:</label>
                             </div>
                             <div class="col-2">                                
                                 <select class="custom-select my-1 mr-sm-1" name="status">
-                                    <option selected value="Ativo">Ativo</option>
-                                    <option value="Inativo">Inativo</option>
+                                    <option selected value="{{ usuario.status_2 }}">{{ usuario.status_2 }}</option>
+                                    {% if usuario.status_2 != "Ativo" %}
+                                        <option value="Ativo">Ativo</option>
+                                    {% endif %}
+                                    {% if usuario.status_2 != "Inativo" %}
+                                        <option value="Inativo">Inativo</option>
+                                    {% endif %}
                                 </select>
                             </div>
                             <div class="col-1" style="margin-right: -23px;">
@@ -83,17 +81,23 @@
                             </div>
                             <div class="col-2">                                
                                 <select class="custom-select my-1 mr-sm-1" name="tipo" required>
-                                    <option selected value="" >Selecionar</option>
-                                    <option value="1">Administrador</option>
-                                    <option value="2">Atendente</option>
-                                    <option value="3">Triagem</option>
+                                    <option selected value="{{direito.id}}" >{{direito.nome}}</option>
+                                    {% if direito.nome != "Administrador" %}
+                                        <option value="1">Administrador</option>
+                                    {% endif %}
+                                    {% if direito.nome != "Atendente" %}
+                                        <option value="2">Atendente</option>
+                                    {% endif %}
+                                    {% if direito.nome != "Triagem" %}
+                                        <option value="3">Triagem</option>
+                                    {% endif %}
                                 </select>
                             </div>
                         </div><br/>
                         <div class="row">
                             <div class="col text-center">
                                 <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Cancelar</button>
-                                <button type="submit" class="btn btn-primary" style="width: 100px;">Salvar</button>
+                                <button type="button" class="btn btn-primary" style="width: 100px;">Salvar</button>
                             </div>
                         </div>
                     </form>
@@ -101,6 +105,39 @@
             </div>
         </div>
     </div>
+
+    {#  inicio modal alterar Senha  --------------------------#}
+
+    <div class="modal fade" id="AlterarSenha" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-success" id="exampleModalCenterTitle">Alterar Senha</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <input type="password" class="form-control" placeholder="Senha" name="senha" id="senha" required>
+                            <div id="senhas" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                        </div>
+                        <div class="col">
+                            <input type="password" class="form-control" placeholder="Confirmar Senha" name="confirmar" id="confirmar" required>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="CancelarAltSenha">Cancelar</button>
+                    <button type="button" id="btnalterarSenha" class="btn btn-success" data-dismiss="modal" disabled="true">Alterar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Fim modal alterar senha ---------------------------------#}
 
     <script>
         $("#cancelarUsuario").click(function () {
@@ -111,7 +148,7 @@
             window.location.href = "{{path("Usuarios")}}";
         });
 
-        $(function () { // declaro o início do jquery
+        $(function () {
             $("input[name='login']").blur(function () {
 
                 var usuario = $("input[name='login']").val();
@@ -139,5 +176,12 @@
                 }
             });
         });
+
+        function AlterarSenha() {
+            $(document).ready(function () {
+                $('#AlterarSenha').modal('show');
+            });
+        }
+        
     </script>
 {% endblock %}

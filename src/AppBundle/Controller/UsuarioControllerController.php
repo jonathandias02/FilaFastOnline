@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
+use AppBundle\Entity\Usuario;
 
 class UsuarioControllerController extends Controller {
 
@@ -32,15 +33,25 @@ class UsuarioControllerController extends Controller {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $login = isset($filtro['login']) ? $filtro['login'] : null;
             $senha = isset($filtro['senha']) ? md5($filtro['senha']) : null;
-            $entityManager = $this->getDoctrine()->getRepository(\AppBundle\Entity\Usuario::class);
+            $entityManager = $this->getDoctrine()->getRepository(Usuario::class);
             $usuario = $entityManager->findOneBy(array("usuario" => $login, "senha" => $senha));
             if ($usuario != null) {
-                $this->iniciaSessao($login, $usuario);
-                return $this->render("Usuario/inicio.html.twig", array(
-                            'nome' => $_SESSION['nome'],
-                ));
+                if ($usuario->getStatus_2() === "Ativo") {
+                    $this->iniciaSessao($login, $usuario);
+                    return $this->render("Usuario/inicio.html.twig", array(
+                                'nome' => $_SESSION['nome'],
+                    ));
+                } else {
+                    $msg = "Este usuário foi desativado, procure um administrador!";
+                    return $this->render("Usuario/login.html.twig", array(
+                                "mensagem" => $msg,
+                    ));
+                }
             } else {
-                return $this->redirectToRoute("Login");
+                $msg = "Usuário e/ou senha invalido(s)!";
+                return $this->render("Usuario/login.html.twig", array(
+                            "mensagem" => $msg,
+                ));
             }
         }
     }
@@ -50,6 +61,7 @@ class UsuarioControllerController extends Controller {
             session_start();
             $_SESSION['login'] = $login;
             $_SESSION['nome'] = $usuario->getNome() . " " . $usuario->getSobrenome();
+            $_SESSION['direitos'] = $usuario->getTipo();
         }
     }
 
@@ -87,9 +99,7 @@ class UsuarioControllerController extends Controller {
         if (!isset($_SESSION['login'])) {
             return $this->redirectToRoute("Login");
         } else {
-            
             $em = $this->getDoctrine()->getManager();
-            
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $nome = isset($filtro['nome']) ? $filtro['nome'] : null;
             $sobrenome = isset($filtro['sobrenome']) ? $filtro['sobrenome'] : null;
@@ -97,55 +107,114 @@ class UsuarioControllerController extends Controller {
             $senha = isset($filtro['senha']) ? md5($filtro['senha']) : null;
             $status = isset($filtro['status']) ? $filtro['status'] : null;
             $tipo = isset($filtro['tipo']) ? $filtro['tipo'] : null;
-            $entityManager = $this->getDoctrine()->getRepository(\AppBundle\Entity\Usuario::class);
-            $verifica = $entityManager->findByUsuario($login);
-            if($verifica == null){
-            
-            $usuario = new \AppBundle\Entity\Usuario();
+            $usuario = new Usuario();
             $usuario->setNome($nome);
             $usuario->setSobrenome($sobrenome);
             $usuario->setUsuario($login);
             $usuario->setSenha($senha);
-            $usuario->setStatus($status);
+            $usuario->setStatus_2($status);
             $usuario->setTipo($tipo);
-            
             $em->persist($usuario);
             $em->flush();
-            
-            $usuarios = $entityManager->findAll();
             $msg = "Usuário cadastrado com sucesso!";
-            
-            return $this->render("Usuario/usuarios.html.twig", array(
-                "mensagem" => $msg,
-                "nome" => $_SESSION['nome'],
-                "usuarios" => $usuarios,
+            return $this->render("Usuario/cadastrar.html.twig", array(
+                        "mensagem" => $msg,
+                        "nome" => $_SESSION['nome'],
             ));
-            
-            }else{
-                $msg = "Já existe um usuário utilizando este login!";
-                return $this->render("Usuario/cadastrar.html.twig", array(
-                    "mensagem" => $msg,
-                    "nome" => $_SESSION['nome'],
+        }
+    }
+
+    /**
+     * @Route ("/usuarios", name="Usuarios")
+     */
+    public function show() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
+            $usuarios = $entityManage->findBy([], ["createAt" => "DESC"], 6);
+            return $this->render("Usuario/usuarios.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "usuarios" => $usuarios,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/buscarUsuario", name="BuscarUsuario")
+     */
+    public function buscar() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $busca = isset($filtro['busca']) ? $filtro['busca'] : null;
+            $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
+
+            if ($busca != null) {
+                $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->buscarUsuario($busca);
+                return $this->render("Usuario/usuarios.html.twig", array(
+                            "nome" => $_SESSION['nome'],
+                            "usuarios" => $usuarios,
+                ));
+            } else {
+                $usuarios = $entityManage->findAll();
+                return $this->render("Usuario/usuarios.html.twig", array(
+                            "nome" => $_SESSION['nome'],
+                            "usuarios" => $usuarios,
                 ));
             }
-            
         }
     }
     
     /**
-     * @Route ("/usuarios", name="Usuarios")
+     * @Route ("/alterarUsuario", name="AlterarUsuario")
      */
-    public function show(){
+    public function alterar(){
         if (!isset($_SESSION['login'])) {
             return $this->redirectToRoute("Login");
         } else {
-            $entityManage = $this->getDoctrine()->getRepository(\AppBundle\Entity\Usuario::class);
-            $usuarios = $entityManage->findAll();
-            return $this->render("Usuario/usuarios.html.twig", array(
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $id = isset($filtro['id']) ? $filtro['id'] : null;
+            $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
+            $usuario = $entityManage->findOneBy(["id" => $id]);
+            $direito = $entityManage->direitos($usuario->getTipo());
+            
+            return $this->render("Usuario/alterar.html.twig", array(
                 "nome" => $_SESSION['nome'],
-                "usuarios" => $usuarios,
+                "usuario" => $usuario,
+                "direito" => $direito,
             ));
+            
         }
     }
-    
+
+    /**
+     * @Route ("/deletarUsuario", name="DeletarUsuario")
+     */
+    public function delete() {
+
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $id = isset($filtro['id']) ? $filtro['id'] : null;
+            $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
+            $deletar = $entityManage->deletarUsuario($id);
+            $usuarios = $entityManage->findBy([], ["createAt" => "DESC"], 6);
+            if($deletar){
+                $msg = "Usuário deletado com sucesso!";
+            }else{
+                $msg = "Não foi possivel deletar usuário!";
+            }
+            return $this->render("Usuario/usuarios.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "usuarios" => $usuarios,
+                        "mensagem" => $msg,
+            ));
+            
+        }
+    }
+
 }

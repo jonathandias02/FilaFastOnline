@@ -13,10 +13,10 @@
         {% block cabecalho %}
             <div class="row">
                 <div class="col-2">
-                    <img src="{{asset('bundles/app/imagens/logo.png')}}" style="width: 130px; height: 75px; margin: 20px 20px 20px 40px; "/>
+                    <img src="{{asset('bundles/app/imagens/logo.png')}}" style="width: 130px; height: 75px; margin: 10px 20px 10px 40px; "/>
                 </div>
                 <div class="col-9 text-center">
-                    <p class="h1 text-muted" style="margin-top: 25px;">Fila Fast Online</p><br/>
+                    <p class="h1 text-muted" style="margin-top: 15px;">Fila Fast Online</p><br/>
                     <p class="text-muted" style="margin-top: -35px;">Soluções em gerenciamento de filas de atendimentos.</p>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                         <nav>
                             <ul class="nav nav-pills">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Home</a>
+                                    <a class="nav-link" href="{{path('Home')}}">Home</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{path('Usuarios')}}">Usuários</a>
@@ -68,6 +68,7 @@
     </div>
     {% block javascripts %}      
         <script src="{{asset('bundles/app/bootstrap/js/bootstrap.bundle.js')}}"></script>    
+        <script src="{{asset('bundles/app/meuscript.js')}}"></script>   
     {% endblock %}
 </body>
 </html>

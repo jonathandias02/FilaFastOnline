@@ -1,24 +1,29 @@
 {% extends "base.html.twig" %}
 {% block conteiner %}
-
     <div class="row">
         <div class="col">
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Usuários</div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col" style="margin: -10px -30px 0px 0px;">
-                            <button type="button" class="btn btn-primary" id="addUsuario" style="width: 100px;"><b>+</b> Novo</button>
-                        </div>
-                        <div class="col-3" style="margin: -10px -30px 0px 0px;">
-                            <form class="form-inline">
-                                <div class="form-group mb-2">
-                                    <input type="text" class="form-control" placeholder="Pesquisar">
-                                </div>
-                                <div class="form-group mx-sm-3 mb-2">
-                                    <button type="button" class="btn btn-secondary">Buscar</button>
-                                </div>
-                            </form>
+                    <div class="row" style="margin-bottom: 5px; margin-top: -15px;">
+                        <div class="container-fluid text-center">
+                            <table width="100%">
+                                <tr>
+                                    <td width="20%" align="left">
+                                        <button type="button" class="btn btn-primary" id="addUsuario" style="width: 100px;"><b>+</b> Novo</button>
+                                    </td>
+                                    <td align="right" width="80%">
+                                        <form action="{{path('BuscarUsuario')}}" class="form-inline" style="width: 281px;" method="post">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" placeholder="Pesquisar" style="margin-right: 20px;" name="busca">
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-secondary">Buscar</button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                     <div class="row">
@@ -39,9 +44,20 @@
                                         <th scope="row">{{ usuario.id }}</th>
                                         <td>{{ usuario.usuario }}</td>
                                         <td>{{ usuario.nome }} {{ usuario.sobrenome }}</td>
-                                        <td>{{ usuario.status }}</td>
-                                        <td width="80px"></td>
-                                        <td width="80px"></td>
+                                        <td>{{ usuario.status_2 }}</td>
+                                        <td width="80px">
+                                            <form action="{{path('AlterarUsuario')}}" method="post">
+                                                <input type="hidden" name="id" value="{{ usuario.id }}"/>
+                                                <button type="submit" style="border: none; background: none;">
+                                                    <img src="{{asset('bundles/app/imagens/alterar.png')}}" style="width: 20px; height: 20px;"/>
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td width="80px">
+                                            <button type="button" onclick="confirmar({{ usuario.id }});" style="border: none; background: none;">
+                                                <img src="{{asset('bundles/app/imagens/excluir.png')}}" style="width: 20px; height: 20px;"/>
+                                            </button>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -51,9 +67,70 @@
             </div>
         </div>
     </div>
-    <script>
-        $("#addUsuario").click(function() {
-            window.location.href="{{path('CadastroUsuario')}}";
-        });
-    </script>
-{% endblock %}
+
+    {#                            Inicio Modal Excluir#}
+    {% if mensagem != null %}
+        <script>
+            $(document).ready(function () {
+                $('#ModalCenterMensagem').modal('show');
+            });
+        </script>    
+    {% endif %}
+    {% if mensagem != null %}
+        <div class="modal fade" id="ModalCenterMensagem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        {% else %}
+            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            {% endif %}
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% if mensagem != null %}
+                            {{ mensagem }}
+                        {% else %}
+                            <p>Tem certeza que deseja excluir?</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        {% if mensagem != null %}
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
+                        {% else %}
+                            <form id="enviaDelete" action="{{path("DeletarUsuario")}}" method="post">
+                                <input type="hidden" name="id" />
+                            </form>
+                            <button type="button" id="sim" class="btn btn-success">Sim</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {#                            Fim Modal Excluir#}
+
+        <script>
+            $("#addUsuario").click(function () {
+                window.location.href = "{{path('CadastroUsuario')}}";
+            });
+
+            function confirmar(id) {
+                $(document).ready(function () {
+                    $('#ModalCenter').modal('show');
+                });
+
+                $("#sim").click(function () {
+                    $("input[name='id']").val(id);
+                    $("#enviaDelete").submit();
+                });
+            }
+
+            $('#ModalCenterMensagem').on('hide.bs.modal', function () {
+                window.location.href = "{{path("Usuarios")}}";
+            });
+
+        </script>
+    {% endblock %}
