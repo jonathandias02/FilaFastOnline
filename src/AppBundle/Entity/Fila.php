@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="t_filas")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\FilaRepository")
  */
-class Fila
-{
+class Fila {
+
     /**
      * @var int
      *
@@ -24,7 +24,7 @@ class Fila
     /**
      * @var string
      *
-     * @ORM\Column(name="nome", type="string", length=45, unique=true)
+     * @ORM\Column(name="nome", type="string", length=60)
      */
     private $nome;
 
@@ -38,14 +38,14 @@ class Fila
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=10)
+     * @ORM\Column(name="status_2", type="string", length=10)
      */
-    private $status;
+    private $status_2;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="idUsuario", type="integer")
+     * @ORM\Column(name="t_usuario_id", type="integer")
      */
     private $idUsuario;
 
@@ -62,15 +62,50 @@ class Fila
      * @ORM\Column(name="update_at", type="datetime", nullable=true)
      */
     private $updateAt;
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="deletar", type="integer")
+     */
+    private $deletar;
 
+    /**
+     * Construct
+     */
+    public function __construct() {
+        $this->createAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+        $this->updateAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+        $this->deletar = 0;
+        $this->nsenha = 1;
+    }
+
+    /**
+     * Get deletar.
+     *
+     * @return int
+     */
+    function getDeletar() {
+        return $this->deletar;
+    }
+
+    /**
+     * Set deletar.
+     *
+     * @param string $deletar
+     *
+     * @return Fila
+     */
+    function setDeletar($deletar) {
+        $this->deletar = $deletar;
+    }
 
     /**
      * Get id.
      *
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -81,8 +116,7 @@ class Fila
      *
      * @return Fila
      */
-    public function setNome($nome)
-    {
+    public function setNome($nome) {
         $this->nome = $nome;
 
         return $this;
@@ -93,8 +127,7 @@ class Fila
      *
      * @return string
      */
-    public function getNome()
-    {
+    public function getNome() {
         return $this->nome;
     }
 
@@ -105,8 +138,7 @@ class Fila
      *
      * @return Fila
      */
-    public function setNsenha($nsenha)
-    {
+    public function setNsenha($nsenha) {
         $this->nsenha = $nsenha;
 
         return $this;
@@ -117,33 +149,30 @@ class Fila
      *
      * @return int
      */
-    public function getNsenha()
-    {
+    public function getNsenha() {
         return $this->nsenha;
     }
 
     /**
-     * Set status.
+     * Set status_2.
      *
      * @param string $status
      *
      * @return Fila
      */
-    public function setStatus($status)
-    {
-        $this->status = $status;
+    public function setStatus_2($status) {
+        $this->status_2 = $status;
 
         return $this;
     }
 
     /**
-     * Get status.
+     * Get status_2.
      *
      * @return string
      */
-    public function getStatus()
-    {
-        return $this->status;
+    public function getStatus_2() {
+        return $this->status_2;
     }
 
     /**
@@ -153,8 +182,7 @@ class Fila
      *
      * @return Fila
      */
-    public function setIdUsuario($idUsuario)
-    {
+    public function setIdUsuario($idUsuario) {
         $this->idUsuario = $idUsuario;
 
         return $this;
@@ -165,8 +193,7 @@ class Fila
      *
      * @return int
      */
-    public function getIdUsuario()
-    {
+    public function getIdUsuario() {
         return $this->idUsuario;
     }
 
@@ -177,8 +204,7 @@ class Fila
      *
      * @return Fila
      */
-    public function setCreateAt($createAt = null)
-    {
+    public function setCreateAt($createAt = null) {
         $this->createAt = $createAt;
 
         return $this;
@@ -189,8 +215,7 @@ class Fila
      *
      * @return \DateTime|null
      */
-    public function getCreateAt()
-    {
+    public function getCreateAt() {
         return $this->createAt;
     }
 
@@ -201,8 +226,7 @@ class Fila
      *
      * @return Fila
      */
-    public function setUpdateAt($updateAt = null)
-    {
+    public function setUpdateAt($updateAt = null) {
         $this->updateAt = $updateAt;
 
         return $this;
@@ -213,8 +237,8 @@ class Fila
      *
      * @return \DateTime|null
      */
-    public function getUpdateAt()
-    {
+    public function getUpdateAt() {
         return $this->updateAt;
     }
+
 }

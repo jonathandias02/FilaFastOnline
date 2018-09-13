@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="t_servicos")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ServicoRepository")
  */
-class Servico
-{
+class Servico {
+
     /**
      * @var int
      *
@@ -45,21 +45,21 @@ class Servico
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=10)
+     * @ORM\Column(name="status_2", type="string", length=10)
      */
-    private $status;
+    private $status_2;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="idFila", type="integer")
+     * @ORM\Column(name="t_filas_id", type="integer")
      */
     private $idFila;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="idUsuario", type="integer")
+     * @ORM\Column(name="t_usuario_id", type="integer")
      */
     private $idUsuario;
 
@@ -76,15 +76,51 @@ class Servico
      * @ORM\Column(name="update_at", type="datetime", nullable=true)
      */
     private $updateAt;
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="deletar", type="integer")
+     */
+    private $deletar;
+    
+    
 
+    /**
+     * Construct
+     */
+    public function __construct() {
+        $this->createAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+        $this->updateAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+        $this->deletar = 0;
+    }
+    
+    /**
+     * Get deletar.
+     *
+     * @return int
+     */
+    function getDeletar() {
+        return $this->deletar;
+    }
+
+    /**
+     * Set deletar.
+     *
+     * @param string $deletar
+     *
+     * @return Usuario
+     */
+    function setDeletar($deletar) {
+        $this->deletar = $deletar;
+    }
 
     /**
      * Get id.
      *
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -95,8 +131,7 @@ class Servico
      *
      * @return Servico
      */
-    public function setNome($nome)
-    {
+    public function setNome($nome) {
         $this->nome = $nome;
 
         return $this;
@@ -107,8 +142,7 @@ class Servico
      *
      * @return string
      */
-    public function getNome()
-    {
+    public function getNome() {
         return $this->nome;
     }
 
@@ -119,8 +153,7 @@ class Servico
      *
      * @return Servico
      */
-    public function setSigla($sigla)
-    {
+    public function setSigla($sigla) {
         $this->sigla = $sigla;
 
         return $this;
@@ -131,8 +164,7 @@ class Servico
      *
      * @return string
      */
-    public function getSigla()
-    {
+    public function getSigla() {
         return $this->sigla;
     }
 
@@ -143,8 +175,7 @@ class Servico
      *
      * @return Servico
      */
-    public function setDescricao($descricao)
-    {
+    public function setDescricao($descricao) {
         $this->descricao = $descricao;
 
         return $this;
@@ -155,33 +186,30 @@ class Servico
      *
      * @return string
      */
-    public function getDescricao()
-    {
+    public function getDescricao() {
         return $this->descricao;
     }
 
     /**
-     * Set status.
+     * Set status_2.
      *
      * @param string $status
      *
      * @return Servico
      */
-    public function setStatus($status)
-    {
-        $this->status = $status;
+    public function setStatus_2($status) {
+        $this->status_2 = $status;
 
         return $this;
     }
 
     /**
-     * Get status.
+     * Get status_2.
      *
      * @return string
      */
-    public function getStatus()
-    {
-        return $this->status;
+    public function getStatus_2() {
+        return $this->status_2;
     }
 
     /**
@@ -191,8 +219,7 @@ class Servico
      *
      * @return Servico
      */
-    public function setIdFila($idFila)
-    {
+    public function setIdFila($idFila) {
         $this->idFila = $idFila;
 
         return $this;
@@ -203,8 +230,7 @@ class Servico
      *
      * @return int
      */
-    public function getIdFila()
-    {
+    public function getIdFila() {
         return $this->idFila;
     }
 
@@ -215,8 +241,7 @@ class Servico
      *
      * @return Servico
      */
-    public function setIdUsuario($idUsuario)
-    {
+    public function setIdUsuario($idUsuario) {
         $this->idUsuario = $idUsuario;
 
         return $this;
@@ -227,8 +252,7 @@ class Servico
      *
      * @return int
      */
-    public function getIdUsuario()
-    {
+    public function getIdUsuario() {
         return $this->idUsuario;
     }
 
@@ -239,8 +263,7 @@ class Servico
      *
      * @return Servico
      */
-    public function setCreateAt($createAt = null)
-    {
+    public function setCreateAt($createAt = null) {
         $this->createAt = $createAt;
 
         return $this;
@@ -251,8 +274,7 @@ class Servico
      *
      * @return \DateTime|null
      */
-    public function getCreateAt()
-    {
+    public function getCreateAt() {
         return $this->createAt;
     }
 
@@ -263,8 +285,7 @@ class Servico
      *
      * @return Servico
      */
-    public function setUpdateAt($updateAt = null)
-    {
+    public function setUpdateAt($updateAt = null) {
         $this->updateAt = $updateAt;
 
         return $this;
@@ -275,8 +296,8 @@ class Servico
      *
      * @return \DateTime|null
      */
-    public function getUpdateAt()
-    {
+    public function getUpdateAt() {
         return $this->updateAt;
     }
+
 }

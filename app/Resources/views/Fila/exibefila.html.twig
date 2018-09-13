@@ -3,19 +3,22 @@
     <div class="row">
         <div class="col">
             <div class="card border-light" >
-                <div class="card-header h5 text-center">Usuários</div>
+                <div class="card-header h5 text-center">Fila: {{ fila.nome }}</div>
                 <div class="card-body">
                     <div class="row" style="margin-bottom: 5px; margin-top: -15px;">
                         <div class="container-fluid text-center">
-                            <table width="100%">
+                            <table width="76%" style="margin: 0 12% 0 12%;">
                                 <tr>
                                     <td width="20%" align="left">
-                                        <button type="button" class="btn btn-primary" id="addUsuario" style="width: 100px;"><b>+</b> Novo</button>
+                                        <form action="{{path('CadastroServico')}}" method="post">
+                                            <input type="hidden" name="idFila" value="{{ fila.id }}" />
+                                            <button type="submit" class="btn btn-primary" style="width: 100px;"><b>+</b> Novo</button>
+                                        </form>
                                     </td>
                                     <td align="right" width="80%">
-                                        <form action="{{path('BuscarUsuario')}}" class="form-inline" style="width: 281px;" method="post">
+                                        <form action="{{path('BuscarFila')}}" class="form-inline" style="width: 281px;" method="post">
                                             <div class="form-group">
-                                                <input type="text" class="form-control" placeholder="Pesquisar" style="margin-right: 20px;" name="busca">
+                                                <input type="text" class="form-control" placeholder="Pesquisar (nome)" style="margin-right: 20px;" name="busca">
                                             </div>
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-secondary">Buscar</button>
@@ -27,64 +30,55 @@
                         </div>
                     </div>
                     <div class="row">
-                        <table class="table table-striped">
+                        <table class="table table-sm table-striped" style="margin: 0 12% 0 12%;">
                             <thead>
+                                <tr align="center" style="font-size: 15pt;">
+                                    <th scope="col" colspan="5">Serviços</th>
+                                </tr>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Login</th>
+                                    <th scope="col" width="40px">#</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col" width="10px"></th>
-                                    <th scope="col" width="10px"></th>
+                                    <th scope="col" width="50px"></th>
+                                    <th scope="col" width="50px"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {#verifica retorno da busca
-                                em caso de nao encontrado#}
-                                {% if pesquisa == "não encontrado" %}
+                                {% if servicos == null %}                                       
                                     <tr align="center">
-                                        <td colspan="6">
+                                        <td colspan="5">
                                             <div>Nenhum registro encontrado!</div>
                                         </td>
                                     </tr>
                                 {% else %}
-                                    {#caso encontre retorno#}
-                                    {% for usuario in usuarios %}
-                                        {#verifica se o retorno não é o usuario já logado no sistema caso seja
-                                        não sera exibido#}
-                                        {% if login != usuario.usuario %}
-                                            <tr>
-                                                <th scope="row">{{ usuario.id }}</th>
-                                                <td>{{ usuario.usuario }}</td>
-                                                <td>{{ usuario.nome }} {{ usuario.sobrenome }}</td>
-                                                <td>{{ usuario.status_2 }}</td>
-                                                <td width="80px">
-                                                    <form action="{{path('AlterarUsuario')}}" method="post">
-                                                        <input type="hidden" name="id" value="{{ usuario.id }}"/>
-                                                        <button type="submit" style="border: none; background: none;">
-                                                            <img src="{{asset('bundles/app/imagens/alterar.png')}}" style="width: 20px; height: 20px;"/>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                                <td width="80px">
-                                                    <button type="button" onclick="confirmar({{ usuario.id }});" style="border: none; background: none;">
-                                                        <img src="{{asset('bundles/app/imagens/excluir.png')}}" style="width: 20px; height: 20px;"/>
+                                    {% for servico in servicos %}
+                                        <tr>
+                                            <th scope="row" style="vertical-align: middle;" width="80px">{{ servico.id }}</th>
+                                            <td style="vertical-align: middle;">{{ servico.nome }}</td>
+                                            <td style="vertical-align: middle;" width="250px">{{ servico.status_2 }}</td>
+                                            <td width="50px">
+                                                <form action="{{path('AlterarUsuario')}}" method="post">
+                                                    <input type="hidden" name="id" value="{{ servico.id }}"/>
+                                                    <button type="submit" style="border: none; background: none;">
+                                                        <img src="{{asset('bundles/app/imagens/alterar.png')}}" style="width: 20px; height: 20px;"/>
                                                     </button>
-                                                </td>
-                                            </tr>
-                                            {#verifica se o retorno da busca é somente quem esta logado
-                                            caso seja não apresenta nenhum resultado#}
-                                        {% elseif usuarios|length == 1 %}
-                                            <tr align="center">
-                                                <td colspan="6">
-                                                    <div>Nenhum registro encontrado!</div>
-                                                </td>
-                                            </tr>
-                                        {% endif %}
+                                                </form>
+                                            </td>
+                                            <td width="50px">
+                                                <button type="button" onclick="confirmar({{ servico.id }});" style="border: none; background: none;">
+                                                    <img src="{{asset('bundles/app/imagens/excluir.png')}}" style="width: 20px; height: 20px;"/>
+                                                </button>
+                                            </td>
+                                        </tr>
                                     {% endfor %}
                                 {% endif %}
                             </tbody>
                         </table>
+                    </div><br/>
+                    <div class="row">
+                        <div class="col text-center">
+                            <button type="button" id="voltar" class="btn btn-secondary">Voltar</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,7 +117,7 @@
                         {% if mensagem != null %}
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
                         {% else %}
-                            <form id="enviaDelete" action="{{path("DeletarUsuario")}}" method="post">
+                            <form id="enviaDelete" action="#" method="post">
                                 <input type="hidden" name="id" />
                             </form>
                             <button type="button" id="sim" class="btn btn-success">Sim</button>
@@ -136,8 +130,8 @@
         {#                            Fim Modal Excluir#}
 
         <script>
-            $("#addUsuario").click(function () {
-                window.location.href = "{{path('CadastroUsuario')}}";
+            $("#voltar").click(function () {
+                window.location.href = "{{path('Filas')}}";
             });
 
             function confirmar(id) {
@@ -152,7 +146,7 @@
             }
 
             $('#ModalCenterMensagem').on('hide.bs.modal', function () {
-                window.location.href = "{{path("Usuarios")}}";
+                window.location.href = "#";
             });
 
         </script>

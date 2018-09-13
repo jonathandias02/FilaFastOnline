@@ -25,7 +25,7 @@
         {% block navegacao %}
             <table width="98%">
                 <tr>
-                    <td width="50%">
+                    <td width="80%">
                         <nav>
                             <ul class="nav nav-pills">
                                 <li class="nav-item">
@@ -34,12 +34,8 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{path('Usuarios')}}">Usuários</a>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Filas</a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Pequisar</a>
-                                        <a class="dropdown-item" href="#">Cadastrar</a>
-                                    </div>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{path('Filas')}}">Filas</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Atendimento</a>
@@ -53,7 +49,7 @@
                             </ul>
                         </nav>
                     </td>
-                    <td align="right" width="50%" class="text-muted">
+                    <td align="right" width="20%" class="text-muted">
                         Olá, {{nome}}. <a href="{{path('Sair')}}" style="margin-left: 5px; "> Sair</a>
                     </td>
                 </tr>

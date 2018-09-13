@@ -35,7 +35,7 @@ class UsuarioControllerController extends Controller {
             $senha = isset($filtro['senha']) ? md5($filtro['senha']) : null;
             $entityManager = $this->getDoctrine()->getRepository(Usuario::class);
             $usuario = $entityManager->findOneBy(array("usuario" => $login, "senha" => $senha));
-            if ($usuario != null) {
+            if ($usuario != null && $usuario->getDeletar() == 0) {
                 if ($usuario->getStatus_2() === "Ativo") {
                     $this->iniciaSessao($login, $usuario);
                     return $this->render("Usuario/inicio.html.twig", array(
@@ -62,6 +62,7 @@ class UsuarioControllerController extends Controller {
             $_SESSION['login'] = $login;
             $_SESSION['nome'] = $usuario->getNome() . " " . $usuario->getSobrenome();
             $_SESSION['direitos'] = $usuario->getTipo();
+            $_SESSION['id'] = $usuario->getId();
         }
     }
 
@@ -132,9 +133,10 @@ class UsuarioControllerController extends Controller {
             return $this->redirectToRoute("Login");
         } else {
             $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
-            $usuarios = $entityManage->findBy([], ["createAt" => "DESC"], 6);
+            $usuarios = $entityManage->findBy(["deletar" => 0], ["createAt" => "DESC"], 6);
             return $this->render("Usuario/usuarios.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        "login" => $_SESSION['login'],
                         "usuarios" => $usuarios,
             ));
         }
@@ -148,44 +150,113 @@ class UsuarioControllerController extends Controller {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-            $busca = isset($filtro['busca']) ? $filtro['busca'] : null;
+            $busca = isset($filtro['busca']) ? "%".$filtro['busca']."%" : null;
+            $busca2 = isset($filtro['busca']) ? $filtro['busca'] : null;
+            $pesquisa = null;
             $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
 
             if ($busca != null) {
-                $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->buscarUsuario($busca);
+                $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->buscarUsuario($busca, $busca2);
+                if($usuarios == null) $pesquisa = "não encontrado";
                 return $this->render("Usuario/usuarios.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            "login" => $_SESSION['login'],
                             "usuarios" => $usuarios,
+                            "pesquisa" => $pesquisa,
                 ));
             } else {
-                $usuarios = $entityManage->findAll();
+                $usuarios = $entityManage->findBy(["deletar" => 0]);
+                if($usuarios == null) $pesquisa = "não encontrado";
                 return $this->render("Usuario/usuarios.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            "login" => $_SESSION['login'],
                             "usuarios" => $usuarios,
+                            "pesquisa" => $pesquisa,
                 ));
             }
         }
     }
-    
+
     /**
      * @Route ("/alterarUsuario", name="AlterarUsuario")
      */
-    public function alterar(){
+    public function alterar() {
         if (!isset($_SESSION['login'])) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $id = isset($filtro['id']) ? $filtro['id'] : null;
             $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
-            $usuario = $entityManage->findOneBy(["id" => $id]);
+            $usuario = $entityManage->findOneBy(["id" => $id, "deletar" => 0]);
             $direito = $entityManage->direitos($usuario->getTipo());
-            
+
             return $this->render("Usuario/alterar.html.twig", array(
-                "nome" => $_SESSION['nome'],
-                "usuario" => $usuario,
-                "direito" => $direito,
+                        "nome" => $_SESSION['nome'],
+                        "usuario" => $usuario,
+                        "direito" => $direito,
             ));
-            
+        }
+    }
+
+    /**
+     * @Route ("/salvarAlteracaoUsuario", name="SalvarAlteracaoUsuario")
+     */
+    public function salvarAlteracao() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $id = isset($filtro['id']) ? $filtro['id'] : null;
+            $nome = isset($filtro['nome']) ? $filtro['nome'] : null;
+            $sobrenome = isset($filtro['sobrenome']) ? $filtro['sobrenome'] : null;
+            $login = isset($filtro['login']) ? $filtro['login'] : null;
+            $status = isset($filtro['status']) ? $filtro['status'] : null;
+            $tipo = isset($filtro['tipo']) ? $filtro['tipo'] : null;
+
+            $alteracao = $this->getDoctrine()->getRepository(Usuario::class);
+            $alteracao->alterarUsuario($id, $nome, $sobrenome, $login, $status, $tipo);
+            $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findOneBy(["id" => $id, "deletar" => 0]);
+            $direito = $this->getDoctrine()->getRepository(Usuario::class)->direitos($usuario->getTipo());
+            if ($alteracao) {
+                $msg = "Alterado com sucesso!";
+            } else {
+                $msg = "Não foi possivel alterar!";
+            }
+
+            return $this->render("Usuario/alterar.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "mensagem" => $msg,
+                        "usuario" => $usuario,
+                        "direito" => $direito,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/alterarSenha", name="AlterarSenha")
+     */
+    public function alterarSenha() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $id = isset($filtro['id']) ? $filtro['id'] : null;
+            $senha = isset($filtro['senha']) ? md5($filtro['senha']) : null;
+            $altsenha = $this->getDoctrine()->getRepository(Usuario::class)->alterarSenha($id, $senha);
+            $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findOneBy(["id" => $id, "deletar" => 0]);
+            $direito = $this->getDoctrine()->getRepository(Usuario::class)->direitos($usuario->getTipo());
+            if ($altsenha) {
+                $msg = "Senha alterada com sucesso!";
+            } else {
+                $msg = "Não foi possivel alterar senha!";
+            }
+
+            return $this->render("Usuario/alterar.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "mensagem" => $msg,
+                        "usuario" => $usuario,
+                        "direito" => $direito,
+            ));
         }
     }
 
@@ -197,23 +268,23 @@ class UsuarioControllerController extends Controller {
         if (!isset($_SESSION['login'])) {
             return $this->redirectToRoute("Login");
         } else {
-            
+
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $id = isset($filtro['id']) ? $filtro['id'] : null;
             $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
             $deletar = $entityManage->deletarUsuario($id);
-            $usuarios = $entityManage->findBy([], ["createAt" => "DESC"], 6);
-            if($deletar){
+            $usuarios = $entityManage->findBy(["deletar" => 0], ["createAt" => "DESC"], 6);
+            if ($deletar) {
                 $msg = "Usuário deletado com sucesso!";
-            }else{
+            } else {
                 $msg = "Não foi possivel deletar usuário!";
             }
             return $this->render("Usuario/usuarios.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        "login" => $_SESSION['login'],
                         "usuarios" => $usuarios,
                         "mensagem" => $msg,
             ));
-            
         }
     }
 

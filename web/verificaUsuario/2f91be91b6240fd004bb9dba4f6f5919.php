@@ -14,7 +14,7 @@
         $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
         $verifica = $filtro['usuario'];
 
-        $sql = "SELECT * FROM t_usuario WHERE usuario = :USUARIO ";
+        $sql = "SELECT * FROM t_usuario WHERE usuario = :USUARIO and deletar = 0";
 
         $stmt = $conexao->prepare($sql);
         $stmt->bindParam(':USUARIO', $verifica);

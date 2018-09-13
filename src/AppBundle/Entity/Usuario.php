@@ -52,7 +52,7 @@ class Usuario {
     /**
      * @var int
      *
-     * @ORM\Column(name="usuario", type="integer", unique=true)
+     * @ORM\Column(name="usuario", type="integer")
      */
     private $usuario;
 
@@ -78,11 +78,39 @@ class Usuario {
     private $tipo;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="deletar", type="integer")
+     */
+    private $deletar;
+
+    /**
      * Construct
      */
     public function __construct() {
         $this->createAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
         $this->updateAt = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+        $this->deletar = 0;
+    }
+
+    /**
+     * Get deletar.
+     *
+     * @return int
+     */
+    function getDeletar() {
+        return $this->deletar;
+    }
+
+    /**
+     * Set deletar.
+     *
+     * @param string $deletar
+     *
+     * @return Usuario
+     */
+    function setDeletar($deletar) {
+        $this->deletar = $deletar;
     }
 
     /**

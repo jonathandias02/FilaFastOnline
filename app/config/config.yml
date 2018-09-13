@@ -38,6 +38,10 @@ twig:
     globals:
         mensagem: null
         usuarios: null
+        id: null
+        pesquisa: null
+        idUsuario: null
+        idFila: null
 
 # Doctrine Configuration
 doctrine:

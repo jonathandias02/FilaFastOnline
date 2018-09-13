@@ -13,11 +13,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        {% if mensagem == "Usuário cadastrado com sucesso!" %}
-                            <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
-                        {% else %}
-                            <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
-                        {% endif %}
+                        <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -26,11 +22,10 @@
                         {{ mensagem }}
                     </div>
                     <div class="modal-footer">
-                        {% if mensagem == "Usuário cadastrado com sucesso!" %}
-                            <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
-                        {% else %}
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
-                        {% endif %}
+                        <form action="{{path('AlterarUsuario')}}" id="enviaID" method="post">
+                            <input type="hidden" name="id" value="{{ usuario.id }}"/>
+                        </form>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
@@ -42,12 +37,13 @@
     <div class="row">
         <div class="col">
             <div class="card border-light" >
-                <div class="card-header h5 text-center">Cadastro de Usuários</div>
+                <div class="card-header h5 text-center">Alterar Usuário</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="#" method="post" id="CadastroUsuario">
+                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarAlteracaoUsuario')}}" method="post" id="CadastroUsuario">
                         <button type="button" style="margin-bottom: 20px;" class="btn btn-primary" onclick="AlterarSenha();">Alterar Senha</button>
                         <div class="row">
                             <div class="col">
+                                <input type="hidden" name="id" value="{{ usuario.id }}"/>
                                 <input type="text" class="form-control" placeholder="Nome" name="nome" value="{{ usuario.nome }}" required>
                             </div>
                             <div class="col">
@@ -56,11 +52,11 @@
                         </div><br/>
                         <div class="row">
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Login (Matricula)" name="login" value="{{ usuario.usuario }}" required>
+                                <input type="text" class="form-control" placeholder="Login (Somente números)" name="login" value="{{ usuario.usuario }}" maxlength="10" onkeyup="somenteNumeros(this);" required>
                                 <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                         </div><br/>
-                        
+
                         <div class="row">
                             <div class="col-1" style="margin-right: -35px;">
                                 <label class="my-2 mr-2">Status:</label>
@@ -76,8 +72,8 @@
                                     {% endif %}
                                 </select>
                             </div>
-                            <div class="col-1" style="margin-right: -23px;">
-                                <label class="my-2 mr-2">Direitos:</label>
+                            <div class="col-1" style="margin-right: -42px;">
+                                <label class="my-2 mr-2">Perfil:</label>
                             </div>
                             <div class="col-2">                                
                                 <select class="custom-select my-1 mr-sm-1" name="tipo" required>
@@ -96,8 +92,8 @@
                         </div><br/>
                         <div class="row">
                             <div class="col text-center">
-                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Cancelar</button>
-                                <button type="button" class="btn btn-primary" style="width: 100px;">Salvar</button>
+                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Voltar</button>
+                                <button type="submit" class="btn btn-primary" style="width: 100px;">Salvar</button>
                             </div>
                         </div>
                     </form>
@@ -117,22 +113,24 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col">
-                            <input type="password" class="form-control" placeholder="Senha" name="senha" id="senha" required>
-                            <div id="senhas" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                <form action="{{path('AlterarSenha')}}" method="post" id="formAlteraSenha">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <input type="hidden" name="id" value="{{ usuario.id }}"/>
+                                <input type="password" class="form-control" placeholder="Senha" name="senha" id="senha" required>
+                                <div id="senhas" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                            </div>
+                            <div class="col">
+                                <input type="password" class="form-control" placeholder="Confirmar Senha" name="confirmar" id="confirmar" required>
+                            </div>
                         </div>
-                        <div class="col">
-                            <input type="password" class="form-control" placeholder="Confirmar Senha" name="confirmar" id="confirmar" required>
-                        </div>
-                        
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="CancelarAltSenha">Cancelar</button>
-                    <button type="button" id="btnalterarSenha" class="btn btn-success" data-dismiss="modal" disabled="true">Alterar</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="CancelarAltSenha">Voltar</button>
+                        <button type="submit" class="btn btn-success">Alterar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -145,36 +143,7 @@
         });
 
         $('#ModalCenter').on('hide.bs.modal', function () {
-            window.location.href = "{{path("Usuarios")}}";
-        });
-
-        $(function () {
-            $("input[name='login']").blur(function () {
-
-                var usuario = $("input[name='login']").val();
-
-                if (usuario !== "") {
-
-                    $.post('{{asset('verificaUsuario/2f91be91b6240fd004bb9dba4f6f5919.php')}}', {usuario: usuario}, function (data) {
-                        if (data !== "Não existe!") {
-                            $('#resultado').html(data);
-                            $("input[name='login']").focus().select();
-                            $("input[name='login']").removeClass("form-control");
-                            $("input[name='login']").addClass("form-control is-invalid");
-                        } else {
-                            $('#resultado').html("");
-                            $("input[name='login']").removeClass("form-control is-invalid");
-                            $("input[name='login']").addClass("form-control is-valid");
-                        }
-                    });
-
-                } else {
-                    $('#resultado').html("");
-                    $("input[name='login']").removeClass("form-control is-valid");
-                    $("input[name='login']").removeClass("form-control is-invalid");
-                    $("input[name='login']").addClass("form-control");
-                }
-            });
+            $("#enviaID").submit();
         });
 
         function AlterarSenha() {
@@ -182,6 +151,5 @@
                 $('#AlterarSenha').modal('show');
             });
         }
-        
     </script>
 {% endblock %}

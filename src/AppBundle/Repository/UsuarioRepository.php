@@ -10,14 +10,14 @@ namespace AppBundle\Repository;
  */
 class UsuarioRepository extends \Doctrine\ORM\EntityRepository {
 
-    public function buscarUsuario($busca): array {
+    public function buscarUsuario($busca, $busca2): array {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = 'SELECT * FROM t_usuario
-        WHERE nome LIKE :busca or usuario = :busca
+        WHERE nome LIKE :busca or usuario = :busca2 and deletar = 0 
         ORDER BY nome ASC';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['busca' => $busca]);
+        $stmt->execute(['busca' => $busca, 'busca2' => $busca2]);
 
         return $stmt->fetchAll();
     }
@@ -25,7 +25,7 @@ class UsuarioRepository extends \Doctrine\ORM\EntityRepository {
     public function deletarUsuario($id) {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = 'DELETE FROM t_usuario WHERE id = :ID';
+        $sql = 'UPDATE t_usuario SET deletar = 1 WHERE id = :ID';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['ID' => $id]);
 
@@ -40,6 +40,18 @@ class UsuarioRepository extends \Doctrine\ORM\EntityRepository {
                 . ' WHERE id = :ID';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['ID' => $id, 'NOME' => $nome, 'SOBRENOME' => $sobrenome, 'USUARIO' => $usuario, 'STATUS' => $status, 'TIPO' => $tipo]);
+
+        return $stmt;
+    }
+    
+    public function alterarSenha($id, $senha) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'UPDATE t_usuario'
+                . ' SET senha = :SENHA'
+                . ' WHERE id = :ID';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['ID' => $id, 'SENHA' => $senha]);
 
         return $stmt;
     }
