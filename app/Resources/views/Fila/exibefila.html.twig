@@ -16,8 +16,9 @@
                                         </form>
                                     </td>
                                     <td align="right" width="80%">
-                                        <form action="{{path('BuscarFila')}}" class="form-inline" style="width: 281px;" method="post">
+                                        <form action="{{path('BuscarServico')}}" class="form-inline" style="width: 281px;" method="post">
                                             <div class="form-group">
+                                                <input type="hidden" name="idFila" value="{{ fila.id }}" />
                                                 <input type="text" class="form-control" placeholder="Pesquisar (nome)" style="margin-right: 20px;" name="busca">
                                             </div>
                                             <div class="form-group">
@@ -33,10 +34,11 @@
                         <table class="table table-sm table-striped" style="margin: 0 12% 0 12%;">
                             <thead>
                                 <tr align="center" style="font-size: 15pt;">
-                                    <th scope="col" colspan="5">Serviços</th>
+                                    <th scope="col" colspan="6">Serviços</th>
                                 </tr>
                                 <tr>
                                     <th scope="col" width="40px">#</th>
+                                    <th scope="col">Sigla</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">Status</th>
                                     <th scope="col" width="50px"></th>
@@ -46,18 +48,19 @@
                             <tbody>
                                 {% if servicos == null %}                                       
                                     <tr align="center">
-                                        <td colspan="5">
+                                        <td colspan="6">
                                             <div>Nenhum registro encontrado!</div>
                                         </td>
                                     </tr>
                                 {% else %}
                                     {% for servico in servicos %}
                                         <tr>
-                                            <th scope="row" style="vertical-align: middle;" width="80px">{{ servico.id }}</th>
+                                            <th scope="row" style="vertical-align: middle;" width="50px">{{ servico.id }}</th>
+                                            <td style="vertical-align: middle; width: 80px;">{{ servico.sigla }}</td>
                                             <td style="vertical-align: middle;">{{ servico.nome }}</td>
                                             <td style="vertical-align: middle;" width="250px">{{ servico.status_2 }}</td>
                                             <td width="50px">
-                                                <form action="{{path('AlterarUsuario')}}" method="post">
+                                                <form action="{{path('AlterarServico')}}" method="post">
                                                     <input type="hidden" name="id" value="{{ servico.id }}"/>
                                                     <button type="submit" style="border: none; background: none;">
                                                         <img src="{{asset('bundles/app/imagens/alterar.png')}}" style="width: 20px; height: 20px;"/>
@@ -65,7 +68,7 @@
                                                 </form>
                                             </td>
                                             <td width="50px">
-                                                <button type="button" onclick="confirmar({{ servico.id }});" style="border: none; background: none;">
+                                                <button type="button" onclick="confirmar({{ servico.id }}, {{ fila.id }});" style="border: none; background: none;">
                                                     <img src="{{asset('bundles/app/imagens/excluir.png')}}" style="width: 20px; height: 20px;"/>
                                                 </button>
                                             </td>
@@ -84,70 +87,83 @@
             </div>
         </div>
     </div>
-
-    {#                            Inicio Modal Excluir#}
+    {#    Inicio modal de mensagens#}
     {% if mensagem != null %}
         <script>
             $(document).ready(function () {
                 $('#ModalCenterMensagem').modal('show');
             });
-        </script>    
-    {% endif %}
-    {% if mensagem != null %}
+        </script>  
         <div class="modal fade" id="ModalCenterMensagem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        {% else %}
-            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            {% endif %}
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
+                        <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        {% if mensagem != null %}
-                            {{ mensagem }}
-                        {% else %}
-                            <p>Tem certeza que deseja excluir?</p>
-                        {% endif %}
+                    <div class="modal-body">   
+                        {{ mensagem }}
                     </div>
                     <div class="modal-footer">
-                        {% if mensagem != null %}
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
-                        {% else %}
-                            <form id="enviaDelete" action="#" method="post">
-                                <input type="hidden" name="id" />
-                            </form>
-                            <button type="button" id="sim" class="btn btn-success">Sim</button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
-                        {% endif %}
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
         </div>
-        {#                            Fim Modal Excluir#}
+    {% endif %}
+    {#      fim modal de mensagens#}
 
-        <script>
-            $("#voltar").click(function () {
-                window.location.href = "{{path('Filas')}}";
+    {#                            Inicio Modal Excluir#}
+    <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir?</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="enviaDelete" action="{{path('DeletarServico')}}" method="post">
+                        <input type="hidden" name="id" />
+                        <input type="hidden" name="idFila" />
+                    </form>
+                    <button type="button" id="sim" class="btn btn-success">Sim</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#                            Fim Modal Excluir#}
+
+    <form id="enviaID" action="{{path('VisualizaFila')}}" method="post">
+        <input type="hidden" name="id" value="{{ fila.id }}" />
+    </form>
+    <script>
+        $("#voltar").click(function () {
+            window.location.href = "{{path('Filas')}}";
+        });
+
+        function confirmar(id, idFila) {
+            $(document).ready(function () {
+                $('#ModalCenter').modal('show');
             });
 
-            function confirmar(id) {
-                $(document).ready(function () {
-                    $('#ModalCenter').modal('show');
-                });
-
-                $("#sim").click(function () {
-                    $("input[name='id']").val(id);
-                    $("#enviaDelete").submit();
-                });
-            }
-
-            $('#ModalCenterMensagem').on('hide.bs.modal', function () {
-                window.location.href = "#";
+            $("#sim").click(function () {
+                $("input[name='id']").val(id);
+                $("input[name='idFila']").val(idFila);
+                $("#enviaDelete").submit();
             });
+        }
 
-        </script>
-    {% endblock %}
+        $('#ModalCenterMensagem').on('hide.bs.modal', function () {
+            $("#enviaID").submit();
+        });
+
+    </script>
+{% endblock %}

@@ -14,7 +14,7 @@ class UsuarioRepository extends \Doctrine\ORM\EntityRepository {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = 'SELECT * FROM t_usuario
-        WHERE nome LIKE :busca or usuario = :busca2 and deletar = 0 
+        WHERE nome LIKE :busca and deletar = 0 or usuario = :busca2 and deletar = 0 
         ORDER BY nome ASC';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['busca' => $busca, 'busca2' => $busca2]);

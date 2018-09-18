@@ -13,7 +13,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        {% if mensagem == "Serviço cadastrado com sucesso!" %}
+                        {% if mensagem == "Alterado com sucesso!" %}
                             <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
                         {% else %}
                             <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
@@ -26,7 +26,7 @@
                         {{ mensagem }}
                     </div>
                     <div class="modal-footer">
-                        {% if mensagem == "Serviço cadastrado com sucesso!" %}
+                        {% if mensagem == "Alterado com sucesso!" %}
                             <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
                         {% else %}
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
@@ -44,21 +44,20 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Cadastro de Serviços</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarServico')}}" method="post">
+                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarAlteracaoServico')}}" method="post">
                         <div class="row">
                             <div style="width: 60px; margin-left: 15px;">
-                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="2" minlength="1" onkeyup="" required>
+                                <input type="hidden" name="id" value="{{ servico.id }}"/>
+                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="2" minlength="1" onkeyup="" value="{{ servico.sigla }}" required>
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" onkeyup="somenteLetras2(this);" required>
-                                <input type="hidden" name="id" value="{{ idUsuario }}"/>
-                                <input type="hidden" name="idFila" value="{{ idFila }}"/>
+                                <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" value="{{ servico.nome }}" onkeyup="somenteLetras2(this);" required>
                             </div>
                         </div><br/>
                         <div class="row">
                             <div class="col">
                                 <label>Descrição:</label>
-                                <textarea class="form-control" name="descricao"></textarea>
+                                <textarea class="form-control" name="descricao">{{ servico.descricao }}</textarea>
                             </div>
                         </div><br/>
                         <div class="row">
@@ -67,14 +66,19 @@
                             </div>
                             <div class="col-2">                                
                                 <select class="custom-select my-1 mr-sm-1" name="status">
-                                    <option selected value="Ativo">Ativo</option>
+                                    <option selected value="{{ servico.status_2 }}">{{ servico.status_2 }}</option>
+                                    {% if servico.status_2 != "Ativo" %}
+                                    <option value="Ativo">Ativo</option>
+                                    {% endif %}
+                                    {% if servico.status_2 != "Inativo" %}
                                     <option value="Inativo">Inativo</option>
+                                    {% endif %}
                                 </select>
                             </div>                            
                         </div><br/>
                         <div class="row">
                             <div class="col text-center">
-                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Cancelar</button>
+                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="voltar">Voltar</button>
                                 <button type="submit" class="btn btn-primary" style="width: 100px;">Salvar</button>
                             </div>
                         </div>
@@ -87,12 +91,12 @@
         <input type="hidden" name="id" value="{{ idFila }}" />
     </form>
     <script>
-        $("#cancelarUsuario").click(function () {
+        $("#voltar").click(function () {
             $("#enviaID").submit();
         });
 
-        $('#ModalCenter').on('hide.bs.modal', function () {
+        {#$('#ModalCenter').on('hide.bs.modal', function () {
             $("#enviaID").submit();
-        });
+        });#}
     </script>
 {% endblock %}
