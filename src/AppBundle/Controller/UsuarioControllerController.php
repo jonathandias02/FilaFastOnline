@@ -133,7 +133,7 @@ class UsuarioControllerController extends Controller {
             return $this->redirectToRoute("Login");
         } else {
             $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
-            $usuarios = $entityManage->findBy(["deletar" => 0], ["createAt" => "DESC"], 6);
+            $usuarios = $entityManage->findBy(["deletar" => 0], ["createAt" => "DESC"], 7);
             return $this->render("Usuario/usuarios.html.twig", array(
                         "nome" => $_SESSION['nome'],
                         "login" => $_SESSION['login'],

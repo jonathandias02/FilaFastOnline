@@ -1,6 +1,8 @@
-//Base Começa aqui
 var login = $("input[name='login']").val();
+var nomeGlobal = $("input[name='nome'").val();
+var siglaGlobal = $("input[name='sigla'").val();
 
+//funcao para verificar se confirmar senha bate com a senha
 $(function () {
     $("input[name='confirmar']").blur(function () {
         var senha = document.getElementById("senha").value;
@@ -10,13 +12,13 @@ $(function () {
 
             if (senha !== confirmar) {
                 $('#senhas').html("As senhas não conferem!");
+                $('#resultadoConfirmar').html("");
                 $("input[name='senha']").focus().val("");
                 $("input[name='confirmar']").val("");
                 $("input[name='senha']").removeClass("form-control");
                 $("input[name='senha']").addClass("form-control is-invalid");
                 $("input[name='confirmar']").removeClass("form-control");
                 $("input[name='confirmar']").addClass("form-control is-invalid");
-//                $("#btnalterarSenha").prop("disabled", true);
             } else {
                 $('#senhas').html("");
                 $("input[name='senha']").removeClass("form-control is-invalid");
@@ -27,17 +29,18 @@ $(function () {
             }
         } else {
             $('#senhas').html("");
+            $('#resultadoConfirmar').html("");
             $("input[name='senha']").removeClass("form-control is-invalid");
             $("input[name='senha']").removeClass("form-control is-valid");
             $("input[name='senha']").addClass("form-control");
             $("input[name='confirmar']").removeClass("form-control is-invalid");
             $("input[name='confirmar']").removeClass("form-control is-valid");
             $("input[name='confirmar']").addClass("form-control");
-//            $("#btnalterarSenha").prop("disabled", true);
         }
     });
 });
 
+//funcao para verificar se senha é valida
 $(function () {
     $("input[name='senha']").blur(function () {
         var senha = document.getElementById("senha").value;
@@ -59,7 +62,6 @@ $(function () {
                 $("input[name='confirmar']").removeClass("form-control is-invalid");
                 $("input[name='confirmar']").removeClass("form-control is-valid");
                 $("input[name='confirmar']").addClass("form-control");
-//                $("#btnalterarSenha").prop("disabled", true);
             } else {
                 if (senha !== confirmar) {
                     $('#senhas').html("As senhas não conferem!");
@@ -76,7 +78,6 @@ $(function () {
                     $("input[name='senha']").addClass("form-control is-valid");
                     $("input[name='confirmar']").removeClass("form-control is-invalid");
                     $("input[name='confirmar']").addClass("form-control is-valid");
-//                    $("#btnalterarSenha").prop("disabled", false);
                 }
             }
 
@@ -84,8 +85,7 @@ $(function () {
     });
 });
 
-// Termina aqui
-
+//funcao para cancelar o alterar senha
 $("#CancelarAltSenha").click(function () {
     $("input[name='senha']").val("");
     $("input[name='confirmar']").val("");
@@ -109,6 +109,9 @@ function somenteNumeros(num) {
 
 }
 
+function maiuscula(letra) {
+    letra.value = letra.value.toUpperCase();
+}
 
 function somenteLetras(letra) {
     letra.value = letra.value.replace(/[^a-zA-ZãõÃÕá-úÁ-ÚçÇ]/g, '');
@@ -118,8 +121,8 @@ function somenteLetras2(letra) {
     letra.value = letra.value.replace(/[^a-zA-ZãõÃÕá-úÁ-ÚçÇ ]/g, '');
 }
 
-
-$(function () { // declaro o início do jquery
+//função para verificar se o login já esta em uso
+$(function () {
     $("input[name='login']").blur(function () {
 
         var usuario = $("input[name='login']").val().length;
@@ -163,22 +166,23 @@ $(function () { // declaro o início do jquery
     });
 });
 
-
+//função para colocar a primeira letra de cada palavra maiuscula campo nome
 $(function () {
     $("input[name='nome']").blur(function () {
+        $('#resultadoNome').html("");
         var nome = $("input[name='nome']").val().toLowerCase().split(" ");
         for (var a = 0; a < nome.length; a++) {
             var n = nome[a];
             nome[a] = n[0].toUpperCase() + n.slice(1);
         }
-
         $("input[name='nome']").val(nome.join(" "));
-
     });
 });
 
+//função para colocar a primeira letra de cada palavra maiuscula campo sobrenome
 $(function () {
     $("input[name='sobrenome']").blur(function () {
+        $('#resultadoSobrenome').html("");
         var nome = $("input[name='sobrenome']").val().toLowerCase().split(" ");
         for (var a = 0; a < nome.length; a++) {
             var n = nome[a];
@@ -189,3 +193,285 @@ $(function () {
 
     });
 });
+
+//funçao para limpar a div resultadoPerfil quando for preenchida
+$(function () {
+    $("select[name='tipo']").blur(function () {
+        $('#resultadoPerfil').html("");
+    });
+});
+
+//função para botao salvar usuario
+function salvarUsuario() {
+    var nome = $("input[name='nome']").val();
+    var sobrenome = $("input[name='sobrenome']").val();
+    var login = $("input[name='login']").val();
+    var senha = $("input[name='senha']").val();
+    var confirmar = $("input[name='confirmar']").val();
+    var perfil = $("select[name='tipo']").val();
+    if (nome === "") {
+        $('#resultadoNome').html("O campo nome é obrigatório!");
+        $("input[name='nome']").focus();
+    } else if (sobrenome === "") {
+        $('#resultadoSobrenome').html("O campo sobrenome é obrigatório!");
+        $("input[name='sobrenome']").focus();
+    } else if (login === "") {
+        $('#resultado').html("O campo login é obrigatório!");
+        $("input[name='login']").focus();
+    } else if (senha === "") {
+        $('#senhas').html("O campo senha é obrigatório!");
+        $("input[name='senha']").focus();
+    } else if (confirmar === "") {
+        $('#resultadoConfirmar').html("O campo confirmar senha é obrigatório!");
+        $("input[name='confirmar']").focus();
+    } else if (perfil === "") {
+        $('#resultadoPerfil').html("Selecione um perfil!");
+        $("select[name='tipo']").focus();
+    } else {
+        var usuarioCount = $("input[name='login']").val().length;
+        if (usuarioCount < 4 && usuarioCount > 0) {
+            $('#resultado').html("O login deve possuir no mínimo 4 números, você digitou apenas " + usuarioCount);
+            $("input[name='login']").focus().select();
+            $("input[name='login']").removeClass("form-control");
+            $("input[name='login']").removeClass("form-control is-valid");
+            $("input[name='login']").addClass("form-control is-invalid");
+        } else {
+            $.post('../../verificaUsuario/2f91be91b6240fd004bb9dba4f6f5919.php', {usuario: login}, function (data) {
+                if (data !== "Não existe!") {
+                    $('#resultado').html(data);
+                    $("input[name='login']").focus().select();
+                    $("input[name='login']").removeClass("form-control");
+                    $("input[name='login']").addClass("form-control is-invalid");
+                } else {
+                    $('#resultado').html("");
+                    $("input[name='login']").removeClass("form-control is-invalid");
+                    $("input[name='login']").addClass("form-control is-valid");
+                    $('#formUsuario').submit();
+                }
+            });
+        }
+    }
+}
+
+//função para botao alterar usuario
+function alterarUsuario() {
+    var nome = $("input[name='nome']").val();
+    var sobrenome = $("input[name='sobrenome']").val();
+    var usuario = $("input[name='login']").val();
+    var perfil = $("select[name='tipo']").val();
+    if (nome === "") {
+        $('#resultadoNome').html("O campo nome é obrigatório!");
+        $("input[name='nome']").focus();
+    } else if (sobrenome === "") {
+        $('#resultadoSobrenome').html("O campo sobrenome é obrigatório!");
+        $("input[name='sobrenome']").focus();
+    } else if (usuario === "") {
+        $('#resultado').html("O campo login é obrigatório!");
+        $("input[name='login']").focus();
+    } else if (perfil === "") {
+        $('#resultadoPerfil').html("Selecione um perfil!");
+        $("select[name='tipo']").focus();
+    } else {
+        var usuarioCount = $("input[name='login']").val().length;
+        if (usuarioCount < 4 && usuarioCount > 0) {
+            $('#resultado').html("O login deve possuir no mínimo 4 números, você digitou apenas " + usuarioCount);
+            $("input[name='login']").focus().select();
+            $("input[name='login']").removeClass("form-control");
+            $("input[name='login']").removeClass("form-control is-valid");
+            $("input[name='login']").addClass("form-control is-invalid");
+        } else {
+            if (usuario !== login) {
+                $.post('../../verificaUsuario/2f91be91b6240fd004bb9dba4f6f5919.php', {usuario: usuario}, function (data) {
+                    if (data !== "Não existe!") {
+                        $('#resultado').html(data);
+                        $("input[name='login']").focus().select();
+                        $("input[name='login']").removeClass("form-control");
+                        $("input[name='login']").addClass("form-control is-invalid");
+                    } else {
+                        $('#resultado').html("");
+                        $("input[name='login']").removeClass("form-control is-invalid");
+                        $("input[name='login']").addClass("form-control is-valid");
+                        $('#formUsuario').submit();
+                    }
+                });
+            } else {
+                $('#resultado').html("");
+                $("input[name='login']").removeClass("form-control is-invalid");
+                $("input[name='login']").addClass("form-control is-valid");
+                $('#formUsuario').submit();
+            }
+        }
+    }
+}
+
+//função para botao alterar senha do usuario
+function alterarSenha() {
+    var senha = $("input[name='senha']").val();
+    var confirmar = $("input[name='confirmar']").val();
+
+    if (senha === "") {
+        if ($('#senhas').text() !== "As senhas não conferem!") {
+            $('#senhas').html("O campo senha é obrigatório!");
+        }
+        $("input[name='senha']").focus();
+    } else if (confirmar === "") {
+        $('#resultadoConfirmar').html("O campo confirmar senha é obrigatório!");
+        $("input[name='confirmar']").focus();
+    } else {
+        $('#senhas').html("");
+        $('#resultadoConfirmar').html("");
+        $("input[name='senha']").removeClass("form-control is-invalid");
+        $("input[name='senha']").addClass("form-control is-valid");
+        $("input[name='confirmar']").removeClass("form-control is-invalid");
+        $("input[name='confirmar']").addClass("form-control is-valid");
+        $("#formAlteraSenha").submit();
+    }
+
+}
+
+//função para botao salvar fila
+function salvarFila() {
+    var nome = $("input[name='nome']").val();
+    if (nome === "") {
+        $('#resultado').html("O campo nome é obrigatório!");
+        $("input[name='nome']").focus();
+    } else {
+        if (nome !== nomeGlobal) {
+            $.post('../../verificaUsuario/6ea13bffb6e18ece1265286ee9203fa0.php', {nome: nome}, function (data) {
+                if (data !== "Não existe!") {
+                    $('#resultado').html(data);
+                    $("input[name='nome']").focus().select();
+                    $("input[name='nome']").removeClass("form-control");
+                    $("input[name='nome']").addClass("form-control is-invalid");
+                } else {
+                    $('#resultado').html("");
+                    $("input[name='nome']").removeClass("form-control is-invalid");
+                    $("input[name='nome']").addClass("form-control is-valid");
+                    $('#formFila').submit();
+                }
+            });
+        } else {
+            $('#resultado').html("");
+            $("input[name='nome']").removeClass("form-control is-invalid");
+            $("input[name='nome']").addClass("form-control is-valid");
+            $('#formFila').submit();
+        }
+    }
+}
+
+//funcao complicada de entender para botao salvar servico ifs aninhados
+function salvarServico() {
+    var sigla = $("input[name='sigla']").val();
+    var nome = $("input[name='nome']").val();
+
+    if (sigla === "") {
+        $('#resultado').html("O campo sigla é obrigatório!");
+        $("input[name='sigla']").focus();
+    } else {
+        if (sigla !== siglaGlobal) {
+            $.post('../../verificaUsuario/07cec372873365e1192cfc1fe6b94e56.php', {sigla: sigla}, function (data) {
+                if (data !== "Não existe!") {
+                    $('#resultado').html(data);
+                    $("input[name='sigla']").focus().select();
+                    $("input[name='sigla']").removeClass("form-control");
+                    $("input[name='sigla']").addClass("form-control is-invalid");
+                } else {
+                    $('#resultado').html("");
+                    $("input[name='sigla']").removeClass("form-control is-invalid");
+                    $("input[name='sigla']").addClass("form-control is-valid");
+
+
+//                    caso a sigla não esteja em uso confere o nome para entao autorizar o submit INICIO
+
+
+                    if (nome === "") {
+                        $('#resultado2').html("O campo nome é obrigatório!");
+                        $("input[name='nome']").focus();
+                    } else {
+                        if (nome !== nomeGlobal) {
+                            $.post('../../verificaUsuario/07cec372873365e1192cfc1fe6b94e56.php', {nome: nome}, function (data) {
+                                if (data !== "Não existe!") {
+                                    $('#resultado2').html(data);
+                                    $("input[name='nome']").focus().select();
+                                    $("input[name='nome']").removeClass("form-control");
+                                    $("input[name='nome']").addClass("form-control is-invalid");
+                                } else {
+                                    $('#resultado2').html("");
+                                    $("input[name='nome']").removeClass("form-control is-invalid");
+                                    $("input[name='nome']").addClass("form-control is-valid");
+                                    $('#formServico').submit();
+                                }
+                            });
+                        } else {
+                            $('#resultado2').html("");
+                            $("input[name='nome']").removeClass("form-control is-invalid");
+                            $("input[name='nome']").removeClass("form-control is-valid");
+                            $("input[name='nome']").addClass("form-control");
+                            $('#formServico').submit();
+                        }
+
+                    }
+
+
+//                    FIM do else $post
+
+
+                }
+            });
+        } else {
+            $('#resultado').html("");
+            $("input[name='sigla']").removeClass("form-control is-invalid");
+            $("input[name='sigla']").removeClass("form-control is-valid");
+            $("input[name='sigla']").addClass("form-control");
+
+
+//            caso a sigla não tenha sido alterada mantem os campos limpos e verifica o nome para assim autorizar submit
+//            INICIO
+
+
+            if (nome === "") {
+                $('#resultado2').html("O campo nome é obrigatório!");
+                $("input[name='nome']").focus();
+            } else {
+                if (nome !== nomeGlobal) {
+                    $.post('../../verificaUsuario/07cec372873365e1192cfc1fe6b94e56.php', {nome: nome}, function (data) {
+                        if (data !== "Não existe!") {
+                            $('#resultado2').html(data);
+                            $("input[name='nome']").focus().select();
+                            $("input[name='nome']").removeClass("form-control");
+                            $("input[name='nome']").addClass("form-control is-invalid");
+                        } else {
+                            $('#resultado2').html("");
+                            $("input[name='nome']").removeClass("form-control is-invalid");
+                            $("input[name='nome']").addClass("form-control is-valid");
+                            $('#formServico').submit();
+                        }
+                    });
+                } else {
+                    $('#resultado2').html("");
+                    $("input[name='nome']").removeClass("form-control is-invalid");
+                    $("input[name='nome']").removeClass("form-control is-valid");
+                    $("input[name='nome']").addClass("form-control");
+                    $('#formServico').submit();
+                }
+
+            }
+
+
+//            FIM do else varivel sigla igual a global
+
+
+        }
+    } //fim do 1º else
+} //fim da função salvarServico
+
+
+//funcao para nao aceitar submit com tecla enter
+function EnterKeyFilter()
+{
+    if (window.event.keyCode === 13)
+    {
+        event.returnValue = false;
+        event.cancel = true;
+    }
+}

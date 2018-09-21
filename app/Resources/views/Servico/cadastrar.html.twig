@@ -44,17 +44,20 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Cadastro de Serviços</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarServico')}}" method="post">
+                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarServico')}}" method="post" id="formServico" onkeydown="EnterKeyFilter();">
                         <div class="row">
                             <div style="width: 60px; margin-left: 15px;">
-                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="2" minlength="1" onkeyup="" required>
+                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="2" minlength="1" onkeyup="maiuscula(this);" required>
                             </div>
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" onkeyup="somenteLetras2(this);" required>
                                 <input type="hidden" name="id" value="{{ idUsuario }}"/>
                                 <input type="hidden" name="idFila" value="{{ idFila }}"/>
                             </div>
-                        </div><br/>
+                        </div>
+                        <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                        <div id="resultado2" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                        <br/>
                         <div class="row">
                             <div class="col">
                                 <label>Descrição:</label>
@@ -75,7 +78,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Cancelar</button>
-                                <button type="submit" class="btn btn-primary" style="width: 100px;">Salvar</button>
+                                <button type="button" class="btn btn-primary" style="width: 100px;" onclick="salvarServico();">Salvar</button>
                             </div>
                         </div>
                     </form>
@@ -94,5 +97,66 @@
         $('#ModalCenter').on('hide.bs.modal', function () {
             $("#enviaID").submit();
         });
+
+        $(function () {
+            $("input[name='nome']").blur(function () {
+
+                var nome = $("input[name='nome']").val();
+
+                if (nome !== "") {
+
+                    $.post('../../verificaUsuario/07cec372873365e1192cfc1fe6b94e56.php', {nome: nome}, function (data) {
+                        if (data !== "Não existe!") {
+                            $('#resultado2').html(data);
+                            $("input[name='nome']").focus().select();
+                            $("input[name='nome']").removeClass("form-control");
+                            $("input[name='nome']").addClass("form-control is-invalid");
+                        } else {
+                            $('#resultado2').html("");
+                            $("input[name='nome']").removeClass("form-control is-invalid");
+                            $("input[name='nome']").addClass("form-control is-valid");
+                        }
+                    });
+
+                } else {
+                    $('#resultado2').html("");
+                    $("input[name='nome']").removeClass("form-control is-valid");
+                    $("input[name='nome']").removeClass("form-control is-invalid");
+                    $("input[name='nome']").addClass("form-control");
+                }
+
+            });
+        });
+
+        $(function () {
+            $("input[name='sigla']").blur(function () {
+
+                var sigla = $("input[name='sigla']").val();
+
+                if (sigla !== "") {
+
+                    $.post('../../verificaUsuario/07cec372873365e1192cfc1fe6b94e56.php', {sigla: sigla}, function (data) {
+                        if (data !== "Não existe!") {
+                            $('#resultado').html(data);
+                            $("input[name='sigla']").focus().select();
+                            $("input[name='sigla']").removeClass("form-control");
+                            $("input[name='sigla']").addClass("form-control is-invalid");
+                        } else {
+                            $('#resultado').html("");
+                            $("input[name='sigla']").removeClass("form-control is-invalid");
+                            $("input[name='sigla']").addClass("form-control is-valid");
+                        }
+                    });
+
+                } else {
+                    $('#resultado').html("");
+                    $("input[name='sigla']").removeClass("form-control is-valid");
+                    $("input[name='sigla']").removeClass("form-control is-invalid");
+                    $("input[name='sigla']").addClass("form-control");
+                }
+
+            });
+        });
+
     </script>
 {% endblock %}

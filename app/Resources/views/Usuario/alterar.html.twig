@@ -39,15 +39,17 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Alterar Usuário</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarAlteracaoUsuario')}}" method="post" id="CadastroUsuario">
+                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarAlteracaoUsuario')}}" method="post" id="formUsuario" onkeydown="EnterKeyFilter();">
                         <button type="button" style="margin-bottom: 20px;" class="btn btn-primary" onclick="AlterarSenha();">Alterar Senha</button>
                         <div class="row">
                             <div class="col">
                                 <input type="hidden" name="id" value="{{ usuario.id }}"/>
                                 <input type="text" class="form-control" placeholder="Nome" name="nome" value="{{ usuario.nome }}" required>
+                                <div id="resultadoNome" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Sobrenome" name="sobrenome" value="{{ usuario.sobrenome }}" required>
+                                <div id="resultadoSobrenome" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                         </div><br/>
                         <div class="row">
@@ -93,7 +95,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Voltar</button>
-                                <button type="submit" class="btn btn-primary" style="width: 100px;">Salvar</button>
+                                <button type="button" class="btn btn-primary" style="width: 100px;" onclick="alterarUsuario();">Salvar</button>
                             </div>
                         </div>
                     </form>
@@ -123,12 +125,13 @@
                             </div>
                             <div class="col">
                                 <input type="password" class="form-control" placeholder="Confirmar Senha" name="confirmar" id="confirmar" required>
+                                <div id="resultadoConfirmar" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal" id="CancelarAltSenha">Voltar</button>
-                        <button type="submit" class="btn btn-success">Alterar</button>
+                        <button type="button" class="btn btn-success" onclick="alterarSenha();">Alterar</button>
                     </div>
                 </form>
             </div>

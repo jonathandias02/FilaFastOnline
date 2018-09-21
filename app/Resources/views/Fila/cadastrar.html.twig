@@ -44,10 +44,11 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Cadastro de Filas</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarFila')}}" method="post">
+                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarFila')}}" method="post" id="formFila" onkeydown="EnterKeyFilter();">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" onkeyup="somenteLetras2(this);" required>
+                                <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" onkeyup="somenteLetras2(this);" required/>
+                                <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                                 <input type="hidden" name="id" value="{{ id }}"/>
                             </div>
                         </div><br/>
@@ -65,7 +66,7 @@
                         <div class="row">
                             <div class="col text-center">
                                 <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Cancelar</button>
-                                <button type="submit" class="btn btn-primary" style="width: 100px;">Salvar</button>
+                                <button type="button" class="btn btn-primary" style="width: 100px;" onclick="salvarFila();">Salvar</button>
                             </div>
                         </div>
                     </form>
@@ -81,6 +82,36 @@
 
         $('#ModalCenter').on('hide.bs.modal', function () {
             window.location.href = "{{path("Filas")}}";
+        });
+
+        $(function () {
+            $("input[name='nome']").blur(function () {
+
+                var nome = $("input[name='nome']").val();
+
+                if (nome !== "") {
+
+                    $.post('../../verificaUsuario/6ea13bffb6e18ece1265286ee9203fa0.php', {nome: nome}, function (data) {
+                        if (data !== "Não existe!") {
+                            $('#resultado').html(data);
+                            $("input[name='nome']").focus().select();
+                            $("input[name='nome']").removeClass("form-control");
+                            $("input[name='nome']").addClass("form-control is-invalid");
+                        } else {
+                            $('#resultado').html("");
+                            $("input[name='nome']").removeClass("form-control is-invalid");
+                            $("input[name='nome']").addClass("form-control is-valid");
+                        }
+                    });
+
+                } else {
+                    $('#resultado').html("");
+                    $("input[name='nome']").removeClass("form-control is-valid");
+                    $("input[name='nome']").removeClass("form-control is-invalid");
+                    $("input[name='nome']").addClass("form-control");
+                }
+
+            });
         });
     </script>
 {% endblock %}

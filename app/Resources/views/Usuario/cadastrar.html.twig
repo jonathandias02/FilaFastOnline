@@ -44,13 +44,15 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Cadastro de Usuários</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarUsuario')}}" method="post" id="CadastroUsuario">
+                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarUsuario')}}" method="post" id="formUsuario" onkeydown="EnterKeyFilter();">
                         <div class="row">
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="15" minlength="2" onkeyup="somenteLetras(this);" required>
+                                <div id="resultadoNome" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Sobrenome" name="sobrenome" maxlength="40" minlength="2" onkeyup="somenteLetras2(this);" required>
+                                <div id="resultadoSobrenome" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                         </div><br/>
                         <div class="row">
@@ -66,6 +68,7 @@
                             </div>
                             <div class="col">
                                 <input type="password" class="form-control" placeholder="Confirmar Senha" name="confirmar" id="confirmar" maxlength="12" required>
+                                <div id="resultadoConfirmar" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                             </div>
                         </div><br/>
                         <div class="row">
@@ -89,11 +92,12 @@
                                     <option value="3">Triagem</option>
                                 </select>
                             </div>
+                            <div id="resultadoPerfil" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
                         </div><br/>
                         <div class="row">
                             <div class="col text-center">
                                 <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Cancelar</button>
-                                <button type="submit" class="btn btn-primary" style="width: 100px;">Salvar</button>
+                                <button type="button" class="btn btn-primary" style="width: 100px;" onclick="salvarUsuario();">Salvar</button>
                             </div>
                         </div>
                     </form>
