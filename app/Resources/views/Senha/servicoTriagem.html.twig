@@ -1,0 +1,88 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+    <style>
+        li.teste{
+            display:block; 
+            list-style-type: none;  
+            margin:0; 
+            box-sizing: border-box;
+            border-radius: 5px;
+            padding: 5px;
+            width: 49.5%;
+            float:right;
+            margin-bottom: 15px;
+        }
+        li:nth-child(odd).teste {          /* este css será aplicato nos LI impares (1, 3, 5... ).         */
+            clear:both;                /* forçamos a quebra de linha por segurança...                  */
+            float:left;                /* ... e o alinhamos à esquerda.                                */
+            width:49.5%;                 /* Aplicamos 50% na esquerda, os da direita "herdam" o resto.   */
+            margin-bottom: 15px;
+        }
+    </style>
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">TRIAGEM</div>
+                <div class="card-body">
+                    {% if servicos == null%}
+                        <div class="alert alert-danger text-center" role="alert">
+                            Nenhum serviço cadastrado nessa fila!
+                        </div>
+                    {% else %}
+                        <div class="row" style="background-color: #CED8F6;">
+                            <div class="col-1">
+                                <img src="{{asset('bundles/app/imagens/usuario.png')}}" style="width: 40px; height: 40px; margin-top: 5px;" />
+                            </div>
+                            <div class="col-2" style="margin: 12px -90px 0 -50px;">
+                                <p class="h5" style="">Identificação</p>
+                            </div>
+                            <div class="col-4">
+                                <form style="margin: 5px 0 5px 0;">
+                                    <input type="text" name="nome" class="form-control" placeholder="Nome" onkeyup="somenteLetras2(this);"/>
+                                </form>
+                            </div>
+
+                        </div><br/>
+                        <div class="row">
+                            <div class="col">
+                                <ul style="position:relative; margin:0; padding:0; width:100%; height:100%;">
+                                    {% for servico in servicos%}
+                                        <li class="teste border">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="50%">
+                                                        <div class="h6">{{ servico.sigla }} - {{ servico.nome }}</div>
+                                                        <div class="row">
+                                                            <div class="col-1" style="margin-left: 10px;">
+                                                                <img src="{{asset('bundles/app/imagens/usuario.png')}}" style="width: 20px; height: 20px;" />
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="border text-center" style="border-radius: 40px; width: 40px; color: white; background-color: #383d41;">
+                                                                    -/-
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td width="50%" align="right">
+                                                        <button class="btn btn-primary" style="margin: 5px;">Normal</button>
+                                                        <button class="btn btn-danger" style="margin: 5px;">Preferencial</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </li> 
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                            <button class="btn btn-secondary" id="selecionar"><b><</b> Selecionar Fila</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#selecionar").click(function () {
+            window.location.href = "{{path('TriagemFila')}}";
+        });
+    </script>
+{% endblock %}

@@ -34,11 +34,18 @@ class Senha
      * @ORM\Column(name="dataSolicitacao", type="datetime", nullable=true)
      */
     private $dataSolicitacao;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=120, nullable=true)
+     */
+    private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="identificacao", type="string", length=60)
+     * @ORM\Column(name="identificacao", type="string", length=60, nullable=true)
      */
     private $identificacao;
 
@@ -66,24 +73,31 @@ class Senha
     /**
      * @var int
      *
-     * @ORM\Column(name="idPreferencia", type="integer")
+     * @ORM\Column(name="t_preferencia_id", type="integer")
      */
     private $idPreferencia;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="idServico", type="integer")
+     * @ORM\Column(name="t_servicos_id", type="integer")
      */
     private $idServico;
 
     /**
      * @var int|null
      *
-     * @ORM\Column(name="idUsuario", type="integer", nullable=true)
+     * @ORM\Column(name="t_usuario_id", type="integer", nullable=true)
      */
     private $idUsuario;
-
+    
+    /**
+     * Construct
+     */
+    public function __construct() {
+        $this->dataSolicitacao = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+        $this->situacao = "Aguardando";
+    }
 
     /**
      * Get id.
@@ -143,6 +157,30 @@ class Senha
         return $this->dataSolicitacao;
     }
 
+    /**
+     * Set email.
+     *
+     * @param string $email
+     *
+     * @return Senha
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    
     /**
      * Set identificacao.
      *
