@@ -194,6 +194,19 @@ $(function () {
     });
 });
 
+//função para colocar a primeira letra de cada palavra maiuscula campo identificacao
+$(function () {
+    $("input[name='identificacao']").blur(function () {
+        $('#resultado').html("");
+        var identificacao = $("input[name='identificacao']").val().toLowerCase().split(" ");
+        for (var a = 0; a < identificacao.length; a++) {
+            var n = identificacao[a];
+            identificacao[a] = n[0].toUpperCase() + n.slice(1);
+        }
+        $("input[name='identificacao']").val(identificacao.join(" "));
+    });
+});
+
 //funçao para limpar a div resultadoPerfil quando for preenchida
 $(function () {
     $("select[name='tipo']").blur(function () {
@@ -474,4 +487,15 @@ function EnterKeyFilter()
         event.returnValue = false;
         event.cancel = true;
     }
+}
+
+//funcao para imprimir
+function imprimir() {
+    var conteudo = document.getElementById('imprimeSenha').innerHTML,
+            tela_impressao = window.open('about:blank');
+
+    tela_impressao.document.write(conteudo);
+    tela_impressao.window.print();
+    tela_impressao.window.close();
+
 }

@@ -36,12 +36,14 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
+        empresa: '%empresa%'
         mensagem: null
         usuarios: null
         id: null
         pesquisa: null
         idUsuario: null
         idFila: null
+        senha: null
 
 # Doctrine Configuration
 doctrine:

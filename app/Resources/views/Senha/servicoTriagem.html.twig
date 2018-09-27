@@ -37,8 +37,12 @@
                                 <p class="h5" style="">Identificação</p>
                             </div>
                             <div class="col-4">
-                                <form style="margin: 5px 0 5px 0;">
-                                    <input type="text" name="nome" class="form-control" placeholder="Nome" onkeyup="somenteLetras2(this);"/>
+                                <form style="margin: 5px 0 5px 0;" id="gerarSenha" action="" method="post">
+                                    <input type="text" name="identificacao" class="form-control" placeholder="Nome" onkeyup="somenteLetras2(this);"/>
+                                    <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                                    <input type="hidden" name="idPreferencia" />
+                                    <input type="hidden" name="idServico" />
+                                    <input type="hidden" name="sigla" />
                                 </form>
                             </div>
 
@@ -64,8 +68,8 @@
                                                         </div>
                                                     </td>
                                                     <td width="50%" align="right">
-                                                        <button class="btn btn-primary" style="margin: 5px;">Normal</button>
-                                                        <button class="btn btn-danger" style="margin: 5px;">Preferencial</button>
+                                                        <button class="btn btn-primary" style="margin: 5px;" onclick="gerarSenha('1', '{{ servico.id }}', '{{ servico.sigla }}');">Normal</button>
+                                                        <button class="btn btn-danger" style="margin: 5px;" onclick="gerarSenha('2', '{{ servico.id }}', '{{ servico.sigla }}');">Preferencial</button>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -80,9 +84,95 @@
             </div>
         </div>
     </div>
+
+    {#    modal gerar senha #}
+    {% if senha != null %}
+        <script>
+            $(document).ready(function () {
+                $('#ExempleModalCenter').modal('show');
+            });
+        </script>
+
+        <div class="modal fade" id="ExempleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Senha de Atendimento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center" id="imprimeSenha">
+                        <div align="center">
+                            <h4 align="center" style="margin: 2px;">{{ empresa }}</h4>
+                            <p align="center" style="margin: 2px;">  {{ fila.nome }}</p>
+                            <h1 align="center" style="margin: 2px;">{{ senha }}</h1>
+                            <p align="center" style="margin: 2px;"><b>Serviço: {{ servico.nome }}</b></p>
+                            <p align="center" style="margin: 2px;">Data: {{ data.date|date('d/m/Y') }}</p>
+                            <p align="center" style="margin: 2px;">Hora: {{ data.date|date('H:i:s') }}</p>
+                            <p align="center" style="margin: 2px;"><b>Atendimento: {{ tipo }}</b></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" onclick="imprimir();" data-dismiss="modal">Imprimir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+    {#      fim modal gerar senha#}
+
+    {#    modal de aviso#}
+
+    <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalCenterTitle">Mensagem</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Gerar senha?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="sim">Sim</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#      fim modal de aviso#}
     <script>
+        function gerarSenha(idPreferencia, idServico, sigla) {
+            $(document).ready(function () {
+                $('#ModalCenter').modal('show');
+            });
+
+            $("#sim").click(function () {
+                $('#ModalCenter').modal('hide');
+                var identificacao = $("input[name='identificacao']").val();
+                $("input[name='idPreferencia']").val(idPreferencia);
+                $("input[name='idServico']").val(idServico);
+                $("input[name='sigla']").val(sigla);
+                if (identificacao !== "") {
+                    $('#gerarSenha').submit();
+                } else {
+                    $("#resultado").html("é preciso identificar-se!");
+                    $("input[name='identificacao']").focus();
+                }
+
+            });
+        }
         $("#selecionar").click(function () {
             window.location.href = "{{path('TriagemFila')}}";
+        });
+
+        $('#ExempleModalCenter').on('hide.bs.modal', function () {
+            window.location.href = "";
         });
     </script>
 {% endblock %}

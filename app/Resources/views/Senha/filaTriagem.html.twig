@@ -7,11 +7,17 @@
                 <div class="card-header h5 text-center">Selecione a fila para triagem:</div>
                 <div class="card-body">
                     <div class="list-group" style="">
-                        {% for fila in filas %}
-                            <a href="/triagem/{{ fila.id }}" class="list-group-item list-group-item-action h5 text-center list-group-item-light" style="margin-bottom: 5px;">
-                                {{ fila.nome }}
-                            </a>
-                        {% endfor %}
+                        {% if filas != null %}
+                            {% for fila in filas %}
+                                <a href="/triagem/{{ fila.id }}" class="list-group-item list-group-item-action h5 text-center list-group-item-light" style="margin-bottom: 5px;">
+                                    {{ fila.nome }}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-danger text-center" role="alert">
+                                Nenhuma fila cadastrada!
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
