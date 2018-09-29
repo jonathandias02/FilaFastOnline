@@ -52,7 +52,7 @@ class Senha
     /**
      * @var int
      *
-     * @ORM\Column(name="numero", type="integer")
+     * @ORM\Column(name="numero", type="string", length=5)
      */
     private $numero;
 
@@ -83,6 +83,13 @@ class Senha
      * @ORM\Column(name="t_servicos_id", type="integer")
      */
     private $idServico;
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_filas_id", type="integer")
+     */
+    private $idFila;
 
     /**
      * @var int|null
@@ -323,6 +330,30 @@ class Senha
     public function getIdServico()
     {
         return $this->idServico;
+    }
+    
+    /**
+     * Set idFila.
+     *
+     * @param int $idFila
+     *
+     * @return Senha
+     */
+    public function setIdFila($idFila)
+    {
+        $this->idFila = $idFila;
+
+        return $this;
+    }
+
+    /**
+     * Get idFila.
+     *
+     * @return int
+     */
+    public function getIdFila()
+    {
+        return $this->idFila;
     }
 
     /**

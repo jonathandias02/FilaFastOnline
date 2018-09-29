@@ -84,7 +84,27 @@ class Servico {
      */
     private $deletar;
     
+    private $senhasAguardando;
     
+    private $senhasAtendidas;
+    
+    function getSenhasAtendidas() {
+        return $this->senhasAtendidas;
+    }
+
+    function setSenhasAtendidas($senhasAtendidas) {
+        $this->senhasAtendidas = $senhasAtendidas;
+    }
+
+    function getSenhasAguardando() {
+        return $this->senhasAguardando;
+    }
+
+    function setSenhasAguardando($senhasAguardando) {
+        $this->senhasAguardando = $senhasAguardando;
+    }
+
+        
 
     /**
      * Construct

@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">Digite o número do guichê de atendimento:</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-2 mx-auto d-block" style="width: 50%;">
+                            <form class="text-center" action="{{path('Atendimento')}}" method="post">
+                                <input type="text" maxlength="2" minlength="1" class="form-control" placeholder="Nº Guichê" name="guiche" onkeyup="somenteNumeros(this)" required/><br/>
+                                <input type="hidden" name="idFila" value="{{ idFila }}" />
+                                <button class="btn btn-primary" style="width: 100px;">Entrar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

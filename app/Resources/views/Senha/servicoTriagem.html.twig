@@ -40,6 +40,7 @@
                                 <form style="margin: 5px 0 5px 0;" id="gerarSenha" action="" method="post">
                                     <input type="text" name="identificacao" class="form-control" placeholder="Nome" onkeyup="somenteLetras2(this);"/>
                                     <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                                    <input type="hidden" name="idFila" value="{{ fila.id }}"/>
                                     <input type="hidden" name="idPreferencia" />
                                     <input type="hidden" name="idServico" />
                                     <input type="hidden" name="sigla" />
@@ -50,7 +51,8 @@
                         <div class="row">
                             <div class="col">
                                 <ul style="position:relative; margin:0; padding:0; width:100%; height:100%;">
-                                    {% for servico in servicos%}
+                                    {% for servico in servicos %}
+
                                         <li class="teste border">
                                             <table width="100%">
                                                 <tr>
@@ -62,7 +64,7 @@
                                                             </div>
                                                             <div class="col">
                                                                 <div class="border text-center" style="border-radius: 40px; width: 40px; color: white; background-color: #383d41;">
-                                                                    -/-
+                                                                    {{ servico.senhasAtendidas }}/{{ servico.senhasAguardando }}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -74,6 +76,7 @@
                                                 </tr>
                                             </table>
                                         </li> 
+
                                     {% endfor %}
                                 {% endif %}
                             </ul>

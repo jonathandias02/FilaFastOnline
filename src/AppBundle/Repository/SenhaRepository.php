@@ -32,5 +32,46 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $count = $stmt->rowCount();
         return $count;
     }
+    
+    public function numeroDeSenhas($id) {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT id FROM t_senhas WHERE t_servicos_id = :ID';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["ID" => $id]);
+        $count = $stmt->rowCount();
+        return $count;
+    }
+    
+    public function numeroDeSenhasAtendidas($id) {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT id FROM t_senhas WHERE situacao != "Aguardando" and t_servicos_id = :ID';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["ID" => $id]);
+        $count = $stmt->rowCount();
+        return $count;
+    }
+    
+    public function senhasNormais($idFila): array {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT ser.id, ser.nome, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
+                WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id
+                AND s.situacao = "Aguardando" AND s.t_preferencia_id = 1 AND
+                s.t_filas_id = :IDFILA AND s.t_usuario_id IS NULL;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["IDFILA" => $idFila]);
+        return $stmt->fetchAll();
+    }
+    
+    public function senhasPreferenciais($idFila): array {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT ser.id, ser.nome, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
+                WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id AND s.situacao = "Aguardando" AND s.t_preferencia_id = 2 AND
+                s.t_filas_id = :IDFILA AND s.t_usuario_id IS NULL;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["IDFILA" => $idFila]);
+        return $stmt->fetchAll();
+    }
 
+    
+    
 }
