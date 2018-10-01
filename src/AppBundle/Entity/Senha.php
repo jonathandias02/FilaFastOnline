@@ -69,6 +69,20 @@ class Senha
      * @ORM\Column(name="situacao", type="string", length=20)
      */
     private $situacao;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="observacoes", type="string", length=255, nullable=true)
+     */
+    private $observacoes;
+    
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="duracao", type="time", nullable=true)
+     */
+    private $duracao;
 
     /**
      * @var int
@@ -282,6 +296,54 @@ class Senha
     public function getSituacao()
     {
         return $this->situacao;
+    }
+    
+    /**
+     * Set observacoes.
+     *
+     * @param string $observacoes
+     *
+     * @return Senha
+     */
+    public function setObservacoes($observacoes)
+    {
+        $this->observacoes = $observacoes;
+
+        return $this;
+    }
+
+    /**
+     * Get observacoes.
+     *
+     * @return string
+     */
+    public function getObservacoes()
+    {
+        return $this->observacoes;
+    }
+    
+    /**
+     * Set duracao.
+     *
+     * @param \DateTime|null $duracao
+     *
+     * @return Senha
+     */
+    public function setDuracao($duracao = null)
+    {
+        $this->duracao = $duracao;
+
+        return $this;
+    }
+
+    /**
+     * Get duracao.
+     *
+     * @return \DateTime|null
+     */
+    public function getDuracao()
+    {
+        return $this->duracao;
     }
 
     /**

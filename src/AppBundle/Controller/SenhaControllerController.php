@@ -143,18 +143,101 @@ class SenhaControllerController extends Controller {
         } else {
 
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $finalizar = isset($filtro['finalizar']) ? $filtro['finalizar'] : null;
+            $duracao = isset($filtro['duracao']) ? $filtro['duracao'] : null;
+            $idSenha = isset($filtro['idSenha']) ? $filtro['idSenha'] : null;
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
             $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
+            $em = $this->getDoctrine()->getRepository(Senha::class);
+            
+            //caso ja esteja em atendimento a rota recebe valores de finalizar e duracao e o id da senha
+            //caso seja 1 senha atendida caso 2 senha não compareceu
+            $data = new Senha();
+            if($finalizar == "finalizar"){
+                $em->finalizar($idSenha, $duracao, $data->getDataSolicitacao());
+            }else if($finalizar == "naoCompareceu"){
+                $em->naoCompareceu($idSenha, $data->getDataSolicitacao());
+            }
+            
             $fila = $this->getDoctrine()->getRepository(Fila::class)->findOneBy(["id" => $idFila]);
-            $senhasNormal = $this->getDoctrine()->getRepository(Senha::class)->senhasNormais($idFila);
-            $senhasPrefencial = $this->getDoctrine()->getRepository(Senha::class)->senhasPreferenciais($idFila);
-            $proximaSenha = $senhasNormal[0];
+            $senhasNormal = $em->senhasNormais($idFila);
+            $senhasPrefencial = $em->senhasPreferenciais($idFila);
+            if (count($senhasNormal) === 0) {
+                $proximaSenha = null;
+            } else {
+                $proximaSenha = $senhasNormal[0];
+            }
             return $this->render("Senha/atendimento.html.twig", array(
                         "nome" => $_SESSION['nome'],
                         "idFila" => $idFila,
                         "guiche" => $guiche,
                         "fila" => $fila,
                         "proximaSenha" => $proximaSenha,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/chamarSenha", name="ChamarSenha")
+     */
+    public function chamarSenha() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $idSenha = isset($filtro['idSenha']) ? $filtro['idSenha'] : null;
+            $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
+            $sigla = isset($filtro['sigla']) ? $filtro['sigla'] : null;
+            $numero = isset($filtro['numero']) ? $filtro['numero'] : null;
+            $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
+            $novamente = isset($filtro['novamente']) ? $filtro['novamente'] : null;
+            $fila = $this->getDoctrine()->getRepository(Fila::class)->findOneBy(["id" => $idFila]);
+            $em = $this->getDoctrine()->getRepository(Senha::class);
+            if ($novamente === null) {
+                $em->chamarSenha($idSenha, $_SESSION['id']);
+            }
+            $senha = $em->senha($idSenha);
+            return $this->render("Senha/chamarSenha.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "idFila" => $idFila,
+                        "guiche" => $guiche,
+                        "fila" => $fila,
+                        "senha" => $senha,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/emAtendimento", name="EmAtendimento")
+     */
+    public function emAtendimento() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $idSenha = isset($filtro['idSenha']) ? $filtro['idSenha'] : null;
+            $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
+            $nomeFila = isset($filtro['nomeFila']) ? $filtro['nomeFila'] : null;
+            $sigla = isset($filtro['sigla']) ? $filtro['sigla'] : null;
+            $numero = isset($filtro['numero']) ? $filtro['numero'] : null;
+            $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
+            $preferencia = isset($filtro['preferencia']) ? $filtro['preferencia'] : null;
+            $identificacao = isset($filtro['identificacao']) ? $filtro['identificacao'] : null;
+            $servico = isset($filtro['servico']) ? $filtro['servico'] : null;
+
+            return $this->render("Senha/emAtendimento.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "idFila" => $idFila,
+                        "nomeFila" => $nomeFila,
+                        "guiche" => $guiche,
+                        "sigla" => $sigla,
+                        "numero" => $numero,
+                        "preferencia" => $preferencia,
+                        "identificacao" => $identificacao,
+                        "idSenha" => $idSenha,
+                        "servico" => $servico,
             ));
         }
     }

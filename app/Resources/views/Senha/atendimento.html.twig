@@ -19,61 +19,77 @@
                                 <div style="padding-top: 2px;">
                                     <p style="color: white; margin: 10px 0 0 0;">Guichê</p>
                                     <h1 style="font-size: 50pt; color: white; margin: 0;">{{ guiche }}</h1>
-                                    <p style=""><a href="../selecionarguiche/{{ idFila}} " style="color: white;"> <u>Alterar</u> </a></p>
+                                    <p style=""><a href="../selecionarguiche/{{ idFila }} " style="color: white;"> <u>Alterar</u> </a></p>
                                 </div>
                             </div>
                         </div>
                         <div class="col">
                             <div class="bg-light" style="width: 100%; border: solid #999999 .5px; border-radius: 5px; margin-top: 10px; padding: 20px;">
-                                <div class="row" style="margin-top: 20px;">
-                                    <div class="col-2">
-                                        <label><b class="h5">Senha:</b></label><br/>
-                                        <label><b class="h5">Serviço:</b></label><br/>
-                                        <label><b class="h5">Prioridade:</b></label><br/>
-                                        <label><b class="h5">Identificação:</b></label>
-                                    </div>
-                                    <div class="col">
-                                        <label style="margin-top: -10px;"><b class="h2">{{ proximaSenha.sigla }}{{ proximaSenha.numero }}</b></label><br/>
-                                        <label>{{proximaSenha.nome}}</label><br/>
-                                        <label>{{proximaSenha.preferencia}}</label><br/>
-                                        <label>{{proximaSenha.identificacao}}</label>
-                                    </div>
-                                </div><br/>
+                                {% if proximaSenha != null %}
+                                    <div class="row" style="margin-top: 20px;">
 
+                                        <div class="col-2">
+                                            <label><b class="h5">Senha:</b></label><br/>
+                                            <label><b class="h5">Serviço:</b></label><br/>
+                                            <label><b class="h5">Prioridade:</b></label><br/>
+                                            <label><b class="h5">Identificação:</b></label>
+                                        </div>
+                                        <div class="col">
+                                            <label style="margin-top: -10px;"><b class="h2">{{ proximaSenha.sigla }}{{ proximaSenha.numero }}</b></label><br/>
+                                            <label>{{proximaSenha.nome}}</label><br/>
+                                            <label>{{proximaSenha.preferencia}}</label><br/>
+                                            <label>{{proximaSenha.identificacao}}</label>
+                                        </div>
+
+                                    </div><br/>
+                                {% else %}
+                                    <div class="alert alert-primary text-center" role="alert" style="margin: 50px 0 50px 0;">
+                                        Não há senhas aguardando atendimento!
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>{#
                         <div class="col"></div>
                         <div class="col"></div>
                         <div class="col"></div>#}    
                     </div><br/>
-                    <div class="row">
-                        <div class="col-1" style="margin-right: 20px;"></div>
-                        <div class="col">
-                            <div class="row">
-                                <div class="col-2">
-                                    <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;">
-                                        <img src="{{asset('bundles/app/imagens/mega.png')}}" style="width: 50px; height: 40px; margin-bottom: 5px;"/><br/>
-                                        <b style="color: black;">Chamar</b>
-                                    </button>
-                                </div>
-                                <div class="col-2">
-                                    <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;"">
-                                        <img src="{{asset('bundles/app/imagens/chamar.png')}}" style="width: 40px; height: 40px; margin-bottom: 5px;"/><br/>
-                                        <b style="color: black;">Iniciar Atendimento</b>
-                                    </button>
-                                </div>
-                                <div class="col-2">
-                                    <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;"">
-                                        <img src="{{asset('bundles/app/imagens/usuarionao.png')}}" style="width: 40px; height: 40px; margin-bottom: 5px;"/><br/>
-                                        <b style="color: black;">Não Compareceu</b>
-                                    </button>
+                    {% if proximaSenha != null %}
+                        <div class="row">
+                            <div class="col-1" style="margin-right: 20px;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;" onclick="chamarSenha();">
+                                            <img src="{{asset('bundles/app/imagens/mega.png')}}" style="width: 50px; height: 40px; margin-bottom: 5px;"/><br/>
+                                            <b style="color: black;">Chamar</b>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    {% if proximaSenha != null %}
+        <form action="{{path('ChamarSenha')}}" method="post" id="chamarSenha">
+            <input type="hidden" name="idSenha" value="{{proximaSenha.id}}"/>
+            <input type="hidden" name="sigla" value="{{proximaSenha.sigla}}"/>
+            <input type="hidden" name="numero" value="{{proximaSenha.numero}}"/>
+            <input type="hidden" name="guiche" value="{{guiche}}"/>
+            <input type="hidden" name="idFila" value="{{idFila}}"/>
+        </form>
+    {% endif %}
+    <script>
+        function chamarSenha() {
+            $("#chamarSenha").submit();
+        }
+
+        setTimeout(function () {
+            location.reload();
+        }, 5000);
+
+    </script>
 
 {% endblock %}

@@ -53,7 +53,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
     
     public function senhasNormais($idFila): array {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT ser.id, ser.nome, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
+        $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
                 WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id
                 AND s.situacao = "Aguardando" AND s.t_preferencia_id = 1 AND
                 s.t_filas_id = :IDFILA AND s.t_usuario_id IS NULL;';
@@ -64,12 +64,55 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
     
     public function senhasPreferenciais($idFila): array {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT ser.id, ser.nome, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
+        $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
                 WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id AND s.situacao = "Aguardando" AND s.t_preferencia_id = 2 AND
                 s.t_filas_id = :IDFILA AND s.t_usuario_id IS NULL;';
         $stmt = $conn->prepare($sql);
         $stmt->execute(["IDFILA" => $idFila]);
         return $stmt->fetchAll();
+    }
+    
+    public function chamarSenha($idSenha, $idUsuario){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'UPDATE t_senhas
+        SET situacao = "Chamada", t_usuario_id = :IDUSUARIO
+        WHERE id = :IDSENHA;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['IDSENHA' => $idSenha, 'IDUSUARIO' => $idUsuario]);
+        $count = $stmt->rowCount();
+        return $count;
+    }
+    
+    public function senha($idSenha){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, s.situacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
+                WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id
+                AND s.id = :IDSENHA;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["IDSENHA" => $idSenha]);
+        return $stmt->fetch();
+    }
+    
+    public function finalizar($idSenha, $duracao, $dataAtendimento){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'UPDATE t_senhas
+        SET situacao = "Atendida", duracao = :DURACAO, dataAtendimento = :DATA
+        WHERE id = :IDSENHA;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['IDSENHA' => $idSenha, 'DURACAO' => $duracao, 'DATA' => $dataAtendimento]);
+        $count = $stmt->rowCount();
+        return $count;
+    }
+    
+    public function naoCompareceu($idSenha, $dataAtendimento){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'UPDATE t_senhas
+        SET situacao = "Não Compareceu", dataAtendimento = :DATA
+        WHERE id = :IDSENHA;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['IDSENHA' => $idSenha, 'DATA' => $dataAtendimento]);
+        $count = $stmt->rowCount();
+        return $count;
     }
 
     
