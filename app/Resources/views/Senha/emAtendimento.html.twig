@@ -4,77 +4,83 @@
     <div class="row">
         <div class="col">
             <div class="card border-light" >
-                <div class="card-header h5 text-center">Em Atendimento</div>
+                {% if mensagem == null %}
+                    <div class="card-header h5 text-center">Em Atendimento</div>
+                {% else %}
+                    <div class="card-header h5 text-center">Atendimento</div>
+                {% endif %}
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <div class="alert alert-secondary" role="alert" style="margin: -10px 0 0 0;">
-                                <b class="h5">Fila de Atendimento: </b>{{nomeFila}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-1" style="margin-right: 20px;">
-                            <div class="text-center" style="width: 100px; height: 150px; background: #007bff; margin-top: 10px; border-radius: 5px;">
-                                <div style="padding-top: 2px;">
-                                    <p style="color: white; margin: 10px 0 0 0;">Guichê</p>
-                                    <h1 style="font-size: 50pt; color: white; margin: 0;">{{ guiche }}</h1>
-                                    <p style=""><a href="../selecionarguiche/{{ idFila}} " style="color: white;"> <u>Alterar</u> </a></p>
+                    {% if mensagem == null %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="alert alert-secondary" role="alert" style="margin: -10px 0 0 0;">
+                                    <b class="h5">Fila de Atendimento: </b>{{nomeFila}}
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="bg-light" style="width: 100%; border: solid #999999 .5px; border-radius: 5px; margin-top: 10px; padding: 20px;">
-                                <div class="row" style="margin-top: 20px;">
-                                    <div class="col-2">
-                                        <label><b class="h5">Senha:</b></label><br/>
-                                        <label><b class="h5">Serviço:</b></label><br/>
-                                        <label><b class="h5">Prioridade:</b></label><br/>
-                                        <label><b class="h5">Identificação:</b></label>
-                                    </div>
-                                    <div class="col-3">
-                                        <label style="margin-top: -10px;"><b class="h2">{{ sigla }}{{ numero }}</b></label><br/>
-                                        <label>{{servico}}</label><br/>
-                                        <label>{{preferencia}}</label><br/>
-                                        <label>{{identificacao}}</label><br/>
+                        <div class="row">
+                            <div class="col-1" style="margin-right: 20px;">
+                                <div class="text-center" style="width: 100px; height: 150px; background: #007bff; margin-top: 10px; border-radius: 5px;">
+                                    <div style="padding-top: 2px;">
+                                        <p style="color: white; margin: 10px 0 0 0;">Guichê</p>
+                                        <h1 style="font-size: 50pt; color: white; margin: 0;">{{ guiche }}</h1>
+                                        {#                                    {{ path('SelecionarGuiche', {'id': fila.id })}}<p style=""><a href="../selecionarguiche/{{ idFila}} " style="color: white;"> <u>Alterar</u> </a></p>#}
                                     </div>
                                 </div>
-                                <label><b class="h5">Observações:</b></label>
+                            </div>
+                            <div class="col">
+                                <div class="bg-light" style="width: 100%; border: solid #999999 .5px; border-radius: 5px; margin-top: 10px; padding: 20px;">
+                                    <div class="row" style="margin-top: 20px;">
+                                        <div class="col-2">
+                                            <label><b class="h5">Senha:</b></label><br/>
+                                            <label><b class="h5">Serviço:</b></label><br/>
+                                            <label><b class="h5">Prioridade:</b></label><br/>
+                                            <label><b class="h5">Identificação:</b></label>
+                                        </div>
+                                        <div class="col-3">
+                                            <label style="margin-top: -10px;"><b class="h2">{{ sigla }}{{ numero }}</b></label><br/>
+                                            <label>{{servico}}</label><br/>
+                                            <label>{{preferencia}}</label><br/>
+                                            <label>{{identificacao}}</label><br/>
+                                        </div>
+                                    </div>
+                                    <label><b class="h5">Observações:</b></label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <form>
+                                                <textarea name="observacoes" class="form-control" style="height: 90px;" id="observacoes"></textarea>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2" style="margin-top: 20px;">
+                                <div class="text-center">  
+                                    <div id="cronometro" style="color: red;"></div><br/>                                
+                                </div>
+                                <div class="text-center">
+                                    <button class="btn btn-light" style="width: 190px; height: 90px; border: solid #000 0.5px;" onclick="finalizarAtendimento();">
+                                        <img src="{{asset('bundles/app/imagens/finalizar.png')}}" style="width: 50px; height: 50px;"/><br/>
+                                        <b style="color: black;">Finalizar</b>
+                                    </button>
+                                </div><br/>
+                                <div class="text-center">
+                                    <button class="btn btn-light" style="width: 190px; height: 90px; border: solid #000 0.5px;" onclick="naoCompareceu();">
+                                        <img src="{{asset('bundles/app/imagens/usuarionao.png')}}" style="width: 40px; height: 40px; margin-bottom: 5px;"/><br/>
+                                        <b style="color: black;">Não Compareceu</b>
+                                    </button>
+                                </div>
+                            </div> 
+                        </div><br/>
+                        <div class="row">
+                            <div class="col-1" style="margin-right: 20px;"></div>
+                            <div class="col">
                                 <div class="row">
-                                    <div class="col">
-                                        <form>
-                                            <textarea name="observacoes" class="form-control" style="height: 90px;"></textarea>
-                                        </form>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
-                        <div class="col-2" style="margin-top: 20px;">
-                            <div class="text-center">  
-                                <div id="cronometro" style="color: red;"></div><br/>                                
-                            </div>
-                            <div class="text-center">
-                                <button class="btn btn-light" style="width: 190px; height: 90px; border: solid #000 0.5px;" onclick="finalizarAtendimento();">
-                                    <img src="{{asset('bundles/app/imagens/finalizar.png')}}" style="width: 50px; height: 50px;"/><br/>
-                                    <b style="color: black;">Finalizar</b>
-                                </button>
-                            </div><br/>
-                            <div class="text-center">
-                                <button class="btn btn-light" style="width: 190px; height: 90px; border: solid #000 0.5px;" onclick="naoCompareceu();">
-                                    <img src="{{asset('bundles/app/imagens/usuarionao.png')}}" style="width: 40px; height: 40px; margin-bottom: 5px;"/><br/>
-                                    <b style="color: black;">Não Compareceu</b>
-                                </button>
-                            </div>
-                        </div> 
-                    </div><br/>
-                    <div class="row">
-                        <div class="col-1" style="margin-right: 20px;"></div>
-                        <div class="col">
-                            <div class="row">
-
-                            </div>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -101,16 +107,27 @@
             </div>
         </div>
     </div>
-
-    {#                                    fim modal confirmacao#}
-    <form action="{{path('Atendimento')}}" method="post" id="finalizar">
-        <input type="hidden" name="duracao" />
-        <input type="hidden" name="finalizar" />
-        <input type="hidden" name="idSenha" value="{{idSenha}}"/>
+    {% if mensagem == null %}
+        {#                                    fim modal confirmacao#}
+        <form action="{{path('Finalizar')}}" method="post" id="finalizar">
+            <input type="hidden" name="duracao" />
+            <input type="hidden" name="observacoes" />
+            <input type="hidden" name="idSenha" value="{{idSenha}}"/>
+            <input type="hidden" name="idFila" value="{{idFila}}"/>
+            <input type="hidden" name="guiche" value="{{guiche}}"/>
+        </form>
+        <form action="{{path('NaoCompareceu')}}" method="post" id="naocompareceu">
+            <input type="hidden" name="idSenha" value="{{idSenha}}"/>
+            <input type="hidden" name="idFila" value="{{idFila}}"/>
+            <input type="hidden" name="guiche" value="{{guiche}}"/>
+        </form>
+    {% endif %}
+    <form action="{{path('Atendimento')}}" method="post" id="atendimento">
         <input type="hidden" name="idFila" value="{{idFila}}"/>
+        <input type="hidden" name="guiche" value="{{guiche}}"/>
     </form>
-
     <script>
+        var mensagem = '{{mensagem}}';
         var timeCrono;
         var hor = 0;
         var min = 0;
@@ -147,8 +164,9 @@
             });
 
             $("#sim").click(function () {
+                var observacoes = $("#observacoes").val();
                 $("input[name='duracao']").val(duracao);
-                $("input[name='finalizar']").val("finalizar");
+                $("input[name='observacoes']").val(observacoes);
                 $("#finalizar").submit();
             });
         }
@@ -160,9 +178,12 @@
             });
 
             $("#sim").click(function () {
-                $("input[name='finalizar']").val("naoCompareceu");
-                $("#finalizar").submit();
+                $("#naocompareceu").submit();
             });
-            }
+        }
+
+        if (mensagem === "Finalizado") {
+            $("#atendimento").submit();
+        }
     </script>
 {% endblock %}

@@ -93,24 +93,26 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         return $stmt->fetch();
     }
     
-    public function finalizar($idSenha, $duracao, $dataAtendimento){
+    public function finalizar($idSenha, $duracao, $dataAtendimento, $observacoes){
         $conn = $this->getEntityManager()->getConnection();
+        $data = $dataAtendimento->format('Y-m-d H:i:s');
         $sql = 'UPDATE t_senhas
-        SET situacao = "Atendida", duracao = :DURACAO, dataAtendimento = :DATA
+        SET situacao = "Atendida", duracao = :DURACAO, dataAtendimento = :DATA, observacoes = :OBSERVACOES
         WHERE id = :IDSENHA;';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['IDSENHA' => $idSenha, 'DURACAO' => $duracao, 'DATA' => $dataAtendimento]);
+        $stmt->execute(['IDSENHA' => $idSenha, 'DURACAO' => $duracao, 'DATA' => $data, 'OBSERVACOES' => $observacoes]);
         $count = $stmt->rowCount();
         return $count;
     }
     
     public function naoCompareceu($idSenha, $dataAtendimento){
         $conn = $this->getEntityManager()->getConnection();
+        $data = $dataAtendimento->format('Y-m-d H:i:s');
         $sql = 'UPDATE t_senhas
         SET situacao = "Não Compareceu", dataAtendimento = :DATA
         WHERE id = :IDSENHA;';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['IDSENHA' => $idSenha, 'DATA' => $dataAtendimento]);
+        $stmt->execute(['IDSENHA' => $idSenha, 'DATA' => $data]);
         $count = $stmt->rowCount();
         return $count;
     }

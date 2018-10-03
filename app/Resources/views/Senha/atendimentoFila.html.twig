@@ -9,7 +9,7 @@
                     <div class="list-group" style="">
                         {% if filas != null %}
                             {% for fila in filas %}
-                                <a href="/selecionarguiche/{{ fila.id }}" class="list-group-item list-group-item-action h5 text-center list-group-item-light" style="margin-bottom: 5px;">
+                                <a href="{{ path('SelecionarGuiche', {'id': fila.id })}}" class="list-group-item list-group-item-action h5 text-center list-group-item-light" style="margin-bottom: 5px;">
                                     {{ fila.nome }}
                                 </a>
                             {% endfor %}

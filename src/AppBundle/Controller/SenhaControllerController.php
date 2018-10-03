@@ -143,22 +143,9 @@ class SenhaControllerController extends Controller {
         } else {
 
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-            $finalizar = isset($filtro['finalizar']) ? $filtro['finalizar'] : null;
-            $duracao = isset($filtro['duracao']) ? $filtro['duracao'] : null;
-            $idSenha = isset($filtro['idSenha']) ? $filtro['idSenha'] : null;
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
             $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
             $em = $this->getDoctrine()->getRepository(Senha::class);
-            
-            //caso ja esteja em atendimento a rota recebe valores de finalizar e duracao e o id da senha
-            //caso seja 1 senha atendida caso 2 senha não compareceu
-            $data = new Senha();
-            if($finalizar == "finalizar"){
-                $em->finalizar($idSenha, $duracao, $data->getDataSolicitacao());
-            }else if($finalizar == "naoCompareceu"){
-                $em->naoCompareceu($idSenha, $data->getDataSolicitacao());
-            }
-            
             $fila = $this->getDoctrine()->getRepository(Fila::class)->findOneBy(["id" => $idFila]);
             $senhasNormal = $em->senhasNormais($idFila);
             $senhasPrefencial = $em->senhasPreferenciais($idFila);
@@ -238,6 +225,56 @@ class SenhaControllerController extends Controller {
                         "identificacao" => $identificacao,
                         "idSenha" => $idSenha,
                         "servico" => $servico,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/finalizar", name="Finalizar")
+     */
+    public function finalizar() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $duracao = isset($filtro['duracao']) ? $filtro['duracao'] : null;
+            $observacoes = isset($filtro['observacoes']) ? $filtro['observacoes'] : null;
+            $idSenha = isset($filtro['idSenha']) ? $filtro['idSenha'] : null;
+            $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
+            $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
+            $dataAtendimento = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+            $em = $this->getDoctrine()->getRepository(Senha::class);
+            $em->finalizar($idSenha, $duracao, $dataAtendimento, $observacoes);
+            $msg = "Finalizado";
+            return $this->render("Senha/emAtendimento.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "idFila" => $idFila,
+                        "mensagem" => $msg,
+                        "guiche" => $guiche,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/naocompareceu", name="NaoCompareceu")
+     */
+    public function naoCompareceu() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $idSenha = isset($filtro['idSenha']) ? $filtro['idSenha'] : null;
+            $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
+            $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
+            $dataAtendimento = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
+            $em = $this->getDoctrine()->getRepository(Senha::class);
+            $em->naoCompareceu($idSenha, $dataAtendimento);
+            $msg = "Finalizado";
+            return $this->render("Senha/emAtendimento.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "idFila" => $idFila,
+                        "mensagem" => $msg,
+                        "guiche" => $guiche,
             ));
         }
     }
