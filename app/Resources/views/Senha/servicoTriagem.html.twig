@@ -175,7 +175,7 @@
         });
 
         $('#ExempleModalCenter').on('hide.bs.modal', function () {
-            window.location.href = "";
+            window.location.href = "{{path('Triagem', {'id': id})}}";
         });
     </script>
 {% endblock %}

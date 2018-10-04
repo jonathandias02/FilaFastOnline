@@ -1,6 +1,30 @@
 {% extends "base.html.twig" %}
 {% block conteiner %}
+    <script>
+        updateSenha();
+        function updateSenha() {
+            $.post("../../verificaUsuario/senhas.php", {idFila: '{{idFila}}'}, function (data, status) {
+                    if (data === "NULL") {
+                        
+                    } else {
+                        var senha = JSON.parse(data);
+                        $("#senhaNumero").html(senha.sigla + senha.numero);
+                        $("#senhaNome").html(senha.nome);
+                        $("#senhaPreferencia").html(senha.preferencia);
+                        $("#senhaIdentificacao").html(senha.identificacao);
 
+                        $("#idSenha").val(senha.id);
+                        $("#sigla").val(senha.sigla);
+                        $("#numero").val(senha.numero);
+                        if (senha.preferencia === "Preferencial") {
+                            $("#senhaAtendimento").css("color", "red");
+                        }
+                    }
+
+                });
+                setTimeout("updateSenha()", 1000);
+            }
+    </script>
     <div class="row">
         <div class="col">
             <div class="card border-light" >
@@ -24,36 +48,33 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="bg-light" style="width: 100%; border: solid #999999 .5px; border-radius: 5px; margin-top: 10px; padding: 20px;">
-                                {% if proximaSenha != null %}
-                                    <div class="row" style="margin-top: 20px;">
-
+                            <div class="bg-light" style="width: 100%; border: solid #999999 .5px; border-radius: 5px; margin-top: 10px; padding: 20px;" id="temSenha">
+                                {% if senha != 0 %}
+                                    <div class="row" style="margin-top: 20px;" id="senhaAtendimento">                                        
                                         <div class="col-2">
                                             <label><b class="h5">Senha:</b></label><br/>
                                             <label><b class="h5">Serviço:</b></label><br/>
                                             <label><b class="h5">Prioridade:</b></label><br/>
                                             <label><b class="h5">Identificação:</b></label>
+                                            {{senha}}
                                         </div>
                                         <div class="col">
-                                            <label style="margin-top: -10px;"><b class="h2">{{ proximaSenha.sigla }}{{ proximaSenha.numero }}</b></label><br/>
-                                            <label>{{proximaSenha.nome}}</label><br/>
-                                            <label>{{proximaSenha.preferencia}}</label><br/>
-                                            <label>{{proximaSenha.identificacao}}</label>
+                                            <label style="margin-top: -10px;"><b class="h2" id="senhaNumero"></b></label><br/>
+                                            <label id="senhaNome"></label><br/>
+                                            <label id="senhaPreferencia"></label><br/>
+                                            <label id="senhaIdentificacao"></label>
                                         </div>
 
                                     </div><br/>
                                 {% else %}
-                                    <div class="alert alert-primary text-center" role="alert" style="margin: 50px 0 50px 0;">
+                                    <div class="alert alert-primary text-center" role="alert" style="margin: 50px 0 50px 0;" id="semSenha">
                                         Não há senhas aguardando atendimento!
                                     </div>
                                 {% endif %}
                             </div>
-                        </div>{#
-                        <div class="col"></div>
-                        <div class="col"></div>
-                        <div class="col"></div>#}    
+                        </div>    
                     </div><br/>
-                    {% if proximaSenha != null %}
+                    {% if senha != 0 %}
                         <div class="row">
                             <div class="col-1" style="margin-right: 20px;"></div>
                             <div class="col">
@@ -74,22 +95,17 @@
     </div>
     {% if proximaSenha != null %}
         <form action="{{path('ChamarSenha')}}" method="post" id="chamarSenha">
-            <input type="hidden" name="idSenha" value="{{proximaSenha.id}}"/>
-            <input type="hidden" name="sigla" value="{{proximaSenha.sigla}}"/>
-            <input type="hidden" name="numero" value="{{proximaSenha.numero}}"/>
+            <input type="hidden" name="idSenha" id="idSenha"/>
+            <input type="hidden" name="sigla" id="sigla"/>
+            <input type="hidden" name="numero" id="numero"/>
             <input type="hidden" name="guiche" value="{{guiche}}"/>
             <input type="hidden" name="idFila" value="{{idFila}}"/>
         </form>
     {% endif %}
+
     <script>
         function chamarSenha() {
             $("#chamarSenha").submit();
         }
-
-        {#setTimeout(function () {
-            location.reload();
-        }, 5000);#}
-
     </script>
-
 {% endblock %}

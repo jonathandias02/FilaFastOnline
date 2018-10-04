@@ -64,7 +64,7 @@
                                     </button>
                                 </div>
                                 <div class="col-2">
-                                    <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;"">
+                                    <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;" onclick="naoCompareceu();">
                                         <img src="{{asset('bundles/app/imagens/usuarionao.png')}}" style="width: 40px; height: 40px; margin-bottom: 5px;"/><br/>
                                         <b style="color: black;">Não Compareceu</b>
                                     </button>
@@ -76,6 +76,30 @@
             </div>
         </div>
     </div>
+
+    {#                                    inicio modal confirmacao#}
+
+    <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Finalizar Atendimento?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="sim" class="btn btn-success">Sim</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#                                    fim modal confirmacao#}
+
     <form action="{{path('ChamarSenha')}}" method="post" id="chamarSenha">
         <input type="hidden" name="idSenha" value="{{senha.id}}"/>
         <input type="hidden" name="sigla" value="{{senha.sigla}}"/>
@@ -96,13 +120,29 @@
         <input type="hidden" name="preferencia" value="{{senha.preferencia}}"/>
         <input type="hidden" name="servico" value="{{senha.nome}}"/>
     </form>
+    <form action="{{path('NaoCompareceu')}}" method="post" id="naocompareceu">
+        <input type="hidden" name="idSenha" value="{{senha.id}}"/>
+        <input type="hidden" name="idFila" value="{{fila.id}}"/>
+        <input type="hidden" name="guiche" value="{{guiche}}"/>
+    </form>
     <script>
         function chamarSenha() {
             $("#chamarSenha").submit();
         }
-        
+
         function iniciarAtendimento() {
             $("#iniciarAtendimento").submit();
+        }
+
+        function naoCompareceu() {
+            $(document).ready(function () {
+                $('#ModalCenter').modal('show');
+                $("#exampleModalCenterTitle").html("Não Compareceu");
+            });
+
+            $("#sim").click(function () {
+                $("#naocompareceu").submit();
+            });
         }
     </script>
 
