@@ -51,27 +51,6 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         return $count;
     }
 
-    public function senhasNormais($idFila): array {
-        $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
-                WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id
-                AND s.situacao = "Aguardando" AND s.t_preferencia_id = 1 AND
-                s.t_filas_id = :IDFILA AND s.t_usuario_id IS NULL;';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(["IDFILA" => $idFila]);
-        return $stmt->fetchAll();
-    }
-
-    public function senhasPreferenciais($idFila): array {
-        $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
-                WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id AND s.situacao = "Aguardando" AND s.t_preferencia_id = 2 AND
-                s.t_filas_id = :IDFILA AND s.t_usuario_id IS NULL;';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(["IDFILA" => $idFila]);
-        return $stmt->fetchAll();
-    }
-
     public function chamarSenha($idSenha, $idUsuario) {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'UPDATE t_senhas
@@ -85,7 +64,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
 
     public function senha($idSenha) {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, s.situacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
+        $sql = 'SELECT ser.nomeServico, s.id, s.sigla, s.numero, s.identificacao, s.situacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
                 WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id
                 AND s.id = :IDSENHA;';
         $stmt = $conn->prepare($sql);
@@ -125,6 +104,28 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         AND dataSolicitacao BETWEEN :DATAINICIO AND :DATAFIM;';
         $stmt = $conn->prepare($sql);
         $stmt->execute(["DATAINICIO" => $dataInicio, "DATAFIM" => $dataFim]);
+        return $stmt->fetchAll();
+    }
+    
+    public function relatorioFila($idFila, $dataInicio, $dataFim): array {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, s.t_filas_id, u.nome, u.sobrenome, ser.nomeServico
+        FROM t_senhas s, t_usuario u, t_servicos ser
+        WHERE u.id = s.t_usuario_id AND ser.id = s.t_servicos_id AND s.situacao != "Chamada" AND s.situacao != "Aguardando"
+        AND s.t_filas_id = :IDFILA AND dataSolicitacao BETWEEN :DATAINICIO AND :DATAFIM;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["IDFILA" => $idFila,"DATAINICIO" => $dataInicio, "DATAFIM" => $dataFim]);
+        return $stmt->fetchAll();
+    }
+    
+    public function relatorioServico($idServico, $dataInicio, $dataFim): array {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, s.t_filas_id, u.nome, u.sobrenome, ser.nomeServico
+        FROM t_senhas s, t_usuario u, t_servicos ser
+        WHERE u.id = s.t_usuario_id AND ser.id = s.t_servicos_id AND s.situacao != "Chamada" AND s.situacao != "Aguardando"
+        AND s.t_servicos_id = :IDSERVICO AND dataSolicitacao BETWEEN :DATAINICIO AND :DATAFIM;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["IDSERVICO" => $idServico,"DATAINICIO" => $dataInicio, "DATAFIM" => $dataFim]);
         return $stmt->fetchAll();
     }
 

@@ -147,19 +147,11 @@ class SenhaControllerController extends Controller {
             $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
             $em = $this->getDoctrine()->getRepository(Senha::class);
             $fila = $this->getDoctrine()->getRepository(Fila::class)->findOneBy(["id" => $idFila]);
-            $senhasNormal = $em->senhasNormais($idFila);
-            $senhasPrefencial = $em->senhasPreferenciais($idFila);
-            if (count($senhasNormal) === 0) {
-                $proximaSenha = null;
-            } else {
-                $proximaSenha = $senhasNormal[0];
-            }
             return $this->render("Senha/atendimento.html.twig", array(
                         "nome" => $_SESSION['nome'],
                         "idFila" => $idFila,
                         "guiche" => $guiche,
                         "fila" => $fila,
-                        "proximaSenha" => $proximaSenha,
             ));
         }
     }

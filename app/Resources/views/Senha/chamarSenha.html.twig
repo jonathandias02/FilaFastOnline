@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="col">
                                         <label style="margin-top: -10px;"><b class="h2">{{ senha.sigla }}{{ senha.numero }}</b></label><br/>
-                                        <label>{{senha.nome}}</label><br/>
+                                        <label>{{senha.nomeServico}}</label><br/>
                                         <label>{{senha.preferencia}}</label><br/>
                                         <label>{{senha.identificacao}}</label><br/>
                                         <label style="color: red; margin-bottom: -10px;">{{senha.situacao}}</label>
@@ -118,7 +118,7 @@
         <input type="hidden" name="nomeFila" value="{{fila.nome}}"/>
         <input type="hidden" name="identificacao" value="{{senha.identificacao}}"/>
         <input type="hidden" name="preferencia" value="{{senha.preferencia}}"/>
-        <input type="hidden" name="servico" value="{{senha.nome}}"/>
+        <input type="hidden" name="servico" value="{{senha.nomeServico}}"/>
     </form>
     <form action="{{path('NaoCompareceu')}}" method="post" id="naocompareceu">
         <input type="hidden" name="idSenha" value="{{senha.id}}"/>

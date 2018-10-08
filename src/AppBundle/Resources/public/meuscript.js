@@ -500,6 +500,17 @@ function imprimir() {
 
 }
 
+//funcao para imprimir
+function imprimirRelatorio() {
+    var conteudo = document.getElementById('imprimirRelatorio').innerHTML,
+            tela_impressao = window.open('about:blank');
+
+    tela_impressao.document.write(conteudo);
+    tela_impressao.window.print();
+    tela_impressao.window.close();
+
+}
+
 function chamarSenha() {
     $("#chamarSenha").submit();
 }
@@ -544,5 +555,9 @@ function updateSenha(idFila) {
         }
 
     });
-    setTimeout("updateSenha("+idFila+")", 1000);
+    setTimeout("updateSenha(" + idFila + ")", 1000);
+}
+
+function fechar() {
+    $("#mensagem").hide();
 }

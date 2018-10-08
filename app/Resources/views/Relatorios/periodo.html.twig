@@ -5,14 +5,14 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Relatório por período</div>
                 <div style="height: 60px;">
-                {% if mensagem != null %}
-                    <div class="alert alert-danger text-center" role="alert" id="mensagem" style="margin: 20px;">
-                        <button type="button" class="close" aria-label="Close" onclick="fechar();">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        {{ mensagem }}
-                    </div>
-                {% endif %}
+                    {% if mensagem != null %}
+                        <div class="alert alert-danger text-center" role="alert" id="mensagem" style="margin: 20px;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="card-body mx-auto d-block" style="padding: 3%;">
 
@@ -61,44 +61,46 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-bottom: 20px;">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr class="text-center">
-                                    <th scope="col" colspan="8" style="font-size: 16pt;">Relatório do Período {{dataInicio|date('d-m-Y')}} à {{dataFim|date('d-m-Y')}}</th>
-                                </tr>
-                                <tr>
-                                    <th scope="col">Situação</th>
-                                    <th scope="col">Data de Solicitação</th>
-                                    <th scope="col">Data de Atendimento</th>
-                                    <th scope="col">Duração</th>
-                                    <th scope="col">Senha</th>
-                                    <th scope="col">Cliente</th>
-                                    <th scope="col">Atendente</th>
-                                    <th scope="col">Serviço</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for atendimento in atendimentos %}
-                                    <tr>                               
-                                        <td>{{atendimento.situacao}}</td>
-                                        <td>{{atendimento.dataSolicitacao}}</td>
-                                        <td>{{atendimento.dataAtendimento}}</td>
-                                        {% if atendimento.duracao == null %}
-                                            <td>-- : -- : --</td>
-                                        {% else %}
-                                            <td>{{atendimento.duracao}}</td>
-                                        {% endif %}
-                                        <td>{{atendimento.sigla}}{{atendimento.numero}}</td>
-                                        <td>{{atendimento.identificacao}}</td>
-                                        <td>{{atendimento.nome}}{{atendimento.sobrenome}}</td>
-                                        <td>{{atendimento.nomeServico}}</td>
+                        <div id="imprimirRelatorio">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th scope="col" colspan="8" style="font-size: 16pt;">Relatório do Período {{dataInicio|date('d-m-Y')}} à {{dataFim|date('d-m-Y')}}</th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                    <tr>
+                                        <th scope="col">Situação</th>
+                                        <th scope="col">Data de Solicitação</th>
+                                        <th scope="col">Data de Atendimento</th>
+                                        <th scope="col">Duração</th>
+                                        <th scope="col">Senha</th>
+                                        <th scope="col">Cliente</th>
+                                        <th scope="col">Atendente</th>
+                                        <th scope="col">Serviço</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for atendimento in atendimentos %}
+                                        <tr>                               
+                                            <td>{{atendimento.situacao}}</td>
+                                            <td>{{atendimento.dataSolicitacao}}</td>
+                                            <td>{{atendimento.dataAtendimento}}</td>
+                                            {% if atendimento.duracao == null %}
+                                                <td>-- : -- : --</td>
+                                            {% else %}
+                                                <td>{{atendimento.duracao}}</td>
+                                            {% endif %}
+                                            <td>{{atendimento.sigla}}{{atendimento.numero}}</td>
+                                            <td>{{atendimento.identificacao}}</td>
+                                            <td>{{atendimento.nome}}{{atendimento.sobrenome}}</td>
+                                            <td>{{atendimento.nomeServico}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Imprimir</button>
+                        <button type="button" class="btn btn-primary" onclick="imprimirRelatorio();">Imprimir</button>
                     </div>
                 </div>
             </div>
@@ -106,11 +108,4 @@
 
     {% endif %}
     {#                    Fim modal Relatorio#}
-{% endblock %}
-{% block javascripts %}
-    <script>
-        function fechar() {
-            $("#mensagem").hide();
-        }
-    </script>
 {% endblock %}

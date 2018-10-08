@@ -4,13 +4,26 @@
         <div class="col">
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Relatório por fila</div>
-                <div class="card-body mx-auto d-block" style="padding: 5%;">
-                    <form style="width: 500px;">
+                <div style="height: 60px;">
+                    {% if mensagem != null %}
+                        <div class="alert alert-danger text-center" role="alert" id="mensagem" style="margin: 20px;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body mx-auto d-block" style="padding: 3%;">
+                    <form style="width: 500px;" action="{{path('RelatorioFila')}}" method="post">
                         <div class="row">
                             <div class="col">
                                 <label><b>Filas:</b></label>
-                                <select class="form-control" required>
+                                <select class="form-control" name="idFila" required>
                                     <option value="">Selecionar</option>
+                                    {% for fila in filas %}
+                                        <option value="{{fila.id}}">{{fila.nome}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col">
@@ -30,4 +43,79 @@
             </div>
         </div>
     </div>
+
+    {#                    Modal Relatorio#}
+    {% if atendimentos != null %}
+        <script>
+            $(document).ready(function () {
+                $("#relatorio").modal('show');
+            });
+        </script>
+        <style>        
+            @media (min-width: 576px) {
+                .modal-dialog { max-width: none; }
+            }
+            .modal-dialog {
+                width: 99%;
+                padding: 0;
+            }
+        </style>
+        <div class="modal fade" id="relatorio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-bottom: 20px;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div id="imprimirRelatorio">
+                            <table class="table table-striped">
+                                <thead>
+                                    {% for fila in filas %}
+                                        {% if fila.id == idFila %}
+                                            <tr class="text-center" style="">
+                                                <th scope="col" colspan="8" style="height: 70px; font-size: 14pt; vertical-align: middle;">Relatório da Fila: <u>{{fila.nome}}</u> no Período {{dataInicio|date('d-m-Y')}} à {{dataFim|date('d-m-Y')}}</th>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tr>
+                                        <th scope="col">Situação</th>
+                                        <th scope="col">Data de Solicitação</th>
+                                        <th scope="col">Data de Atendimento</th>
+                                        <th scope="col">Duração</th>
+                                        <th scope="col">Senha</th>
+                                        <th scope="col">Cliente</th>
+                                        <th scope="col">Atendente</th>
+                                        <th scope="col">Serviço</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for atendimento in atendimentos %}
+                                        <tr>                               
+                                            <td>{{atendimento.situacao}}</td>
+                                            <td>{{atendimento.dataSolicitacao}}</td>
+                                            <td>{{atendimento.dataAtendimento}}</td>
+                                            {% if atendimento.duracao == null %}
+                                                <td>-- : -- : --</td>
+                                            {% else %}
+                                                <td>{{atendimento.duracao}}</td>
+                                            {% endif %}
+                                            <td>{{atendimento.sigla}}{{atendimento.numero}}</td>
+                                            <td>{{atendimento.identificacao}}</td>
+                                            <td>{{atendimento.nome}}{{atendimento.sobrenome}}</td>
+                                            <td>{{atendimento.nomeServico}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="imprimirRelatorio();">Imprimir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+    {#                    Fim modal Relatorio#}
 {% endblock %}
