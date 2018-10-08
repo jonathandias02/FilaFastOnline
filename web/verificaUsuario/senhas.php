@@ -33,13 +33,18 @@ $stmt2 = $conexao->prepare($sql2);
 $stmt2->bindParam(':IDFILA', $idFila);
 $stmt2->execute();
 $senhasPreferenciais = $stmt2->fetchAll(PDO::FETCH_OBJ);
-
+$npessoas = count($senhasPreferenciais) + count($senhasNormais);
 if (count($senhasNormais) === 0 && count($senhasPreferenciais) === 0) {
     echo "NULL";
 } else {
-    if(count($senhasPreferenciais) !== 0){
+
+    if (count($senhasPreferenciais) !== 0) {
+        $preferencial = new ArrayObject($senhasPreferenciais[0]);
+        $preferencial->offsetSet('npessoas', $npessoas);
         echo json_encode($senhasPreferenciais[0]);
-    }else{
-        echo json_encode($senhasNormais[0]);
-    }    
+    } else {
+        $normal = new ArrayObject($senhasNormais[0]);
+        $normal->offsetSet('npessoas', $npessoas);
+        echo json_encode($normal);
+    }
 }

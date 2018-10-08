@@ -24,7 +24,7 @@ class Servico {
     /**
      * @var string
      *
-     * @ORM\Column(name="nome", type="string", length=45, unique=true)
+     * @ORM\Column(name="nomeServico", type="string", length=45, unique=true)
      */
     private $nome;
 

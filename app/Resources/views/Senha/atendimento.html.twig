@@ -1,30 +1,5 @@
 {% extends "base.html.twig" %}
 {% block conteiner %}
-    <script>
-        updateSenha();
-        function updateSenha() {
-            $.post("../../verificaUsuario/senhas.php", {idFila: '{{idFila}}'}, function (data, status) {
-                    if (data === "NULL") {
-                        
-                    } else {
-                        var senha = JSON.parse(data);
-                        $("#senhaNumero").html(senha.sigla + senha.numero);
-                        $("#senhaNome").html(senha.nome);
-                        $("#senhaPreferencia").html(senha.preferencia);
-                        $("#senhaIdentificacao").html(senha.identificacao);
-
-                        $("#idSenha").val(senha.id);
-                        $("#sigla").val(senha.sigla);
-                        $("#numero").val(senha.numero);
-                        if (senha.preferencia === "Preferencial") {
-                            $("#senhaAtendimento").css("color", "red");
-                        }
-                    }
-
-                });
-                setTimeout("updateSenha()", 1000);
-            }
-    </script>
     <div class="row">
         <div class="col">
             <div class="card border-light" >
@@ -33,7 +8,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="alert alert-secondary" role="alert" style="margin: -10px 0 0 0;">
-                                <b class="h5">Fila de Atendimento: </b>{{fila.nome}}
+                                <b class="h5">Fila de Atendimento: </b>{{fila.nome}}<b style="display: block; float: right;">Pessoas aguardando: <span id="npessoas">--</span></b>
                             </div>
                         </div>
                     </div>
@@ -49,63 +24,38 @@
                         </div>
                         <div class="col">
                             <div class="bg-light" style="width: 100%; border: solid #999999 .5px; border-radius: 5px; margin-top: 10px; padding: 20px;" id="temSenha">
-                                {% if senha != 0 %}
-                                    <div class="row" style="margin-top: 20px;" id="senhaAtendimento">                                        
-                                        <div class="col-2">
-                                            <label><b class="h5">Senha:</b></label><br/>
-                                            <label><b class="h5">Serviço:</b></label><br/>
-                                            <label><b class="h5">Prioridade:</b></label><br/>
-                                            <label><b class="h5">Identificação:</b></label>
-                                            {{senha}}
-                                        </div>
-                                        <div class="col">
-                                            <label style="margin-top: -10px;"><b class="h2" id="senhaNumero"></b></label><br/>
-                                            <label id="senhaNome"></label><br/>
-                                            <label id="senhaPreferencia"></label><br/>
-                                            <label id="senhaIdentificacao"></label>
-                                        </div>
-
-                                    </div><br/>
-                                {% else %}
-                                    <div class="alert alert-primary text-center" role="alert" style="margin: 50px 0 50px 0;" id="semSenha">
-                                        Não há senhas aguardando atendimento!
-                                    </div>
-                                {% endif %}
+                                <span id="senhaAtendimento"></span>
                             </div>
                         </div>    
                     </div><br/>
-                    {% if senha != 0 %}
-                        <div class="row">
-                            <div class="col-1" style="margin-right: 20px;"></div>
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-2">
-                                        <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;" onclick="chamarSenha();">
-                                            <img src="{{asset('bundles/app/imagens/mega.png')}}" style="width: 50px; height: 40px; margin-bottom: 5px;"/><br/>
-                                            <b style="color: black;">Chamar</b>
-                                        </button>
-                                    </div>
+                    <div class="row">
+                        <div class="col-1" style="margin-right: 20px;"></div>
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="btn btn-light" style="width: 180px; height: 90px; border: solid #000 0.5px;" onclick="chamarSenha();" id="botao">
+                                        <img src="{{asset('bundles/app/imagens/mega.png')}}" style="width: 50px; height: 40px; margin-bottom: 5px;"/><br/>
+                                        <b style="color: black;">Chamar</b>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    {% if proximaSenha != null %}
-        <form action="{{path('ChamarSenha')}}" method="post" id="chamarSenha">
-            <input type="hidden" name="idSenha" id="idSenha"/>
-            <input type="hidden" name="sigla" id="sigla"/>
-            <input type="hidden" name="numero" id="numero"/>
-            <input type="hidden" name="guiche" value="{{guiche}}"/>
-            <input type="hidden" name="idFila" value="{{idFila}}"/>
-        </form>
-    {% endif %}
+    <form action="{{path('ChamarSenha')}}" method="post" id="chamarSenha">
+        <input type="hidden" name="idSenha" id="idSenha"/>
+        <input type="hidden" name="sigla" id="sigla"/>
+        <input type="hidden" name="numero" id="numero"/>
+        <input type="hidden" name="guiche" value="{{guiche}}"/>
+        <input type="hidden" name="idFila" value="{{idFila}}"/>
+    </form>
 
+{% endblock %}
+{% block javascripts %}      
     <script>
-        function chamarSenha() {
-            $("#chamarSenha").submit();
-        }
+        updateSenha(1);
     </script>
 {% endblock %}

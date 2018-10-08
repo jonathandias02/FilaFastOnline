@@ -499,3 +499,50 @@ function imprimir() {
     tela_impressao.window.close();
 
 }
+
+function chamarSenha() {
+    $("#chamarSenha").submit();
+}
+
+function updateSenha(idFila) {
+    $.post("../../verificaUsuario/senhas.php", {idFila: idFila}, function (data) {
+        if (data === "NULL") {
+            $("#botao").hide();
+            $("#senhaAtendimento").html('<div class="alert alert-primary text-center" role="alert" style="margin: 50px 0 50px 0;">' +
+                    'Não há senhas aguardando atendimento!' +
+                    '</div>');
+        } else {
+            $("#botao").show();
+            $("#senhaAtendimento").html('<div class="row" style="margin-top: 20px;" >' +
+                    '<div class="col-2">' +
+                    '<label><b class="h5">Senha:</b></label><br/>' +
+                    '<label><b class="h5">Serviço:</b></label><br/>' +
+                    '<label><b class="h5">Prioridade:</b></label><br/>' +
+                    '<label><b class="h5">Identificação:</b></label>' +
+                    '</div>' +
+                    '<div class="col">' +
+                    '<label style="margin-top: -10px;"><b class="h2" id="senhaNumero"></b></label><br/>' +
+                    '<label id="senhaNome"></label><br/>' +
+                    '<label id="senhaPreferencia"></label><br/>' +
+                    '<label id="senhaIdentificacao"></label>' +
+                    '</div>' +
+                    '</div>');
+
+            var senha = JSON.parse(data);
+            $("#npessoas").html(senha.npessoas);
+            $("#senhaNumero").html(senha.sigla + senha.numero);
+            $("#senhaNome").html(senha.nome);
+            $("#senhaPreferencia").html(senha.preferencia);
+            $("#senhaIdentificacao").html(senha.identificacao);
+
+            $("#idSenha").val(senha.id);
+            $("#sigla").val(senha.sigla);
+            $("#numero").val(senha.numero);
+            if (senha.preferencia === "Preferencial") {
+                $("#senhaAtendimento").css("color", "red");
+            }
+        }
+
+    });
+    setTimeout("updateSenha("+idFila+")", 1000);
+}

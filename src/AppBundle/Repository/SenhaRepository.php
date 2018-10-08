@@ -20,7 +20,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
 
         return $stmt->fetchAll();
     }
-    
+
     public function atualizarSenha($idFila, $senha) {
         $conn = $this->getEntityManager()->getConnection();
         $novaSenha = $senha + 1;
@@ -32,7 +32,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $count = $stmt->rowCount();
         return $count;
     }
-    
+
     public function numeroDeSenhas($id) {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT id FROM t_senhas WHERE t_servicos_id = :ID';
@@ -41,7 +41,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $count = $stmt->rowCount();
         return $count;
     }
-    
+
     public function numeroDeSenhasAtendidas($id) {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT id FROM t_senhas WHERE situacao != "Aguardando" and t_servicos_id = :ID';
@@ -50,7 +50,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $count = $stmt->rowCount();
         return $count;
     }
-    
+
     public function senhasNormais($idFila): array {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
@@ -61,7 +61,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $stmt->execute(["IDFILA" => $idFila]);
         return $stmt->fetchAll();
     }
-    
+
     public function senhasPreferenciais($idFila): array {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
@@ -71,8 +71,8 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $stmt->execute(["IDFILA" => $idFila]);
         return $stmt->fetchAll();
     }
-    
-    public function chamarSenha($idSenha, $idUsuario){
+
+    public function chamarSenha($idSenha, $idUsuario) {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'UPDATE t_senhas
         SET situacao = "Chamada", t_usuario_id = :IDUSUARIO
@@ -82,8 +82,8 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $count = $stmt->rowCount();
         return $count;
     }
-    
-    public function senha($idSenha){
+
+    public function senha($idSenha) {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT ser.nome, s.id, s.sigla, s.numero, s.identificacao, s.situacao, p.preferencia FROM t_servicos ser, t_senhas s, t_preferencia p
                 WHERE ser.id = s.t_servicos_id AND p.id = s.t_preferencia_id
@@ -92,8 +92,8 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $stmt->execute(["IDSENHA" => $idSenha]);
         return $stmt->fetch();
     }
-    
-    public function finalizar($idSenha, $duracao, $dataAtendimento, $observacoes){
+
+    public function finalizar($idSenha, $duracao, $dataAtendimento, $observacoes) {
         $conn = $this->getEntityManager()->getConnection();
         $data = $dataAtendimento->format('Y-m-d H:i:s');
         $sql = 'UPDATE t_senhas
@@ -104,8 +104,8 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         $count = $stmt->rowCount();
         return $count;
     }
-    
-    public function naoCompareceu($idSenha, $dataAtendimento){
+
+    public function naoCompareceu($idSenha, $dataAtendimento) {
         $conn = $this->getEntityManager()->getConnection();
         $data = $dataAtendimento->format('Y-m-d H:i:s');
         $sql = 'UPDATE t_senhas
@@ -117,6 +117,15 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         return $count;
     }
 
-    
-    
+    public function relatorioPeriodo($dataInicio, $dataFim): array {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, u.nome, u.sobrenome, ser.nomeServico
+        FROM t_senhas s, t_usuario u, t_servicos ser
+        WHERE u.id = s.t_usuario_id AND ser.id = s.t_servicos_id AND s.situacao != "Chamada" AND s.situacao != "Aguardando"
+        AND dataSolicitacao BETWEEN :DATAINICIO AND :DATAFIM;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["DATAINICIO" => $dataInicio, "DATAFIM" => $dataFim]);
+        return $stmt->fetchAll();
+    }
+
 }

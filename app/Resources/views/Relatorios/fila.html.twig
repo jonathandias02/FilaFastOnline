@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">Relatório por fila</div>
+                <div class="card-body mx-auto d-block" style="padding: 5%;">
+                    <form style="width: 500px;">
+                        <div class="row">
+                            <div class="col">
+                                <label><b>Filas:</b></label>
+                                <select class="form-control" required>
+                                    <option value="">Selecionar</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label><b>Data de Inicio:</b></label>
+                                <input type="date" name="inicio" class="form-control" required/><br/>
+                                <label><b>Data Fim:</b></label>
+                                <input type="date" name="fim" class="form-control" required/>
+                            </div>
+                        </div><br/>
+                        <div class="row">
+                            <div class="col text-center">
+                                <button type="submit" class="btn btn-primary">Gerar Relatório</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

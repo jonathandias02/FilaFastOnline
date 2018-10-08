@@ -44,6 +44,7 @@ twig:
         idUsuario: null
         idFila: null
         senha: null
+        atendimentos: null
 
 # Doctrine Configuration
 doctrine:

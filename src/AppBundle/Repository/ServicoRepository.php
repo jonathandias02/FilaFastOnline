@@ -14,7 +14,7 @@ class ServicoRepository extends \Doctrine\ORM\EntityRepository {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = 'SELECT * FROM t_servicos
-        WHERE nome LIKE :busca and deletar = 0 and t_filas_id = :IDFILA or id = :busca2 and deletar = 0 and t_filas_id = :IDFILA
+        WHERE nomeServico LIKE :busca and deletar = 0 and t_filas_id = :IDFILA or id = :busca2 and deletar = 0 and t_filas_id = :IDFILA
         ORDER BY nome ASC';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['busca' => $busca, 'busca2' => $busca2, 'IDFILA' => $idFila]);
@@ -26,7 +26,7 @@ class ServicoRepository extends \Doctrine\ORM\EntityRepository {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = 'UPDATE t_servicos'
-                . ' SET sigla = :SIGLA, nome = :NOME, descricao = :DESCRICAO, status_2 = :STATUS'
+                . ' SET sigla = :SIGLA, nomeServico = :NOME, descricao = :DESCRICAO, status_2 = :STATUS'
                 . ' WHERE id = :ID';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['ID' => $id, 'SIGLA' => $sigla, 'NOME' => $nome, 'DESCRICAO' => $descricao, 'STATUS' => $status]);
