@@ -489,7 +489,7 @@ function EnterKeyFilter()
     }
 }
 
-//funcao para imprimir
+//funcao para imprimir senha
 function imprimir() {
     var conteudo = document.getElementById('imprimeSenha').innerHTML,
             tela_impressao = window.open('about:blank');
@@ -500,7 +500,7 @@ function imprimir() {
 
 }
 
-//funcao para imprimir
+//funcao para imprimir relatorio
 function imprimirRelatorio() {
     var conteudo = document.getElementById('imprimirRelatorio').innerHTML,
             tela_impressao = window.open('about:blank');
@@ -511,10 +511,12 @@ function imprimirRelatorio() {
 
 }
 
+//função para chamar e atender senha
 function chamarSenha() {
     $("#chamarSenha").submit();
 }
 
+//ajax para atualizar senhas na tela de atendimento
 function updateSenha(idFila) {
     $.post("../../verificaUsuario/senhas.php", {idFila: idFila}, function (data) {
         if (data === "NULL") {
@@ -558,6 +560,26 @@ function updateSenha(idFila) {
     setTimeout("updateSenha(" + idFila + ")", 1000);
 }
 
+//fechar mensagens de alerta
 function fechar() {
     $("#mensagem").hide();
+}
+
+//buscar serviços com ajax pagina de relatorios por serviços
+function buscarServicos(idFila) {
+    $.post("../../verificaUsuario/servicos.php", {idFila: idFila}, function (data) {
+        if (data === "NULL") {
+            $("#servicos option").remove();
+            $("#servicos").append('<option value=""></option>');
+            $("#servicos").prop("disabled", true);
+        } else {
+            var servicos = JSON.parse(data);
+            $('#servicos option').remove();
+            $("#servicos").append('<option value="">Selecionar</option>');
+            $("#servicos").prop("disabled", false);
+            servicos.forEach(function (item) {
+                $("#servicos").append('<option value="' + item.id + '">' + item.nomeServico + '</option>');
+            });
+        }
+    });
 }

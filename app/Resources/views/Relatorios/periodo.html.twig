@@ -65,17 +65,17 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr class="text-center">
-                                        <th scope="col" colspan="8" style="font-size: 16pt;">Relatório do Período {{dataInicio|date('d-m-Y')}} à {{dataFim|date('d-m-Y')}}</th>
+                                        <th scope="col" colspan="8" style="height: 70px; font-size: 16pt; vertical-align: middle;">Relatório do Período {{dataInicio|date('d-m-Y')}} à {{dataFim|date('d-m-Y')}}</th>
                                     </tr>
                                     <tr>
-                                        <th scope="col">Situação</th>
-                                        <th scope="col">Data de Solicitação</th>
-                                        <th scope="col">Data de Atendimento</th>
-                                        <th scope="col">Duração</th>
-                                        <th scope="col">Senha</th>
-                                        <th scope="col">Cliente</th>
-                                        <th scope="col">Atendente</th>
-                                        <th scope="col">Serviço</th>
+                                        <td scope="col"><b>Situação</b></td>
+                                        <td scope="col"><b>Data de Solicitação</b></td>
+                                        <td scope="col"><b>Data de Atendimento</b></td>
+                                        <td scope="col"><b>Duração</b></td>
+                                        <td scope="col"><b>Senha</b></td>
+                                        <td scope="col"><b>Cliente</b></td>
+                                        <td scope="col"><b>Atendente</b></td>
+                                        <td scope="col"><b>Serviço</b></td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,7 +91,7 @@
                                             {% endif %}
                                             <td>{{atendimento.sigla}}{{atendimento.numero}}</td>
                                             <td>{{atendimento.identificacao}}</td>
-                                            <td>{{atendimento.nome}}{{atendimento.sobrenome}}</td>
+                                            <td>{{atendimento.nome}} {{atendimento.sobrenome}}</td>
                                             <td>{{atendimento.nomeServico}}</td>
                                         </tr>
                                     {% endfor %}

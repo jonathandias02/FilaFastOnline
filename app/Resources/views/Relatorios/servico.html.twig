@@ -4,17 +4,30 @@
         <div class="col">
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Relatório por serviço</div>
-                <div class="card-body mx-auto d-block" style="padding: 5%;">
-                    <form style="width: 500px;">
+                <div style="height: 60px;">
+                    {% if mensagem != null %}
+                        <div class="alert alert-danger text-center" role="alert" id="mensagem" style="margin: 20px;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body mx-auto d-block" style="padding: 3%;">
+                    <form style="width: 500px;" action="{{path('RelatorioServico')}}" method="post">
                         <div class="row">
                             <div class="col">
                                 <label><b>Filas:</b></label>
-                                <select class="form-control" required>
+                                <select class="form-control" required id="selectFila" onchange="buscarServicos(this.value);" name="idFila">
                                     <option value="">Selecionar</option>
+                                    {% for fila in filas %}
+                                        <option value="{{fila.id}}">{{fila.nome}}</option>
+                                    {% endfor %}
                                 </select><br/>
                                 <label><b>Serviços:</b></label>
-                                <select class="form-control" required>
-                                    <option value="">Selecionar</option>
+                                <select class="form-control" required id="servicos" disabled="" name="idServico">
+                                    <option value=""></option>
                                 </select>
                             </div>
                             <div class="col">
@@ -34,4 +47,80 @@
             </div>
         </div>
     </div>
+    {#                    Modal Relatorio#}
+    {% if atendimentos != null %}
+        <script>
+            $(document).ready(function () {
+                $("#relatorio").modal('show');
+            });
+        </script>
+        <style>        
+            @media (min-width: 576px) {
+                .modal-dialog { max-width: none; }
+            }
+            .modal-dialog {
+                width: 99%;
+                padding: 0;
+            }
+        </style>
+        <div class="modal fade" id="relatorio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-bottom: 20px;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div id="imprimirRelatorio">
+                            <table class="table table-striped">
+                                <thead>
+                                    {% for fila in filas %}
+                                        {% if fila.id == idFila %}
+                                            <tr class="text-center">
+                                                <th colspan="8" style="font-size: 14pt; height: 70px; vertical-align: middle;">
+                                                    Relatório do Serviço: <u>{{atendimentos.0.nomeServico}}</u> no Período {{dataInicio|date('d-m-Y')}} à {{dataFim|date('d-m-Y')}}, Fila: <u>{{fila.nome}}</u>
+                                                </th>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tr>
+                                        <td scope="col"><b>Situação</b></td>
+                                        <td scope="col"><b>Data de Solicitação</b></td>
+                                        <td scope="col"><b>Data de Atendimento</b></td>
+                                        <td scope="col"><b>Duração</b></td>
+                                        <td scope="col"><b>Senha</b></td>
+                                        <td scope="col"><b>Cliente</b></td>
+                                        <td scope="col"><b>Atendente</b></td>
+                                        <td scope="col"><b>Serviço</b></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for atendimento in atendimentos %}
+                                        <tr>                               
+                                            <td>{{atendimento.situacao}}</td>
+                                            <td>{{atendimento.dataSolicitacao}}</td>
+                                            <td>{{atendimento.dataAtendimento}}</td>
+                                            {% if atendimento.duracao == null %}
+                                                <td>-- : -- : --</td>
+                                            {% else %}
+                                                <td>{{atendimento.duracao}}</td>
+                                            {% endif %}
+                                            <td>{{atendimento.sigla}}{{atendimento.numero}}</td>
+                                            <td>{{atendimento.identificacao}}</td>
+                                            <td>{{atendimento.nome}} {{atendimento.sobrenome}}</td>
+                                            <td>{{atendimento.nomeServico}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="imprimirRelatorio();">Imprimir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+    {#                    Fim modal Relatorio#}
 {% endblock %}
