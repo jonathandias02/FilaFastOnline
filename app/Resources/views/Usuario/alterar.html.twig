@@ -1,45 +1,19 @@
 {% extends "base.html.twig" %}
 {% block conteiner %}
-    {#    inicio modal de erro#}
-
-    {% if mensagem != null%}
-        <script>
-            $(document).ready(function () {
-                $('#ModalCenter').modal('show');
-            });
-        </script>
-
-        <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        {{ mensagem }}
-                    </div>
-                    <div class="modal-footer">
-                        <form action="{{path('AlterarUsuario')}}" id="enviaID" method="post">
-                            <input type="hidden" name="id" value="{{ usuario.id }}"/>
-                        </form>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-    {#    fim modal de erro#}
-
     <div class="row">
         <div class="col">
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Alterar Usuário</div>
                 <div class="card-body">
-                    <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarAlteracaoUsuario')}}" method="post" id="formUsuario" onkeydown="EnterKeyFilter();">
+                        {% if mensagem != null %}
+                            <div class="alert alert-success text-center" role="alert" id="mensagem" style="width: 100%;">
+                                <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ mensagem }}
+                            </div>
+                        {% endif %}
+                    <form style="padding: 1% 10% 2% 10%;" action="{{path('SalvarAlteracaoUsuario')}}" method="post" id="formUsuario" onkeydown="EnterKeyFilter();">
                         <button type="button" style="margin-bottom: 20px;" class="btn btn-primary" onclick="AlterarSenha();">Alterar Senha</button>
                         <div class="row">
                             <div class="col">
@@ -94,7 +68,7 @@
                         </div><br/>
                         <div class="row">
                             <div class="col text-center">
-                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarUsuario">Voltar</button>
+                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" onclick="voltar('{{path('Usuarios')}}')">Voltar</button>
                                 <button type="button" class="btn btn-primary" style="width: 100px;" onclick="alterarUsuario();">Salvar</button>
                             </div>
                         </div>
@@ -130,7 +104,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="CancelarAltSenha">Voltar</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="CancelarAltSenha">Cancelar</button>
                         <button type="button" class="btn btn-success" onclick="alterarSenha();">Alterar</button>
                     </div>
                 </form>
@@ -139,20 +113,4 @@
     </div>
 
     {# Fim modal alterar senha ---------------------------------#}
-
-    <script>
-        $("#cancelarUsuario").click(function () {
-            window.location.href = "{{path('Usuarios')}}";
-        });
-
-        $('#ModalCenter').on('hide.bs.modal', function () {
-            $("#enviaID").submit();
-        });
-
-        function AlterarSenha() {
-            $(document).ready(function () {
-                $('#AlterarSenha').modal('show');
-            });
-        }
-    </script>
 {% endblock %}

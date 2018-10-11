@@ -583,3 +583,33 @@ function buscarServicos(idFila) {
         }
     });
 }
+
+//botao alterar Senha
+function AlterarSenha() {
+    $(document).ready(function () {
+        $('#AlterarSenha').modal('show');
+    });
+}
+
+//funcao para botoes voltar nos cadastros
+function voltar(url) {
+    window.location.href = url;
+}
+
+//funcao para botoes novo usuario/fila/serviço
+function novo(url) {
+    window.location.href = url;
+}
+
+//funcao para confirmar exclusao
+function confirmar(id) {
+    $(document).ready(function () {
+        $('#ModalCenter').modal('show');
+    });
+
+    $("#sim").click(function () {
+        $("input[name='id']").val(id);
+        $("#enviaDelete").submit();
+    });
+}
+

@@ -1,44 +1,18 @@
 {% extends "base.html.twig" %}
 {% block conteiner %}
-    {#    inicio modal de erro#}
-
-    {% if mensagem != null%}
-        <script>
-            $(document).ready(function () {
-                $('#ModalCenter').modal('show');
-            });
-        </script>
-
-        <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        {{ mensagem }}
-                    </div>
-                    <div class="modal-footer">
-                        <form action="{{path('AlterarFila')}}" id="enviaID" method="post">
-                            <input type="hidden" name="id" value="{{ fila.id }}"/>
-                        </form>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-    {#    fim modal de erro#}
-
     <div class="row">
         <div class="col">
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Alterar Fila</div>
                 <div class="card-body">
+                    {% if mensagem != null %}
+                        <div class="alert alert-success text-center" role="alert" id="mensagem" style="width: 100%;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% endif %}
                     <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarAlteracaoFila')}}" method="post" id="formFila" onkeydown="EnterKeyFilter();">
                         <div class="row">
                             <div class="col">
@@ -65,7 +39,7 @@
                         </div><br/>
                         <div class="row">
                             <div class="col text-center">
-                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="cancelarFila">Voltar</button>
+                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" onclick="voltar('{{path('Filas')}}');">Voltar</button>
                                 <button type="button" class="btn btn-primary" style="width: 100px;" onclick="salvarFila();">Alterar</button>
                             </div>
                         </div>
@@ -76,14 +50,6 @@
     </div>
 
     <script>
-        $("#cancelarFila").click(function () {
-            window.location.href = "{{path('Filas')}}";
-        });
-
-        $('#ModalCenter').on('hide.bs.modal', function () {
-            $("#enviaID").submit();
-        });
-
         $(function () {
             $("input[name='nome']").blur(function () {
 
