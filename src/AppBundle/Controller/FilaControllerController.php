@@ -159,7 +159,7 @@ class FilaControllerController extends Controller {
             $id = isset($filtro['id']) ? $filtro['id'] : null;
             $entityManage = $this->getDoctrine()->getRepository(Fila::class);
             $fila = $entityManage->findOneBy(["deletar" => 0, "id" => $id]);
-            $servicos = $this->getDoctrine()->getRepository(\AppBundle\Entity\Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 10);
+            $servicos = $this->getDoctrine()->getRepository(\AppBundle\Entity\Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
             return $this->render("Fila/exibefila.html.twig", array(
                         "nome" => $_SESSION['nome'],
                         "fila" => $fila,

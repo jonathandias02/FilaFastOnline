@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Entity\Servico;
+use AppBundle\Entity\Fila;
 
 class ServicoControllerController extends Controller {
 
@@ -40,21 +41,39 @@ class ServicoControllerController extends Controller {
             $sigla = isset($filtro['sigla']) ? $filtro['sigla'] : null;
             $descricao = isset($filtro['descricao']) ? $filtro['descricao'] : null;
             $status = isset($filtro['status']) ? $filtro['status'] : null;
-            $servico = new Servico();
-            $servico->setNome($nome);
-            $servico->setIdUsuario($idUsuario);
-            $servico->setIdFila($idFila);
-            $servico->setSigla($sigla);
-            $servico->setStatus_2($status);
-            $servico->setDescricao($descricao);
-            $em->persist($servico);
-            $em->flush();
-            $msg = "Serviço cadastrado com sucesso!";
-            return $this->render("Servico/cadastrar.html.twig", array(
-                        "mensagem" => $msg,
-                        "nome" => $_SESSION['nome'],
-                        "idFila" => $idFila,
-            ));
+            $entityManage = $this->getDoctrine()->getRepository(Fila::class);
+            //buscando fila
+            $fila = $entityManage->findOneBy(["deletar" => 0, "id" => $idFila]);
+            //teste de para evitar que refresh greve dados duplicados no banco
+            $teste = $this->getDoctrine()->getRepository(Servico::class)->findOneBy(["deletar" => 0], ["id" => "DESC"], 1);
+            if ($teste->getSigla() == $sigla && $teste->getNome() == $nome) {
+                //buscando serviços da fila
+                $servicos = $this->getDoctrine()->getRepository(\AppBundle\Entity\Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
+                return $this->render("Fila/exibefila.html.twig", array(
+                            "nome" => $_SESSION['nome'],
+                            "fila" => $fila,
+                            "servicos" => $servicos,
+                ));
+            } else {
+                $servico = new Servico();
+                $servico->setNome($nome);
+                $servico->setIdUsuario($idUsuario);
+                $servico->setIdFila($idFila);
+                $servico->setSigla($sigla);
+                $servico->setStatus_2($status);
+                $servico->setDescricao($descricao);
+                $em->persist($servico);
+                $em->flush();
+                $msg = "Serviço cadastrado com sucesso!";
+                //buscando serviços da fila
+                $servicos = $this->getDoctrine()->getRepository(\AppBundle\Entity\Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
+                return $this->render("Fila/exibefila.html.twig", array(
+                            "mensagem" => $msg,
+                            "nome" => $_SESSION['nome'],
+                            "fila" => $fila,
+                            "servicos" => $servicos,
+                ));
+            }
         }
     }
 
@@ -70,7 +89,7 @@ class ServicoControllerController extends Controller {
             $busca2 = isset($filtro['busca']) ? $filtro['busca'] : null;
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
             $entityManage = $this->getDoctrine()->getRepository(Servico::class);
-            $fila = $this->getDoctrine()->getRepository(\AppBundle\Entity\Fila::class)->findOneBy(["id" => $idFila]); 
+            $fila = $this->getDoctrine()->getRepository(\AppBundle\Entity\Fila::class)->findOneBy(["id" => $idFila]);
 
             if ($busca != "%%") {
                 $servicos = $this->getDoctrine()->getRepository(Servico::class)->buscarServico($busca, $busca2, $idFila);
@@ -80,7 +99,7 @@ class ServicoControllerController extends Controller {
                             "fila" => $fila,
                 ));
             } else {
-                $servicos = $entityManage->findBy(["idFila" => $idFila, "deletar" => 0]);
+                $servicos = $entityManage->buscarServicoAll($idFila);
                 return $this->render("Fila/exibefila.html.twig", array(
                             "nome" => $_SESSION['nome'],
                             "servicos" => $servicos,
@@ -157,14 +176,14 @@ class ServicoControllerController extends Controller {
             $id = isset($filtro['id']) ? $filtro['id'] : null;
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
             $entityManage = $this->getDoctrine()->getRepository(Servico::class);
-            $deletar = $entityManage->deletarServico($id);
-            $fila = $this->getDoctrine()->getRepository(\AppBundle\Entity\Fila::class)->findOneBy(["id" => $idFila]);
-            $servico = $entityManage->findBy(["idFila" => $idFila, "deletar" => 0], ["createAt" => "ASC"], 10);
-            if ($deletar) {
+            $teste = $entityManage->findOneBy(["id" => $id, "deletar" => 0]);
+            $msg = null;
+            if ($teste != null) {
+                $entityManage->deletarServico($id);
                 $msg = "Serviço deletado com sucesso!";
-            } else {
-                $msg = "Não foi possivel deletar serviço!";
             }
+            $fila = $this->getDoctrine()->getRepository(\AppBundle\Entity\Fila::class)->findOneBy(["id" => $idFila]);
+            $servico = $entityManage->findBy(["idFila" => $idFila, "deletar" => 0], ["createAt" => "ASC"], 6);
             return $this->render("Fila/exibefila.html.twig", array(
                         "nome" => $_SESSION['nome'],
                         "servicos" => $servico,

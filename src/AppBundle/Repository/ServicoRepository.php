@@ -15,9 +15,21 @@ class ServicoRepository extends \Doctrine\ORM\EntityRepository {
 
         $sql = 'SELECT * FROM t_servicos
         WHERE nomeServico LIKE :busca and deletar = 0 and t_filas_id = :IDFILA or id = :busca2 and deletar = 0 and t_filas_id = :IDFILA
-        ORDER BY nome ASC';
+        ORDER BY nomeServico ASC';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['busca' => $busca, 'busca2' => $busca2, 'IDFILA' => $idFila]);
+
+        return $stmt->fetchAll();
+    }
+    
+    public function buscarServicoAll($idFila): array {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM t_servicos
+        WHERE deletar = 0 and t_filas_id = :IDFILA
+        ORDER BY nomeServico ASC';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['IDFILA' => $idFila]);
 
         return $stmt->fetchAll();
     }

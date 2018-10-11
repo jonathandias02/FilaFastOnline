@@ -17,7 +17,7 @@ $sigla = isset($filtro['sigla']) ? $filtro['sigla'] : null;
 
 if ($nome !== null && $sigla === null) {
 
-    $sql = "SELECT * FROM t_servicos WHERE nome = :NOME and deletar = 0";
+    $sql = "SELECT * FROM t_servicos WHERE nomeServico = :NOME and deletar = 0";
 
     $stmt = $conexao->prepare($sql);
     $stmt->bindParam(':NOME', $nome);

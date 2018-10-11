@@ -591,6 +591,11 @@ function AlterarSenha() {
     });
 }
 
+//botao voltar para o serviço
+$("#voltarServico").click(function () {
+    $("#enviaID").submit();
+});
+
 //funcao para botoes voltar nos cadastros
 function voltar(url) {
     window.location.href = url;
@@ -612,4 +617,15 @@ function confirmar(id) {
         $("#enviaDelete").submit();
     });
 }
+//confirmar exclusao do servico
+function confirmarServico(id, idFila) {
+    $(document).ready(function () {
+        $('#ModalCenter').modal('show');
+    });
 
+    $("#sim").click(function () {
+        $("input[name='id']").val(id);
+        $("input[name='idFila']").val(idFila);
+        $("#enviaDelete").submit();
+    });
+}

@@ -5,6 +5,14 @@
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Fila: {{ fila.nome }}</div>
                 <div class="card-body">
+                        {% if mensagem != null %}
+                            <div class="alert alert-success text-center" role="alert" id="mensagem" style="margin-bottom: 25px; margin-top: -10px;">
+                                <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ mensagem }}
+                            </div>
+                        {% endif %}
                     <div class="row" style="margin-bottom: 5px; margin-top: -15px;">
                         <div class="container-fluid text-center">
                             <table width="76%" style="margin: 0 12% 0 12%;">
@@ -57,7 +65,7 @@
                                         <tr>
                                             <th scope="row" style="vertical-align: middle;" width="50px">{{ servico.id }}</th>
                                             <td style="vertical-align: middle; width: 80px;">{{ servico.sigla }}</td>
-                                            <td style="vertical-align: middle;">{{ servico.nome }}</td>
+                                            <td style="vertical-align: middle;">{{ servico.nomeServico }}</td>
                                             <td style="vertical-align: middle;" width="250px">{{ servico.status_2 }}</td>
                                             <td width="50px">
                                                 <form action="{{path('AlterarServico')}}" method="post">
@@ -68,7 +76,7 @@
                                                 </form>
                                             </td>
                                             <td width="50px">
-                                                <button type="button" onclick="confirmar({{ servico.id }}, {{ fila.id }});" style="border: none; background: none;">
+                                                <button type="button" onclick="confirmarServico({{ servico.id }}, {{ fila.id }});" style="border: none; background: none;">
                                                     <img src="{{asset('bundles/app/imagens/excluir.png')}}" style="width: 20px; height: 20px;"/>
                                                 </button>
                                             </td>
@@ -80,41 +88,13 @@
                     </div><br/>
                     <div class="row">
                         <div class="col text-center">
-                            <button type="button" id="voltar" class="btn btn-secondary">Voltar</button>
+                            <button type="button" onclick="voltar('{{path('Filas')}}');" class="btn btn-secondary">Voltar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {#    Inicio modal de mensagens#}
-    {% if mensagem != null %}
-        <script>
-            $(document).ready(function () {
-                $('#ModalCenterMensagem').modal('show');
-            });
-        </script>  
-        <div class="modal fade" id="ModalCenterMensagem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">   
-                        {{ mensagem }}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    {#      fim modal de mensagens#}
-
     {#                            Inicio Modal Excluir#}
     <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -144,26 +124,4 @@
     <form id="enviaID" action="{{path('VisualizaFila')}}" method="post">
         <input type="hidden" name="id" value="{{ fila.id }}" />
     </form>
-    <script>
-        $("#voltar").click(function () {
-            window.location.href = "{{path('Filas')}}";
-        });
-
-        function confirmar(id, idFila) {
-            $(document).ready(function () {
-                $('#ModalCenter').modal('show');
-            });
-
-            $("#sim").click(function () {
-                $("input[name='id']").val(id);
-                $("input[name='idFila']").val(idFila);
-                $("#enviaDelete").submit();
-            });
-        }
-
-        $('#ModalCenterMensagem').on('hide.bs.modal', function () {
-            $("#enviaID").submit();
-        });
-
-    </script>
 {% endblock %}
