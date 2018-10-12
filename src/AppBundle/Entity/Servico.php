@@ -26,7 +26,7 @@ class Servico {
      *
      * @ORM\Column(name="nomeServico", type="string", length=45, unique=true)
      */
-    private $nome;
+    private $nomeServico;
 
     /**
      * @var string
@@ -151,8 +151,8 @@ class Servico {
      *
      * @return Servico
      */
-    public function setNome($nome) {
-        $this->nome = $nome;
+    public function setNomeServico($nome) {
+        $this->nomeServico = $nome;
 
         return $this;
     }
@@ -162,8 +162,8 @@ class Servico {
      *
      * @return string
      */
-    public function getNome() {
-        return $this->nome;
+    public function getNomeServico() {
+        return $this->nomeServico;
     }
 
     /**

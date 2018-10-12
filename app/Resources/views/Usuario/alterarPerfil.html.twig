@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">Alterar Usuário</div>
+                <div class="card-body">
+                    {% if mensagem != null %}
+                        <div class="alert alert-success text-center" role="alert" id="mensagem" style="width: 100%;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% endif %}
+                    <form style="padding: 1% 10% 2% 10%;" action="{{path('SalvarPerfil')}}" method="post" id="formUsuario" onkeydown="EnterKeyFilter();">
+                        <div class="row">
+                            <div class="col">
+                                <input type="hidden" name="id" value="{{ usuario.id }}"/>
+                                <input type="text" class="form-control" placeholder="Nome" name="nome" value="{{ usuario.nome }}" maxlength="15" minlength="2" onkeyup="somenteLetras(this);" required>
+                                <div id="resultadoNome" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Sobrenome" name="sobrenome" value="{{ usuario.sobrenome }}" maxlength="40" minlength="2" onkeyup="somenteLetras2(this);" required>
+                                <div id="resultadoSobrenome" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                            </div>
+                        </div><br/>
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Login (Somente números)" name="login" value="{{ usuario.usuario }}" maxlength="10" onkeyup="somenteNumeros(this);" required>
+                                <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                            </div>
+                        </div><br/>
+                        <div class="row">
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" onclick="voltar('{{path('Perfil')}}')">Voltar</button>
+                                <button type="button" class="btn btn-primary" style="width: 100px;" onclick="alterarUsuario();">Salvar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

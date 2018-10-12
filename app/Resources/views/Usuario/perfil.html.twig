@@ -1,0 +1,100 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">Meu Perfil</div>
+                <div class="card-body mx-auto d-block">
+                    {% if mensagem == "Senha alterada com sucesso!" %}
+
+                        <div class="alert alert-success text-center" role="alert" id="mensagem" style="width: 100%;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% elseif mensagem == "Senha atual incorreta!"%}
+                        <div class="alert alert-danger text-center" role="alert" id="mensagem" style="width: 100%;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% endif %}
+                    <div class="container" style="width: 500px; border: #C9C9C9 solid .5px; border-radius: 5px; padding: 20px;">
+                        <label>
+                            <b>Login:</b> {{login}}
+                        </label><br/>
+                        <label>
+                            <b>Nome:</b> {{nome}}
+                        </label><br/>
+                        <label>
+                            <b>Perfil:</b> {% if perfil == '1' %}Administrador{% elseif perfil == '2' %}Atendente{% else %}Triagem{% endif %}
+                        </label><br/>
+                        <label>
+                            <b>Cadastrado:</b> {{data|date('d-m-Y')}}
+                        </label>
+                    </div>
+                    <div class="row">
+                        {% if perfil == 1 %}
+                            <div class="col-3">
+                                <form action="{{path('AlterarPerfil')}}" method="post">
+                                    <input type="hidden" name="id" value="{{ idUsuario }}"/>
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 10px; ">Alterar Dados</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                        <div class="col-3">
+                            <button type="button" class="btn btn-primary" style="margin-top: 10px; " onclick="AlterarSenha();">Alterar Senha</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#  inicio modal alterar Senha  --------------------------#}
+
+    <div class="modal fade" id="AlterarSenha" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-success" id="exampleModalCenterTitle">Alterar Senha</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{path('AlterarSenha')}}" method="post" id="formAlteraSenha">
+                    <div class="modal-body">
+                        <table align="center" width="60%" style="margin-bottom: 10px;">
+                            <tr>
+                                <td>
+                                    <input type="password" class="form-control" placeholder="Senha Atual" name="senhaAtual" id="senhaAtual" required style="margin-bottom: 5px;" title="Digite sua senha atual">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="id" value="{{ idUsuario }}"/>
+                                    <input type="password" class="form-control" placeholder="Nova Senha" name="senha" id="senha" required title="A nova senha deve conter entre 6 e 12 digitos">
+                                    <div id="senhas" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="password" class="form-control" placeholder="Confirmar Nova Senha" name="confirmar" id="confirmar" required title="Confirme a nova senha">
+                                    <div id="resultadoConfirmar" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" id="CancelarAltSenha">Cancelar</button>
+                            <button type="button" class="btn btn-success" onclick="alterarSenha();">Alterar</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {# Fim modal alterar senha ---------------------------------#}
+
+{% endblock %}

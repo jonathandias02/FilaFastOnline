@@ -63,6 +63,7 @@ class UsuarioControllerController extends Controller {
             $_SESSION['nome'] = $usuario->getNome() . " " . $usuario->getSobrenome();
             $_SESSION['direitos'] = $usuario->getTipo();
             $_SESSION['id'] = $usuario->getId();
+            $_SESSION['data'] = $usuario->getCreateAt();
         }
     }
 
@@ -244,6 +245,58 @@ class UsuarioControllerController extends Controller {
     }
 
     /**
+     * @Route ("/alterarPerfil", name="AlterarPerfil")
+     */
+    public function alterarPerfil() {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] !== 1) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $id = isset($filtro['id']) ? $filtro['id'] : null;
+            $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
+            $usuario = $entityManage->findOneBy(["id" => $id, "deletar" => 0]);
+            $direito = $entityManage->direitos($usuario->getTipo());
+
+            return $this->render("Usuario/alterarPerfil.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "usuario" => $usuario,
+                        "direito" => $direito,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/salvarPerfil", name="SalvarPerfil")
+     */
+    public function salvarPerfil() {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] !== 1) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $id = isset($filtro['id']) ? $filtro['id'] : null;
+            $nome = isset($filtro['nome']) ? $filtro['nome'] : null;
+            $sobrenome = isset($filtro['sobrenome']) ? $filtro['sobrenome'] : null;
+            $login = isset($filtro['login']) ? $filtro['login'] : null;
+
+            $alteracao = $this->getDoctrine()->getRepository(Usuario::class);
+            $alteracao->alterarPerfil($id, $nome, $sobrenome, $login);
+            $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findOneBy(["id" => $id, "deletar" => 0]);
+            $_SESSION['id'] = $usuario->getId();
+            $_SESSION['login'] = $usuario->getUsuario();
+            $_SESSION['nome'] = $usuario->getNome() . " " . $usuario->getSobrenome();
+            $direito = $this->getDoctrine()->getRepository(Usuario::class)->direitos($usuario->getTipo());
+            $msg = "Alterado com sucesso!";
+
+            return $this->render("Usuario/alterarPerfil.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        "mensagem" => $msg,
+                        "usuario" => $usuario,
+                        "direito" => $direito,
+            ));
+        }
+    }
+
+    /**
      * @Route ("/alterarSenha", name="AlterarSenha")
      */
     public function alterarSenha() {
@@ -253,21 +306,36 @@ class UsuarioControllerController extends Controller {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $id = isset($filtro['id']) ? $filtro['id'] : null;
             $senha = isset($filtro['senha']) ? md5($filtro['senha']) : null;
-            $altsenha = $this->getDoctrine()->getRepository(Usuario::class)->alterarSenha($id, $senha);
-            $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findOneBy(["id" => $id, "deletar" => 0]);
-            $direito = $this->getDoctrine()->getRepository(Usuario::class)->direitos($usuario->getTipo());
-            if ($altsenha) {
-                $msg = "Senha alterada com sucesso!";
+            $senhaAtual = isset($filtro['senhaAtual']) ? md5($filtro['senhaAtual']) : null;
+            if ($senhaAtual != null) {
+                $teste = $this->getDoctrine()->getRepository(Usuario::class)->findOneBy(["id" => $id, "deletar" => 0, "senha" => $senhaAtual]);
+                if ($teste == null) {
+                    $msg = "Senha atual incorreta!";
+                } else {
+                    $this->getDoctrine()->getRepository(Usuario::class)->alterarSenha($id, $senha);
+                    $msg = "Senha alterada com sucesso!";
+                }
+                return $this->render("Usuario/perfil.html.twig", array(
+                            "nome" => $_SESSION['nome'],
+                            "mensagem" => $msg,
+                            "login" => $_SESSION['login'],
+                            "nome" => $_SESSION['nome'],
+                            "perfil" => $_SESSION['direitos'],
+                            "data" => $_SESSION['data'],
+                            "idUsuario" => $_SESSION['id'],
+                ));
             } else {
-                $msg = "Não foi possivel alterar senha!";
+                $this->getDoctrine()->getRepository(Usuario::class)->alterarSenha($id, $senha);
+                $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findOneBy(["id" => $id, "deletar" => 0]);
+                $direito = $this->getDoctrine()->getRepository(Usuario::class)->direitos($usuario->getTipo());
+                $msg = "Senha alterada com sucesso!";
+                return $this->render("Usuario/alterar.html.twig", array(
+                            "nome" => $_SESSION['nome'],
+                            "mensagem" => $msg,
+                            "usuario" => $usuario,
+                            "direito" => $direito,
+                ));
             }
-
-            return $this->render("Usuario/alterar.html.twig", array(
-                        "nome" => $_SESSION['nome'],
-                        "mensagem" => $msg,
-                        "usuario" => $usuario,
-                        "direito" => $direito,
-            ));
         }
     }
 
@@ -297,6 +365,23 @@ class UsuarioControllerController extends Controller {
             } else {
                 return $this->redirectToRoute("Usuarios");
             }
+        }
+    }
+
+    /**
+     * @Route ("/perfil", name="Perfil")
+     */
+    public function perfil() {
+        if (!isset($_SESSION['login'])) {
+            return $this->redirectToRoute("Login");
+        } else {
+            return $this->render("Usuario/perfil.html.twig", array(
+                        "login" => $_SESSION['login'],
+                        "nome" => $_SESSION['nome'],
+                        "perfil" => $_SESSION['direitos'],
+                        "data" => $_SESSION['data'],
+                        "idUsuario" => $_SESSION['id'],
+            ));
         }
     }
 

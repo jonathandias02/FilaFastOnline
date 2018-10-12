@@ -43,6 +43,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Login</th>
                                     <th scope="col">Nome</th>
+                                    <th scope="col">Perfil</th>
                                     <th scope="col">Status</th>
                                     <th scope="col" width="10px"></th>
                                     <th scope="col" width="10px"></th>
@@ -67,6 +68,7 @@
                                                 <th scope="row">{{ usuario.id }}</th>
                                                 <td>{{ usuario.usuario }}</td>
                                                 <td>{{ usuario.nome }} {{ usuario.sobrenome }}</td>
+                                                <td>{% if usuario.tipo == '1' %}Administrador{% elseif usuario.tipo == '2' %}Atendente{% else %}Triagem{% endif %}</td>
                                                 <td>{{ usuario.status_2 }}</td>
                                                 <td width="80px">
                                                     <form action="{{path('AlterarUsuario')}}" method="post">

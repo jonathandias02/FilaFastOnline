@@ -1,49 +1,18 @@
 {% extends "base.html.twig" %}
 {% block conteiner %}
-    {#    inicio modal de erro#}
-
-    {% if mensagem != null%}
-        <script>
-            $(document).ready(function () {
-                $('#ModalCenter').modal('show');
-            });
-        </script>
-
-        <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        {% if mensagem == "Alterado com sucesso!" %}
-                            <h5 class="modal-title text-success" id="exampleModalCenterTitle">Mensagem</h5>
-                        {% else %}
-                            <h5 class="modal-title text-danger" id="exampleModalCenterTitle">Mensagem</h5>
-                        {% endif %}
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        {{ mensagem }}
-                    </div>
-                    <div class="modal-footer">
-                        {% if mensagem == "Alterado com sucesso!" %}
-                            <button type="button" class="btn btn-success" data-dismiss="modal">Fechar</button>
-                        {% else %}
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-    {#    fim modal de erro#}
-
     <div class="row">
         <div class="col">
             <div class="card border-light" >
                 <div class="card-header h5 text-center">Cadastro de Serviços</div>
                 <div class="card-body">
+                    {% if mensagem != null %}
+                        <div class="alert alert-success text-center" role="alert" id="mensagem" style="width: 100%;">
+                            <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ mensagem }}
+                        </div>
+                    {% endif %}
                     <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarAlteracaoServico')}}" method="post" id="formServico" onkeydown="EnterKeyFilter();">
                         <div class="row">
                             <div style="width: 60px; margin-left: 15px;">
@@ -51,7 +20,7 @@
                                 <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="2" minlength="1" onkeyup="maiuscula(this);" value="{{ servico.sigla }}" required>
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" value="{{ servico.nome }}" onkeyup="somenteLetras2(this);" required>
+                                <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" value="{{ servico.nomeServico }}" onkeyup="somenteLetras2(this);" required>
                             </div>
                         </div>
                         <div id="resultado" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
@@ -81,7 +50,7 @@
                         </div><br/>
                         <div class="row">
                             <div class="col text-center">
-                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="voltar">Voltar</button>
+                                <button type="button" class="btn btn-secondary" style="margin-right: 25px; width: 100px;" id="voltarServico">Voltar</button>
                                 <button type="button" class="btn btn-primary" style="width: 100px;" onclick="salvarServico();">Salvar</button>
                             </div>
                         </div>
@@ -94,10 +63,6 @@
         <input type="hidden" name="id" value="{{ idFila }}" />
     </form>
     <script>
-        $("#voltar").click(function () {
-            $("#enviaID").submit();
-        });
-
         $(function () {
             $("input[name='nome']").blur(function () {
 

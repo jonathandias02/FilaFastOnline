@@ -44,6 +44,18 @@ class UsuarioRepository extends \Doctrine\ORM\EntityRepository {
         return $stmt;
     }
     
+    public function alterarPerfil($id, $nome, $sobrenome, $usuario) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'UPDATE t_usuario'
+                . ' SET nome = :NOME, sobrenome = :SOBRENOME, usuario = :USUARIO'
+                . ' WHERE id = :ID';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['ID' => $id, 'NOME' => $nome, 'SOBRENOME' => $sobrenome, 'USUARIO' => $usuario]);
+
+        return $stmt;
+    }
+    
     public function alterarSenha($id, $senha) {
         $conn = $this->getEntityManager()->getConnection();
 
