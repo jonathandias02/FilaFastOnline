@@ -57,13 +57,13 @@
                                             <table width="100%">
                                                 <tr>
                                                     <td width="50%">
-                                                        <div class="h6">{{ servico.sigla }} - {{ servico.nome }}</div>
+                                                        <div class="h6">{{ servico.sigla }} - {{ servico.nomeServico }}</div>
                                                         <div class="row">
                                                             <div class="col-1" style="margin-left: 10px;">
                                                                 <img src="{{asset('bundles/app/imagens/usuario.png')}}" style="width: 20px; height: 20px;" />
                                                             </div>
                                                             <div class="col">
-                                                                <div class="border text-center" style="border-radius: 40px; width: 40px; color: white; background-color: #383d41;">
+                                                                <div class="border text-center" style="border-radius: 40px; width: 70px; color: white; background-color: #383d41;">
                                                                     {{ servico.senhasAtendidas }}/{{ servico.senhasAguardando }}
                                                                 </div>
                                                             </div>
@@ -110,7 +110,7 @@
                             <h4 align="center" style="margin: 2px;">{{ empresa }}</h4>
                             <p align="center" style="margin: 2px;">  {{ fila.nome }}</p>
                             <h1 align="center" style="margin: 2px;">{{ senha }}</h1>
-                            <p align="center" style="margin: 2px;"><b>Serviço: {{ servico.nome }}</b></p>
+                            <p align="center" style="margin: 2px;"><b>Serviço: {{ servico.nomeServico }}</b></p>
                             <p align="center" style="margin: 2px;">Data: {{ data.date|date('d/m/Y') }}</p>
                             <p align="center" style="margin: 2px;">Hora: {{ data.date|date('H:i:s') }}</p>
                             <p align="center" style="margin: 2px;"><b>Atendimento: {{ tipo }}</b></p>

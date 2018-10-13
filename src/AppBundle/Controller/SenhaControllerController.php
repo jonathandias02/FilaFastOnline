@@ -21,6 +21,7 @@ class SenhaControllerController extends Controller {
             $filas = $entityManage->findBy(["deletar" => 0]);
             return $this->render("Senha/filaTriagem.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "filas" => $filas,
             ));
         }
@@ -75,6 +76,7 @@ class SenhaControllerController extends Controller {
 
                 return $this->render("Senha/servicoTriagem.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "id" => $id,
                             "servicos" => $servicos,
                             "fila" => $fila,
@@ -93,6 +95,7 @@ class SenhaControllerController extends Controller {
                     }
                     return $this->render("Senha/servicoTriagem.html.twig", array(
                                 "nome" => $_SESSION['nome'],
+                                'perfil' => $_SESSION['direitos'],
                                 "id" => $id,
                                 "servicos" => $servicos,
                                 "fila" => $fila,
@@ -108,13 +111,14 @@ class SenhaControllerController extends Controller {
      * @Route ("/atendimentoFila", name="AtendimentoFila")
      */
     public function atendimentoFilas() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1 && $_SESSION['direitos'] != 2) {
             return $this->redirectToRoute("Login");
         } else {
             $entityManage = $this->getDoctrine()->getRepository(Fila::class);
             $filas = $entityManage->findBy(["deletar" => 0]);
             return $this->render("Senha/atendimentoFila.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "filas" => $filas,
             ));
         }
@@ -124,11 +128,12 @@ class SenhaControllerController extends Controller {
      * @Route ("/selecionarguiche/{id}", name="SelecionarGuiche")
      */
     public function guiche($id) {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1 && $_SESSION['direitos'] != 2) {
             return $this->redirectToRoute("Login");
         } else {
             return $this->render("Senha/atendimentoGuiche.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "idFila" => $id,
             ));
         }
@@ -138,7 +143,7 @@ class SenhaControllerController extends Controller {
      * @Route ("/atendimento", name="Atendimento")
      */
     public function atendimento() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1 && $_SESSION['direitos'] != 2) {
             return $this->redirectToRoute("Login");
         } else {
 
@@ -149,6 +154,7 @@ class SenhaControllerController extends Controller {
             $fila = $this->getDoctrine()->getRepository(Fila::class)->findOneBy(["id" => $idFila]);
             return $this->render("Senha/atendimento.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "idFila" => $idFila,
                         "guiche" => $guiche,
                         "fila" => $fila,
@@ -160,7 +166,7 @@ class SenhaControllerController extends Controller {
      * @Route ("/chamarSenha", name="ChamarSenha")
      */
     public function chamarSenha() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1 && $_SESSION['direitos'] != 2) {
             return $this->redirectToRoute("Login");
         } else {
 
@@ -179,6 +185,7 @@ class SenhaControllerController extends Controller {
             $senha = $em->senha($idSenha);
             return $this->render("Senha/chamarSenha.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "idFila" => $idFila,
                         "guiche" => $guiche,
                         "fila" => $fila,
@@ -191,7 +198,7 @@ class SenhaControllerController extends Controller {
      * @Route ("/emAtendimento", name="EmAtendimento")
      */
     public function emAtendimento() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1 && $_SESSION['direitos'] != 2) {
             return $this->redirectToRoute("Login");
         } else {
 
@@ -208,6 +215,7 @@ class SenhaControllerController extends Controller {
 
             return $this->render("Senha/emAtendimento.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "idFila" => $idFila,
                         "nomeFila" => $nomeFila,
                         "guiche" => $guiche,
@@ -225,7 +233,7 @@ class SenhaControllerController extends Controller {
      * @Route ("/finalizar", name="Finalizar")
      */
     public function finalizar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1 && $_SESSION['direitos'] != 2) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -240,6 +248,7 @@ class SenhaControllerController extends Controller {
             $msg = "Finalizado";
             return $this->render("Senha/emAtendimento.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "idFila" => $idFila,
                         "mensagem" => $msg,
                         "guiche" => $guiche,
@@ -251,7 +260,7 @@ class SenhaControllerController extends Controller {
      * @Route ("/naocompareceu", name="NaoCompareceu")
      */
     public function naoCompareceu() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1 && $_SESSION['direitos'] != 2) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -264,6 +273,7 @@ class SenhaControllerController extends Controller {
             $msg = "Finalizado";
             return $this->render("Senha/emAtendimento.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "idFila" => $idFila,
                         "mensagem" => $msg,
                         "guiche" => $guiche,

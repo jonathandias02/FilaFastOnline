@@ -13,7 +13,7 @@ class RelatorioControllerController extends Controller {
      * @Route ("/relatorioperiodo", name="RelatorioPeriodo")
      */
     public function relatorioPeriodo() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -22,6 +22,7 @@ class RelatorioControllerController extends Controller {
             if ($dataInicio === null && $dataFim === null) {
                 return $this->render("Relatorios/periodo.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                 ));
             } else {
                 $msg = null;
@@ -31,6 +32,7 @@ class RelatorioControllerController extends Controller {
                 }
                 return $this->render("Relatorios/periodo.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "atendimentos" => $atendimentos,
                             "mensagem" => $msg,
                             "dataInicio" => $dataInicio,
@@ -44,7 +46,7 @@ class RelatorioControllerController extends Controller {
      * @Route ("/relatoriofila", name="RelatorioFila")
      */
     public function relatorioFila() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             //recebendo dados via post
@@ -58,6 +60,7 @@ class RelatorioControllerController extends Controller {
             if ($dataInicio === null && $dataFim === null && $idFila === null) {
                 return $this->render("Relatorios/fila.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "filas" => $filas,
                 ));
             } else {
@@ -70,6 +73,7 @@ class RelatorioControllerController extends Controller {
                 }
                 return $this->render("Relatorios/fila.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "atendimentos" => $atendimentos,
                             "mensagem" => $msg,
                             "dataInicio" => $dataInicio,
@@ -85,7 +89,7 @@ class RelatorioControllerController extends Controller {
      * @Route ("/relatorioservico", name="RelatorioServico")
      */
     public function relatorioServico() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             //recebendo dados via post
@@ -100,6 +104,7 @@ class RelatorioControllerController extends Controller {
             if ($dataInicio === null && $dataFim === null && $idServico === null) {
                 return $this->render("Relatorios/servico.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "filas" => $filas,
                 ));
             } else {
@@ -112,6 +117,7 @@ class RelatorioControllerController extends Controller {
                 }
                 return $this->render("Relatorios/servico.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "atendimentos" => $atendimentos,
                             "mensagem" => $msg,
                             "dataInicio" => $dataInicio,

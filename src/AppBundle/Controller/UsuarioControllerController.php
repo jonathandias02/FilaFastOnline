@@ -15,6 +15,7 @@ class UsuarioControllerController extends Controller {
         if (isset($_SESSION['login'])) {
             return $this->render("Usuario/inicio.html.twig", array(
                         'nome' => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
             ));
         } else {
             return $this->render("Usuario/login.html.twig");
@@ -28,6 +29,7 @@ class UsuarioControllerController extends Controller {
         if (isset($_SESSION['login'])) {
             return $this->render("Usuario/inicio.html.twig", array(
                         'nome' => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
             ));
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -40,6 +42,7 @@ class UsuarioControllerController extends Controller {
                     $this->iniciaSessao($login, $usuario);
                     return $this->render("Usuario/inicio.html.twig", array(
                                 'nome' => $_SESSION['nome'],
+                                'perfil' => $_SESSION['direitos'],
                     ));
                 } else {
                     $msg = "Este usuário foi desativado, procure um administrador!";
@@ -74,6 +77,9 @@ class UsuarioControllerController extends Controller {
         if (session_status() === PHP_SESSION_ACTIVE) {
             unset($_SESSION['login']);
             unset($_SESSION['nome']);
+            unset($_SESSION['id']);
+            unset($_SESSION['direitos']);
+            unset($_SESSION['data']);
             session_destroy();
             return $this->redirectToRoute('Login');
         } else {
@@ -85,11 +91,12 @@ class UsuarioControllerController extends Controller {
      * @Route ("/cadastroUsuario", name="CadastroUsuario")
      */
     public function novo() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             return $this->render("Usuario/cadastrar.html.twig", array(
                         'nome' => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
             ));
         }
     }
@@ -98,7 +105,7 @@ class UsuarioControllerController extends Controller {
      * @Route ("/salvarUsuario", name="SalvarUsuario")
      */
     public function salvar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $em = $this->getDoctrine()->getManager();
@@ -129,6 +136,7 @@ class UsuarioControllerController extends Controller {
                             "mensagem" => $msg,
                             "nome" => $_SESSION['nome'],
                             "login" => $_SESSION['login'],
+                            'perfil' => $_SESSION['direitos'],
                             "usuarios" => $usuarios,
                 ));
             }
@@ -139,7 +147,7 @@ class UsuarioControllerController extends Controller {
      * @Route ("/usuarios", name="Usuarios")
      */
     public function show() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $entityManage = $this->getDoctrine()->getRepository(Usuario::class);
@@ -147,6 +155,7 @@ class UsuarioControllerController extends Controller {
             return $this->render("Usuario/usuarios.html.twig", array(
                         "nome" => $_SESSION['nome'],
                         "login" => $_SESSION['login'],
+                        'perfil' => $_SESSION['direitos'],
                         "usuarios" => $usuarios,
             ));
         }
@@ -156,7 +165,7 @@ class UsuarioControllerController extends Controller {
      * @Route ("/buscarUsuario", name="BuscarUsuario")
      */
     public function buscar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -172,6 +181,7 @@ class UsuarioControllerController extends Controller {
                 return $this->render("Usuario/usuarios.html.twig", array(
                             "nome" => $_SESSION['nome'],
                             "login" => $_SESSION['login'],
+                            'perfil' => $_SESSION['direitos'],
                             "usuarios" => $usuarios,
                             "pesquisa" => $pesquisa,
                 ));
@@ -182,6 +192,7 @@ class UsuarioControllerController extends Controller {
                 return $this->render("Usuario/usuarios.html.twig", array(
                             "nome" => $_SESSION['nome'],
                             "login" => $_SESSION['login'],
+                            'perfil' => $_SESSION['direitos'],
                             "usuarios" => $usuarios,
                             "pesquisa" => $pesquisa,
                 ));
@@ -193,7 +204,7 @@ class UsuarioControllerController extends Controller {
      * @Route ("/alterarUsuario", name="AlterarUsuario")
      */
     public function alterar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -204,6 +215,7 @@ class UsuarioControllerController extends Controller {
 
             return $this->render("Usuario/alterar.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "usuario" => $usuario,
                         "direito" => $direito,
             ));
@@ -214,7 +226,7 @@ class UsuarioControllerController extends Controller {
      * @Route ("/salvarAlteracaoUsuario", name="SalvarAlteracaoUsuario")
      */
     public function salvarAlteracao() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -237,6 +249,7 @@ class UsuarioControllerController extends Controller {
 
             return $this->render("Usuario/alterar.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "mensagem" => $msg,
                         "usuario" => $usuario,
                         "direito" => $direito,
@@ -259,6 +272,7 @@ class UsuarioControllerController extends Controller {
 
             return $this->render("Usuario/alterarPerfil.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "usuario" => $usuario,
                         "direito" => $direito,
             ));
@@ -289,6 +303,7 @@ class UsuarioControllerController extends Controller {
 
             return $this->render("Usuario/alterarPerfil.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "mensagem" => $msg,
                         "usuario" => $usuario,
                         "direito" => $direito,
@@ -331,6 +346,7 @@ class UsuarioControllerController extends Controller {
                 $msg = "Senha alterada com sucesso!";
                 return $this->render("Usuario/alterar.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "mensagem" => $msg,
                             "usuario" => $usuario,
                             "direito" => $direito,
@@ -344,7 +360,7 @@ class UsuarioControllerController extends Controller {
      */
     public function delete() {
 
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
 
@@ -359,6 +375,7 @@ class UsuarioControllerController extends Controller {
                 return $this->render("Usuario/usuarios.html.twig", array(
                             "nome" => $_SESSION['nome'],
                             "login" => $_SESSION['login'],
+                            'perfil' => $_SESSION['direitos'],
                             "usuarios" => $usuarios,
                             "mensagem" => $msg,
                 ));

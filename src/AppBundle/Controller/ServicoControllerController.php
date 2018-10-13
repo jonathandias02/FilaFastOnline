@@ -13,13 +13,14 @@ class ServicoControllerController extends Controller {
      * @Route ("/cadastroServico", name="CadastroServico")
      */
     public function nova() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
             return $this->render("Servico/cadastrar.html.twig", array(
                         'nome' => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         'idUsuario' => $_SESSION['id'],
                         'idFila' => $idFila,
             ));
@@ -30,7 +31,7 @@ class ServicoControllerController extends Controller {
      * @Route ("/salvarServico", name="SalvarServico")
      */
     public function salvar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $em = $this->getDoctrine()->getManager();
@@ -51,6 +52,7 @@ class ServicoControllerController extends Controller {
                 $servicos = $this->getDoctrine()->getRepository(Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
                 return $this->render("Fila/exibefila.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "fila" => $fila,
                             "servicos" => $servicos,
                 ));
@@ -70,6 +72,7 @@ class ServicoControllerController extends Controller {
                 return $this->render("Fila/exibefila.html.twig", array(
                             "mensagem" => $msg,
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "fila" => $fila,
                             "servicos" => $servicos,
                 ));
@@ -81,7 +84,7 @@ class ServicoControllerController extends Controller {
      * @Route ("/buscarServico", name="BuscarServico")
      */
     public function buscar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -95,6 +98,7 @@ class ServicoControllerController extends Controller {
                 $servicos = $this->getDoctrine()->getRepository(Servico::class)->buscarServico($busca, $busca2, $idFila);
                 return $this->render("Fila/exibefila.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "servicos" => $servicos,
                             "fila" => $fila,
                 ));
@@ -102,6 +106,7 @@ class ServicoControllerController extends Controller {
                 $servicos = $entityManage->findBy(["idFila" => $idFila, "deletar" => 0]);
                 return $this->render("Fila/exibefila.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "servicos" => $servicos,
                             "fila" => $fila,
                 ));
@@ -113,7 +118,7 @@ class ServicoControllerController extends Controller {
      * @Route ("/alterarServico", name="AlterarServico")
      */
     public function alterar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -124,6 +129,7 @@ class ServicoControllerController extends Controller {
 
             return $this->render("Servico/alterar.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "servico" => $servico,
                         "idFila" => $idFila,
             ));
@@ -134,7 +140,7 @@ class ServicoControllerController extends Controller {
      * @Route ("/salvarAlteracaoServico", name="SalvarAlteracaoServico")
      */
     public function salvarAlteracao() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -156,6 +162,7 @@ class ServicoControllerController extends Controller {
 
             return $this->render("Servico/alterar.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "mensagem" => $msg,
                         "servico" => $servico,
                         "idFila" => $idFila,
@@ -168,7 +175,7 @@ class ServicoControllerController extends Controller {
      */
     public function delete() {
 
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
 
@@ -186,6 +193,7 @@ class ServicoControllerController extends Controller {
             $servico = $entityManage->findBy(["idFila" => $idFila, "deletar" => 0], ["createAt" => "ASC"], 6);
             return $this->render("Fila/exibefila.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "servicos" => $servico,
                         "mensagem" => $msg,
                         "fila" => $fila,

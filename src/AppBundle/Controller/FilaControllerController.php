@@ -12,13 +12,14 @@ class FilaControllerController extends Controller {
      * @Route ("/filas", name="Filas")
      */
     public function filas() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $entityManage = $this->getDoctrine()->getRepository(Fila::class);
             $filas = $entityManage->findBy(["deletar" => 0], ["createAt" => "DESC"], 5);
             return $this->render("Fila/filas.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "filas" => $filas,
             ));
         }
@@ -28,11 +29,12 @@ class FilaControllerController extends Controller {
      * @Route ("/cadastroFila", name="CadastroFila")
      */
     public function nova() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             return $this->render("Fila/cadastrar.html.twig", array(
                         'nome' => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         'id' => $_SESSION['id'],
             ));
         }
@@ -42,7 +44,7 @@ class FilaControllerController extends Controller {
      * @Route ("/salvarFila", name="SalvarFila")
      */
     public function salvar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $em = $this->getDoctrine()->getManager();
@@ -66,6 +68,7 @@ class FilaControllerController extends Controller {
                 return $this->render("Fila/filas.html.twig", array(
                             "mensagem" => $msg,
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "filas" => $filas,
                 ));
             }
@@ -76,7 +79,7 @@ class FilaControllerController extends Controller {
      * @Route ("/buscarFila", name="BuscarFila")
      */
     public function buscar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -88,12 +91,14 @@ class FilaControllerController extends Controller {
                 $filas = $this->getDoctrine()->getRepository(Fila::class)->buscarFila($busca, $busca2);
                 return $this->render("Fila/filas.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "filas" => $filas,
                 ));
             } else {
                 $filas = $entityManage->findBy(["deletar" => 0]);
                 return $this->render("Fila/filas.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "filas" => $filas,
                 ));
             }
@@ -104,7 +109,7 @@ class FilaControllerController extends Controller {
      * @Route ("/alterarFila", name="AlterarFila")
      */
     public function alterar() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -114,6 +119,7 @@ class FilaControllerController extends Controller {
 
             return $this->render("Fila/alterar.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "fila" => $fila,
             ));
         }
@@ -123,7 +129,7 @@ class FilaControllerController extends Controller {
      * @Route ("/salvarAlteracaoFila", name="SalvarAlteracaoFila")
      */
     public function salvarAlteracao() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -143,6 +149,7 @@ class FilaControllerController extends Controller {
             return $this->render("Fila/alterar.html.twig", array(
                         "nome" => $_SESSION['nome'],
                         "mensagem" => $msg,
+                        'perfil' => $_SESSION['direitos'],
                         "fila" => $fila,
             ));
         }
@@ -152,7 +159,7 @@ class FilaControllerController extends Controller {
      * @Route ("/visualizafila", name="VisualizaFila")
      */
     public function exibefila() {
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -162,6 +169,7 @@ class FilaControllerController extends Controller {
             $servicos = $this->getDoctrine()->getRepository(\AppBundle\Entity\Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
             return $this->render("Fila/exibefila.html.twig", array(
                         "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
                         "fila" => $fila,
                         "servicos" => $servicos,
             ));
@@ -173,7 +181,7 @@ class FilaControllerController extends Controller {
      */
     public function delete() {
 
-        if (!isset($_SESSION['login'])) {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
             return $this->redirectToRoute("Login");
         } else {
 
@@ -187,6 +195,7 @@ class FilaControllerController extends Controller {
                 $msg = "Fila deletada com sucesso!";
                 return $this->render("Fila/filas.html.twig", array(
                             "nome" => $_SESSION['nome'],
+                            'perfil' => $_SESSION['direitos'],
                             "login" => $_SESSION['login'],
                             "filas" => $filas,
                             "mensagem" => $msg,
