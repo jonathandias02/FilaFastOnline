@@ -8,7 +8,7 @@
                     <form style="padding: 2% 10% 2% 10%;" action="{{path('SalvarServico')}}" method="post" id="formServico" onkeydown="EnterKeyFilter();">
                         <div class="row">
                             <div style="width: 60px; margin-left: 15px;">
-                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="2" minlength="1" onkeyup="maiuscula(this);" required>
+                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="1" minlength="1" onkeyup="maiuscula(this);" required>
                             </div>
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" onkeyup="somenteLetras2(this);" required>

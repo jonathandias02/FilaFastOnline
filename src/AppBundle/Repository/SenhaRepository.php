@@ -51,13 +51,26 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
         return $count;
     }
 
-    public function chamarSenha($idSenha, $idUsuario) {
+    public function chamarSenha($idSenha, $idUsuario, $guiche, $dataChamada) {
         $conn = $this->getEntityManager()->getConnection();
+        $data = $dataChamada->format('Y-m-d H:i:s');
         $sql = 'UPDATE t_senhas
-        SET situacao = "Chamada", t_usuario_id = :IDUSUARIO
+        SET situacao = "Chamada", t_usuario_id = :IDUSUARIO, guiche = :GUICHE, dataChamada = :DATA, alerta = 1
         WHERE id = :IDSENHA;';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['IDSENHA' => $idSenha, 'IDUSUARIO' => $idUsuario]);
+        $stmt->execute(['IDSENHA' => $idSenha, 'IDUSUARIO' => $idUsuario, 'GUICHE' => $guiche, 'DATA' => $data]);
+        $count = $stmt->rowCount();
+        return $count;
+    }
+    
+    public function chamarNovamente($idSenha, $dataChamada) {
+        $conn = $this->getEntityManager()->getConnection();
+        $data = $dataChamada->format('Y-m-d H:i:s');
+        $sql = 'UPDATE t_senhas
+        SET dataChamada = :DATA, alerta = 1
+        WHERE id = :IDSENHA;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['IDSENHA' => $idSenha, 'DATA' => $data]);
         $count = $stmt->rowCount();
         return $count;
     }

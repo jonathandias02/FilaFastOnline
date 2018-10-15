@@ -35,6 +35,13 @@ class Senha
      */
     private $dataSolicitacao;
     
+     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="dataChamada", type="datetime", nullable=true)
+     */
+    private $dataChamada;
+    
     /**
      * @var string
      *
@@ -55,6 +62,20 @@ class Senha
      * @ORM\Column(name="numero", type="string", length=5)
      */
     private $numero;
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="guiche", type="integer", length=3, nullable=true)
+     */
+    private $guiche;
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="alerta", type="integer", length=1, nullable=true)
+     */
+    private $alerta;
 
     /**
      * @var string
@@ -177,6 +198,30 @@ class Senha
     {
         return $this->dataSolicitacao;
     }
+    
+    /**
+     * Set dataChamada.
+     *
+     * @param \DateTime|null $dataChamada
+     *
+     * @return Senha
+     */
+    public function setDataChamada($dataChamada = null)
+    {
+        $this->dataChamada = $dataChamada;
+
+        return $this;
+    }
+
+    /**
+     * Get dataChamada.
+     *
+     * @return \DateTime|null
+     */
+    public function getChamada()
+    {
+        return $this->dataChamada;
+    }
 
     /**
      * Set email.
@@ -248,6 +293,54 @@ class Senha
     public function getNumero()
     {
         return $this->numero;
+    }
+    
+    /**
+     * Set guiche.
+     *
+     * @param int $guiche
+     *
+     * @return Senha
+     */
+    public function setGuiche($guiche)
+    {
+        $this->guiche = $guiche;
+
+        return $this;
+    }
+
+    /**
+     * Get guiche.
+     *
+     * @return int
+     */
+    public function getGuiche()
+    {
+        return $this->guiche;
+    }
+    
+    /**
+     * Set alerta.
+     *
+     * @param int $alerta
+     *
+     * @return Senha
+     */
+    public function setAlerta($alerta)
+    {
+        $this->alerta = $alerta;
+
+        return $this;
+    }
+
+    /**
+     * Get alerta.
+     *
+     * @return int
+     */
+    public function getAlerta()
+    {
+        return $this->alerta;
     }
 
     /**

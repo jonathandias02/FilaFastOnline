@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Login{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{asset('bundles/app/bootstrap/css/bootstrap.css')}}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <script src="{{asset('bundles/app/jquery/jquery.js')}}"></script>
+        <script src="{{asset('bundles/app/jquery.playSound.js')}}"></script>
+    </head>
+    <body style="background-color: #E0F8F7;">
+        {% block body %}
+            <script>
+                $(document).ready(function () {
+                    $("#modal").modal('show');
+                });
+            </script>
+            {#            inicio modal#}
+            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Configuração</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card border-light" >
+                                <div class="card-header h5 text-center">Selecione a Fila de Atendimento:</div>
+                                <div class="card-body">
+                                    <form action="{{path('Painel')}}" method="post" id="configuracao">
+                                        <select name="idFila" class="form-control" required>
+                                            <option value="">Selecionar</option>
+                                            {% for fila in filas %}
+                                                <option value="{{fila.id}}">{{fila.nome}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div id="mensagem" style="color: red; font-size: 9pt; margin-top: 5px;"></div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="salvar();">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {#            fim modal#}
+            <div class="container-fluid" >
+                <table style="width: 98%; margin-top: 2%;" align="center">
+
+                    <tr>
+                        <td width="50%">
+                            <label style="font-size: 35pt;" id="tipo">Não há senhas!</label><br/>
+                            <label style="font-size: 160pt; margin-top: -80px;"><b id="ultimaSenha">------</b></label>
+                        </td>
+                        <td width="50%" align="center">
+                            <label style="font-size: 60pt;" id="guiche">Guichê</label><br/>
+                            <label style="font-size: 60pt; margin-top: -50px;" id="ultimoGuiche">--</label>
+                        </td>
+                    </tr>
+                </table><br/>
+                <table style="position: absolute; bottom: 0;  background-color: #CECEF6; width: 98%; margin-bottom: 2%; border-radius: 10px;" align="center">
+                    <tr>
+                        <td colspan="4"><span style="margin-left: 40px; font-size: 25pt;">Ultimas Senhas:</span></td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <label ><b style="font-size: 50pt;" id="a4">------</b><br/><span style="font-size: 40pt;" id="guiche4">Guichê <label id="g4">--</label></span></label>
+                        </td>
+                        <td align="center">
+                            <label ><b style="font-size: 50pt;" id="a3">------</b><br/><span style="font-size: 40pt;" id="guiche3">Guichê <label id="g3">--</label></span></label>
+                        </td>
+                        <td align="center">
+                            <label ><b style="font-size: 50pt;" id="a2">------</b><br/><span style="font-size: 40pt;" id="guiche2">Guichê <label id="g2">--</label></span></label>
+                        </td>
+                        <td align="center">
+                            <label ><b style="font-size: 50pt;" id="a1">------</b><br/><span style="font-size: 40pt;" id="guiche1">Guichê <label id="g1">--</label></span></label>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <script>
+                function salvar() {
+                    var fila = $("select[name='idFila']").val();
+                    if (fila !== "") {
+                        $("#configuracao").submit();
+                    } else {
+                        $("#mensagem").html("Selecione uma fila na lista.");
+                    }
+                }
+
+                $('#modal').on('hide.bs.modal', function () {
+                    window.location.href = "{{path('Configuracao')}}";
+                });
+            </script>
+        {% endblock %}
+        {% block javascripts %}
+            <script src="{{asset('bundles/app/bootstrap/js/bootstrap.bundle.js')}}"></script>
+        {% endblock %}
+    </body>    
+</html>

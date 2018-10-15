@@ -6,20 +6,127 @@
         <link rel="stylesheet" type="text/css" href="{{asset('bundles/app/bootstrap/css/bootstrap.css')}}" />
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
         <script src="{{asset('bundles/app/jquery/jquery.js')}}"></script>
+        <script src="{{asset('bundles/app/jquery.playSound.js')}}"></script>
     </head>
+    <script>
+
+        function alerta(idSenha) {
+            $.post("../../painel/painel.php", {idSenha: idSenha}, function (data) {
+            });
+        }
+        //ajax para atualizar senhas na tela de atendimento
+        updateSenha('{{idFila}}');
+        function updateSenha(idFila) {
+            var interval = null;
+            var cont = 0;
+            var pisca = function () {
+                if (cont <= 17) {
+                    cont++;
+                    if ($("#ultimaSenha").css("opacity") === "0") {
+                        $("#ultimaSenha").css("opacity", "1");
+                    } else {
+                        $("#ultimaSenha").css("opacity", "0");
+                    }
+                } else {
+                    clearInterval(interval);
+                }
+            };
+
+            $.post("../../painel/painel.php", {idFila: idFila}, function (data) {
+                if (data === "NULL") {
+
+                } else {
+                    var senha = JSON.parse(data);
+                    if (senha.length > 0) {
+                        if (senha[0].t_preferencia_id === '1') {
+                            $("#tipo").html("Convencional");
+                            $("#tipo").css("color", "black");
+                            $("#ultimaSenha").css("color", "black");
+                            $("#ultimoGuiche").css("color", "black");
+                            $("#guiche").css("color", "black");
+                        } else {
+                            $("#tipo").html("Preferencial");
+                            $("#tipo").css("color", "red");
+                            $("#ultimaSenha").css("color", "red");
+                            $("#ultimoGuiche").css("color", "red");
+                            $("#guiche").css("color", "red");
+                        }
+                        $("#ultimaSenha").html(senha[0].sigla + senha[0].numero);
+                        $("#ultimoGuiche").html(senha[0].guiche);
+                        var audioSenha = (senha[0].sigla + senha[0].numero).split("");
+                        var g = (senha[0].guiche).split("");
+                        var audios = [];
+                        var guiche = [];
+                        for (var i = 0; i < audioSenha.length; i++) {
+                            audios[i] = new Audio('{{asset('bundles/app/midia/voz/')}}' + audioSenha[i] + '.mp3');
+                        }
+
+                        for (var i = 0; i < g.length; i++) {
+                            guiche[i] = new Audio('{{asset('bundles/app/midia/voz/')}}' + g[i] + '.mp3');
+                        }
+
+                        if (senha[0].alerta === "1") {
+                            var audio = new Audio('{{asset('bundles/app/midia/alerta.wav')}}');
+                            var audio2 = new Audio('{{asset('bundles/app/midia/voz/senha.mp3')}}');
+                            var audio8 = new Audio('{{asset('bundles/app/midia/voz/guiche.mp3')}}');
+                            
+                            audio.play();
+                            setTimeout(audio2.play.bind(audio2), 1000);
+                            setTimeout(audios[0].play.bind(audios[0]), 1900);
+                            setTimeout(audios[1].play.bind(audios[1]), 2700);
+                            setTimeout(audios[2].play.bind(audios[2]), 3500);
+                            setTimeout(audios[3].play.bind(audios[3]), 4300);
+                            setTimeout(audios[4].play.bind(audios[4]), 5100);
+                            setTimeout(audio8.play.bind(audio8), 5900);
+                            if (senha[0].guiche.length > 1) {
+                                setTimeout(guiche[0].play.bind(guiche[0]), 6700);
+                                setTimeout(guiche[1].play.bind(guiche[1]), 7200);
+                            } else {
+                                var audio9 = new Audio('{{asset('bundles/app/midia/voz/')}}' + senha[0].guiche + ".mp3");
+                                setTimeout(audio9.play.bind(audio9), 6700);
+                            }
+                            interval = setInterval(pisca, 400);
+                            alerta(senha[0].id);
+                        }
+                    }
+                    if (senha.length > 1) {
+                        for (var i = 1; i < senha.length; i++) {
+                            if (senha[i].t_preferencia_id === '1') {
+                                $("#a" + i).html(senha[i].sigla + senha[i].numero);
+                                $("#g" + i).html(senha[i].guiche);
+                                $("#a" + i).css("color", "black");
+                                $("#g" + i).css("color", "black");
+                                $("#guiche" + i).css("color", "black");
+                            } else {
+                                $("#a" + i).html(senha[i].sigla + senha[i].numero);
+                                $("#g" + i).html(senha[i].guiche);
+                                $("#a" + i).css("color", "red");
+                                $("#g" + i).css("color", "red");
+                                $("#guiche" + i).css("color", "red");
+                            }
+                        }
+                    }
+                }
+            });
+            setTimeout("updateSenha(" + idFila + ")", 1000);
+        }
+    </script>
     <body style="background-color: #E0F8F7;">
+        <button class="btn btn-light" type="button" onclick="configuracao();" style="position: absolute; right: 10px; top: 10px;  ">
+            Configurações <img src="{{asset('bundles/app/imagens/configuracao.png')}}" style="width: 20px; height: 20px; margin-left: 10px;"/>
+        </button>
         {% block body %}
             <div class="container-fluid" >
                 <table style="width: 98%; margin-top: 2%;" align="center">
-                    
+
                     <tr>
                         <td width="50%">
-                            <label style="font-size: 35pt;">Normal</label><br/>
-                            <label style="font-size: 160pt; margin-top: -80px;"><b>BO0001</b></label>
+                            <label style="font-size: 35pt;" id="tipo">Não há senhas!</label><br/>
+                            <label style="font-size: 160pt; margin-top: -80px;"><b id="ultimaSenha">------</b></label>
                         </td>
                         <td width="50%" align="center">
-                            <label style="font-size: 60pt;">Guichê</label><br/>
-                            <label style="font-size: 60pt; margin-top: -50px;">01</label>
+                            <label style="font-size: 60pt;" id="guiche">Guichê</label><br/>
+                            <label style="font-size: 60pt; margin-top: -50px;" id="ultimoGuiche">--</label>
                         </td>
                     </tr>
                 </table><br/>
@@ -29,23 +136,27 @@
                     </tr>
                     <tr>
                         <td align="center">
-                            <label ><b style="font-size: 50pt;">AO0001</b><br/><span style="font-size: 40pt;">Guichê 01</span></label>
+                            <label ><b style="font-size: 50pt;" id="a4">------</b><br/><span style="font-size: 40pt;" id="guiche4">Guichê <label id="g4">--</label></span></label>
                         </td>
                         <td align="center">
-                            <label ><b style="font-size: 50pt;">AO0001</b><br/><span style="font-size: 40pt;">Guichê 01</span></label>
+                            <label ><b style="font-size: 50pt;" id="a3">------</b><br/><span style="font-size: 40pt;" id="guiche3">Guichê <label id="g3">--</label></span></label>
                         </td>
                         <td align="center">
-                            <label ><b style="font-size: 50pt;">AO0001</b><br/><span style="font-size: 40pt;">Guichê 01</span></label>
+                            <label ><b style="font-size: 50pt;" id="a2">------</b><br/><span style="font-size: 40pt;" id="guiche2">Guichê <label id="g2">--</label></span></label>
                         </td>
                         <td align="center">
-                            <label ><b style="font-size: 50pt;">AO0001</b><br/><span style="font-size: 40pt;">Guichê 01</span></label>
+                            <label ><b style="font-size: 50pt;" id="a1">------</b><br/><span style="font-size: 40pt;" id="guiche1">Guichê <label id="g1">--</label></span></label>
                         </td>
                     </tr>
                 </table>
             </div>
         {% endblock %}
-
         {% block javascripts %}
+            <script>
+                function configuracao() {
+                    window.location.href = "{{path('Configuracao')}}";
+                }
+            </script>
             <script src="{{asset('bundles/app/bootstrap/js/bootstrap.bundle.js')}}"></script>
         {% endblock %}
     </body>    

@@ -43,5 +43,15 @@ class FilaRepository extends \Doctrine\ORM\EntityRepository {
 
         return $stmt;
     }
+    
+    public function zerar($idFila) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'UPDATE t_filas SET nsenha = 1 WHERE id = :ID';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['ID' => $idFila]);
+
+        return $stmt;
+    }
 
 }

@@ -173,14 +173,15 @@ class SenhaControllerController extends Controller {
             $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
             $idSenha = isset($filtro['idSenha']) ? $filtro['idSenha'] : null;
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
-            $sigla = isset($filtro['sigla']) ? $filtro['sigla'] : null;
-            $numero = isset($filtro['numero']) ? $filtro['numero'] : null;
             $guiche = isset($filtro['guiche']) ? $filtro['guiche'] : null;
             $novamente = isset($filtro['novamente']) ? $filtro['novamente'] : null;
+            $dataChamada = new \DateTime("now", new \DateTimeZone("America/Sao_Paulo"));
             $fila = $this->getDoctrine()->getRepository(Fila::class)->findOneBy(["id" => $idFila]);
             $em = $this->getDoctrine()->getRepository(Senha::class);
             if ($novamente === null) {
-                $em->chamarSenha($idSenha, $_SESSION['id']);
+                $em->chamarSenha($idSenha, $_SESSION['id'], $guiche, $dataChamada);
+            } else {
+                $em->chamarNovamente($idSenha, $dataChamada);
             }
             $senha = $em->senha($idSenha);
             return $this->render("Senha/chamarSenha.html.twig", array(
@@ -277,6 +278,45 @@ class SenhaControllerController extends Controller {
                         "idFila" => $idFila,
                         "mensagem" => $msg,
                         "guiche" => $guiche,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/configurar", name="Configurar")
+     */
+    public function configurar() {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $entityManage = $this->getDoctrine()->getRepository(Fila::class);
+            $filas = $entityManage->findBy(["deletar" => 0]);
+            return $this->render("Senha/configuracoes.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
+                        "filas" => $filas,
+            ));
+        }
+    }
+
+    /**
+     * @Route ("/salvarConfiguracao", name="SalvarConfiguracao")
+     */
+    public function salvarConfiguracao() {
+        if (!isset($_SESSION['login']) || $_SESSION['direitos'] != 1) {
+            return $this->redirectToRoute("Login");
+        } else {
+            $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
+            $entityManage = $this->getDoctrine()->getRepository(Fila::class);
+            $entityManage->zerar($idFila);
+            $msg = "Senhas zeradas com sucesso!";
+            $filas = $entityManage->findBy(["deletar" => 0]);
+            return $this->render("Senha/configuracoes.html.twig", array(
+                        "nome" => $_SESSION['nome'],
+                        'perfil' => $_SESSION['direitos'],
+                        "filas" => $filas,
+                        "mensagem" => $msg,
             ));
         }
     }

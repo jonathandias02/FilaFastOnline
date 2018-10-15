@@ -47,16 +47,7 @@ class ServicoControllerController extends Controller {
             $fila = $entityManage->findOneBy(["deletar" => 0, "id" => $idFila]);
             //teste de para evitar que refresh greve dados duplicados no banco
             $teste = $this->getDoctrine()->getRepository(Servico::class)->findOneBy(["deletar" => 0], ["id" => "DESC"], 1);
-            if ($teste->getSigla() == $sigla && $teste->getNome() == $nome) {
-                //buscando serviços da fila
-                $servicos = $this->getDoctrine()->getRepository(Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
-                return $this->render("Fila/exibefila.html.twig", array(
-                            "nome" => $_SESSION['nome'],
-                            'perfil' => $_SESSION['direitos'],
-                            "fila" => $fila,
-                            "servicos" => $servicos,
-                ));
-            } else {
+            if ($teste == null) {
                 $servico = new Servico();
                 $servico->setNomeServico($nome);
                 $servico->setIdUsuario($idUsuario);
@@ -76,6 +67,37 @@ class ServicoControllerController extends Controller {
                             "fila" => $fila,
                             "servicos" => $servicos,
                 ));
+            } else {
+                if ($teste->getSigla() == $sigla && $teste->getNomeServico() == $nome) {
+                    //buscando serviços da fila
+                    $servicos = $this->getDoctrine()->getRepository(Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
+                    return $this->render("Fila/exibefila.html.twig", array(
+                                "nome" => $_SESSION['nome'],
+                                'perfil' => $_SESSION['direitos'],
+                                "fila" => $fila,
+                                "servicos" => $servicos,
+                    ));
+                } else {
+                    $servico = new Servico();
+                    $servico->setNomeServico($nome);
+                    $servico->setIdUsuario($idUsuario);
+                    $servico->setIdFila($idFila);
+                    $servico->setSigla($sigla);
+                    $servico->setStatus_2($status);
+                    $servico->setDescricao($descricao);
+                    $em->persist($servico);
+                    $em->flush();
+                    $msg = "Serviço cadastrado com sucesso!";
+                    //buscando serviços da fila
+                    $servicos = $this->getDoctrine()->getRepository(Servico::class)->findBy(["idFila" => $fila->getId(), "deletar" => 0], [], 6);
+                    return $this->render("Fila/exibefila.html.twig", array(
+                                "mensagem" => $msg,
+                                "nome" => $_SESSION['nome'],
+                                'perfil' => $_SESSION['direitos'],
+                                "fila" => $fila,
+                                "servicos" => $servicos,
+                    ));
+                }
             }
         }
     }

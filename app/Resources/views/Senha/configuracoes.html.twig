@@ -1,0 +1,55 @@
+{% extends "base.html.twig" %}
+{% block conteiner %}
+
+    <div class="row">
+        <div class="col">
+            <div class="card border-light" >
+                <div class="card-header h5 text-center">Configurações</div>
+                <div class="card-body">
+                    <div class="container-fluid mx-auto d-block">
+                        <div style="margin-top: 10px; margin-bottom: 10px;">
+                            {% if mensagem != null %}
+                                <div class="alert alert-success text-center" role="alert" id="mensagem" style="width: 100%;">
+                                    <button type="button" class="close" aria-label="Close" onclick="fechar();">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    {{ mensagem }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card border-dark" style="height: 223px;">
+                                    <div class="card-header text-center h5" style="border-color: black;">Zerar Senhas</div>
+                                    <div class="card-body text-dark">
+                                        <form action="{{path('SalvarConfiguracao')}}" method="post">
+                                            <label>Selecione a Fila:</label>
+                                            <select class="form-control" name="idFila" required>
+                                                <option value="">Selecionar</option>
+                                                {% for fila in filas %}
+                                                    <option value="{{fila.id}}">{{fila.nome}}</option>
+                                                {% endfor %}
+                                            </select><br/>
+                                            <button class="btn btn-primary" style="width: 100px;">Zerar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card border-danger" style="height: 223px;">
+                                    <div class="card-header text-center h5 text-danger" style="background: none; border-color: red; ">Aviso</div>
+                                    <div class="card-body text-danger">
+                                        <p class="card-text" align="justify">Ao zerar as senhas, o contador da fila volta a 1, 
+                                            porém nenhum informação será perdida e a ordem da fila não será alterada. Ao clicar em zerar essa 
+                                            função não poderar ser desfeita.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

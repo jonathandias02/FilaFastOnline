@@ -54,9 +54,7 @@ class FilaControllerController extends Controller {
             $status = isset($filtro['status']) ? $filtro['status'] : null;
             $entityManage = $this->getDoctrine()->getRepository(Fila::class);
             $teste = $entityManage->findOneBy(["deletar" => 0], ["id" => "DESC"], 1);
-            if ($teste->getNome() == $nome) {
-                return $this->redirectToRoute("Filas");
-            } else {
+            if ($teste == null) {
                 $fila = new Fila();
                 $fila->setNome($nome);
                 $fila->setIdUsuario($id);
@@ -71,6 +69,25 @@ class FilaControllerController extends Controller {
                             'perfil' => $_SESSION['direitos'],
                             "filas" => $filas,
                 ));
+            } else {
+                if ($teste->getNome() == $nome) {
+                    return $this->redirectToRoute("Filas");
+                } else {
+                    $fila = new Fila();
+                    $fila->setNome($nome);
+                    $fila->setIdUsuario($id);
+                    $fila->setStatus_2($status);
+                    $em->persist($fila);
+                    $em->flush();
+                    $msg = "Fila cadastrada com sucesso!";
+                    $filas = $entityManage->findBy(["deletar" => 0], ["createAt" => "DESC"], 5);
+                    return $this->render("Fila/filas.html.twig", array(
+                                "mensagem" => $msg,
+                                "nome" => $_SESSION['nome'],
+                                'perfil' => $_SESSION['direitos'],
+                                "filas" => $filas,
+                    ));
+                }
             }
         }
     }

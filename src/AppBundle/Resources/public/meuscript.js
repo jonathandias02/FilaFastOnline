@@ -544,7 +544,7 @@ function updateSenha(idFila) {
             var senha = JSON.parse(data);
             $("#npessoas").html(senha.npessoas);
             $("#senhaNumero").html(senha.sigla + senha.numero);
-            $("#senhaNome").html(senha.nome);
+            $("#senhaNome").html(senha.nomeServico);
             $("#senhaPreferencia").html(senha.preferencia);
             $("#senhaIdentificacao").html(senha.identificacao);
 
