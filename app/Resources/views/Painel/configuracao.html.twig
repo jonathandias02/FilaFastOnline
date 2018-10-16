@@ -41,6 +41,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="voltar();">Voltar</button>
                             <button type="button" class="btn btn-primary" onclick="salvar();">Salvar</button>
                         </div>
                     </div>
@@ -94,6 +95,9 @@
                 $('#modal').on('hide.bs.modal', function () {
                     window.location.href = "{{path('Configuracao')}}";
                 });
+                function voltar() {
+                    window.location.href = "{{path('Login')}}";
+                }
             </script>
         {% endblock %}
         {% block javascripts %}

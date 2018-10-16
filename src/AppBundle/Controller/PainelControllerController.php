@@ -19,7 +19,7 @@ class PainelControllerController extends Controller {
     }
 
     /**
-     * @Route ("/painel", name="Painel")
+     * @Route ("/painelweb", name="Painel")
      */
     public function painel() {
         $filtro = filter_input_array(INPUT_POST, FILTER_DEFAULT);

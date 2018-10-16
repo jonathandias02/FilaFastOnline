@@ -37,6 +37,8 @@
                 </div>
             {% endif %}
             {#            fim modal erros#}
+
+            <button type="button" class="btn btn-primary" onclick="painel();" style="position: absolute; top: 20px; right: 20px; width: 100px;">Painel</button>
             <div class="container">
                 <div class="row" style="margin-top: 8%;">
                     <img style="width: 280px; height: 160px;" src="{{asset('bundles/app/imagens/logo.png')}}" class="rounded mx-auto d-block" alt="...">
@@ -56,9 +58,12 @@
         {% block javascripts %}
             <script src="{{asset('bundles/app/bootstrap/js/bootstrap.bundle.js')}}"></script>
             <script>
-                $('#ModalCenter').on('hide.bs.modal', function () {
-                    window.location.href="{{path("Login")}}";
-                });
+                    $('#ModalCenter').on('hide.bs.modal', function () {
+                        window.location.href = "{{path("Login")}}";
+                    });
+                    function painel(){
+                        window.location.href = "{{path("Configuracao")}}";
+                    }
             </script>
         {% endblock %}
     </body>    
