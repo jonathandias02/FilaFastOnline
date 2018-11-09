@@ -111,7 +111,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
 
     public function relatorioPeriodo($dataInicio, $dataFim): array {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, u.nome, u.sobrenome, ser.nomeServico
+        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, s.avaliacao, u.nome, u.sobrenome, ser.nomeServico
         FROM t_senhas s, t_usuario u, t_servicos ser
         WHERE u.id = s.t_usuario_id AND ser.id = s.t_servicos_id AND s.situacao != "Chamada" AND s.situacao != "Aguardando"
         AND dataSolicitacao BETWEEN :DATAINICIO AND :DATAFIM;';
@@ -122,7 +122,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
     
     public function relatorioFila($idFila, $dataInicio, $dataFim): array {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, s.t_filas_id, u.nome, u.sobrenome, ser.nomeServico
+        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, s.t_filas_id, s.avaliacao, u.nome, u.sobrenome, ser.nomeServico
         FROM t_senhas s, t_usuario u, t_servicos ser
         WHERE u.id = s.t_usuario_id AND ser.id = s.t_servicos_id AND s.situacao != "Chamada" AND s.situacao != "Aguardando"
         AND s.t_filas_id = :IDFILA AND dataSolicitacao BETWEEN :DATAINICIO AND :DATAFIM;';
@@ -133,7 +133,7 @@ class SenhaRepository extends \Doctrine\ORM\EntityRepository {
     
     public function relatorioServico($idServico, $dataInicio, $dataFim): array {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, s.t_filas_id, u.nome, u.sobrenome, ser.nomeServico
+        $sql = 'SELECT s.situacao, s.dataSolicitacao, s.dataAtendimento, s.duracao, s.sigla, s.numero, s.identificacao, s.t_filas_id, s.avaliacao, u.nome, u.sobrenome, ser.nomeServico
         FROM t_senhas s, t_usuario u, t_servicos ser
         WHERE u.id = s.t_usuario_id AND ser.id = s.t_servicos_id AND s.situacao != "Chamada" AND s.situacao != "Aguardando"
         AND s.t_servicos_id = :IDSERVICO AND dataSolicitacao BETWEEN :DATAINICIO AND :DATAFIM;';

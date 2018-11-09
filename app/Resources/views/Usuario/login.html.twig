@@ -46,8 +46,8 @@
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-4 mx-auto d-block">
                         <form class="mx-auto d-block" action="{{path("Home")}}" method="post">
-                            <input class="form-control form-control-lg" type="number" placeholder="Login" name="login" required><br/>
-                            <input class="form-control form-control-lg" type="password" placeholder="Senha" name="senha" required><br/>
+                            <input class="form-control form-control-lg" type="text" maxlength="10" onkeyup="somenteNumeros(this)" placeholder="Login" name="login" required><br/>
+                            <input class="form-control form-control-lg" type="password" maxlength="12" placeholder="Senha" name="senha" required><br/>
                             <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar</button>
                         </form>
                     </div>
@@ -57,6 +57,7 @@
 
         {% block javascripts %}
             <script src="{{asset('bundles/app/bootstrap/js/bootstrap.bundle.js')}}"></script>
+            <script src="{{asset('bundles/app/login.js')}}"></script>
             <script>
                     $('#ModalCenter').on('hide.bs.modal', function () {
                         window.location.href = "{{path("Login")}}";
