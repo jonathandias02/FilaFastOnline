@@ -17,7 +17,7 @@
                         <div class="row">
                             <div style="width: 60px; margin-left: 15px;">
                                 <input type="hidden" name="id" value="{{ servico.id }}"/>
-                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="2" minlength="1" onkeyup="maiuscula(this);" value="{{ servico.sigla }}" required>
+                                <input type="text" class="form-control" placeholder="Sigla" name="sigla" maxlength="1" minlength="1" onkeyup="maiuscula(this);" value="{{ servico.sigla }}" required>
                             </div>
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Nome" name="nome" maxlength="60" minlength="2" value="{{ servico.nomeServico }}" onkeyup="somenteLetras2(this);" required>

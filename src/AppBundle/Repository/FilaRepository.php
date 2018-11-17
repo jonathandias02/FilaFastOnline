@@ -33,7 +33,7 @@ class FilaRepository extends \Doctrine\ORM\EntityRepository {
 
         return $stmt;
     }
-    
+
     public function deletarFila($id) {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -41,9 +41,14 @@ class FilaRepository extends \Doctrine\ORM\EntityRepository {
         $stmt = $conn->prepare($sql);
         $stmt->execute(['ID' => $id]);
 
-        return $stmt;
+        if ($stmt->rowCount() > 0) {
+            $sql2 = 'UPDATE t_servicos SET deletar = 1 WHERE t_filas_id = :ID';
+            $stmt2 = $conn->prepare($sql2);
+            $stmt2->execute(['ID' => $id]);
+        }
+        return $stmt->rowCount();
     }
-    
+
     public function zerar($idFila) {
         $conn = $this->getEntityManager()->getConnection();
 

@@ -54,7 +54,7 @@ class RelatorioControllerController extends Controller {
             $dataInicio = isset($filtro['inicio']) ? $filtro['inicio'] : null;
             $dataFim = isset($filtro['fim']) ? $filtro['fim'] : null;
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
-            $filas = $this->getDoctrine()->getRepository(Fila::class)->findBy([], ["nome" => "ASC"]);
+            $filas = $this->getDoctrine()->getRepository(Fila::class)->findBy(["deletar" => 0], ["nome" => "ASC"]);
 //            verifica se foram recebidos dados via post caso sim 
 //            tenta gerar relatorio caso não apenas apresenta a pagina para gerar relatorio
             if ($dataInicio === null && $dataFim === null && $idFila === null) {
@@ -98,7 +98,7 @@ class RelatorioControllerController extends Controller {
             $dataFim = isset($filtro['fim']) ? $filtro['fim'] : null;
             $idFila = isset($filtro['idFila']) ? $filtro['idFila'] : null;
             $idServico = isset($filtro['idServico']) ? $filtro['idServico'] : null;
-            $filas = $this->getDoctrine()->getRepository(Fila::class)->findBy([], ["nome" => "ASC"]);
+            $filas = $this->getDoctrine()->getRepository(Fila::class)->findBy(["deletar" => 0], ["nome" => "ASC"]);
 //            verifica se foram recebidos dados via post caso sim 
 //            tenta gerar relatorio caso não apenas apresenta a pagina para gerar relatorio
             if ($dataInicio === null && $dataFim === null && $idServico === null) {
